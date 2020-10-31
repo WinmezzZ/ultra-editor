@@ -22,11 +22,12 @@ import EmojiControl from './controls/EmojiControl';
 import { ENTITY_TYPE } from './config/constant';
 import DividerBlock from './controls/DividerControl/DividerBlock';
 import DividerControl from './controls/DividerControl';
+import decorator from './decorators';
 
 const { Title } = Typography;
 
 const UltraEditor: FC = () => {
-  const [editorState, setEditorState] = React.useState(() => EditorState.createEmpty());
+  const [editorState, setEditorState] = React.useState(() => EditorState.createEmpty(decorator));
   const editorRef = useRef<Editor>(null);
 
   function focus() {
@@ -53,8 +54,6 @@ const UltraEditor: FC = () => {
     return getDefaultKeyBinding(e);
   };
 
-  // If the user changes block type before entering any text, we can
-  // either style the placeholder or hide it. Let's just hide it now.
   let className = 'RichEditor-editor';
   const contentState = editorState.getCurrentContent();
   if (!contentState.hasText()) {
@@ -133,13 +132,20 @@ function blockRendererFn(block: ContentBlock, editorState: EditorState) {
     const contentState = editorState.getCurrentContent();
     const entityKey = block.getEntityAt(0);
     const entity = contentState.getEntity(entityKey);
-    const isHorizontalRule = entity.getType() === ENTITY_TYPE.HORIZONTAL_RULE;
 
-    if (isHorizontalRule) {
-      return {
-        component: DividerBlock,
-        editable: false,
-      };
+    switch (entity.getType()) {
+      case ENTITY_TYPE.HORIZONTAL_RULE:
+        return {
+          component: DividerBlock,
+          editable: false,
+        };
+      // case ENTITY_TYPE.LINK:
+      //   return {
+      //     component: LinkEntry,
+      //     props: {
+      //       editorState,
+      //     },
+      //   };
     }
   }
 }
