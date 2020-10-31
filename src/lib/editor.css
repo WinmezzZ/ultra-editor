@@ -22,9 +22,16 @@
   padding: 20px;
 }
 
+.RichEditor-editor .RichEditor-DividerBlock {
+  border: none;
+  background: #5a5a5a;
+  min-height: 3px;
+  max-width: 100px;
+}
+
 .UltraEditor-controls {
   user-select: none;
-} 
+}
 
 .UltraEditor-controls > * {
   margin-right: 14px;

@@ -19,6 +19,9 @@ import UndoRedoControls from './controls/UndoRedoControls';
 import LinkControl from './controls/LinkControl';
 import ImageControl from './controls/ImageControl';
 import EmojiControl from './controls/EmojiControl';
+import { ENTITY_TYPE } from './config/constant';
+import DividerBlock from './controls/DividerControl/DividerBlock';
+import DividerControl from './controls/DividerControl';
 
 const { Title } = Typography;
 
@@ -76,6 +79,7 @@ const UltraEditor: FC = () => {
             <InlineControls editorState={editorState} setEditorState={setEditorState} />
             <Divider type="vertical" />
             <BlockControls editorState={editorState} setEditorState={setEditorState} />
+            <DividerControl editorState={editorState} setEditorState={setEditorState} />
             <LinkControl editorState={editorState} setEditorState={setEditorState} />
             <ImageControl editorState={editorState} setEditorState={setEditorState} />
             <EmojiControl editorState={editorState} setEditorState={setEditorState} />
@@ -87,6 +91,7 @@ const UltraEditor: FC = () => {
             editorState={editorState}
             onChange={setEditorState}
             blockStyleFn={getBlockStyle}
+            blockRendererFn={block => blockRendererFn(block, editorState)}
             customStyleMap={styleMap}
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={mapKeyToEditorCommand}
@@ -118,5 +123,23 @@ function getBlockStyle(block: ContentBlock): string {
       return 'RichEditor-blockquote';
     default:
       return '';
+  }
+}
+
+function blockRendererFn(block: ContentBlock, editorState: EditorState) {
+  const type = block.getType();
+
+  if (type === 'atomic') {
+    const contentState = editorState.getCurrentContent();
+    const entityKey = block.getEntityAt(0);
+    const entity = contentState.getEntity(entityKey);
+    const isHorizontalRule = entity.getType() === ENTITY_TYPE.HORIZONTAL_RULE;
+
+    if (isHorizontalRule) {
+      return {
+        component: DividerBlock,
+        editable: false,
+      };
+    }
   }
 }

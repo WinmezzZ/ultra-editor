@@ -1,0 +1,5 @@
+export const ENTITY_TYPE = {
+  LINK: 'LINK',
+  IMAGE: 'IMAGE',
+  HORIZONTAL_RULE: 'HORIZONTAL_RULE',
+};
