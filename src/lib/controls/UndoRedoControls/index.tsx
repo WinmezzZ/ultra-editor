@@ -13,7 +13,7 @@ const UndoRedoControls: FC<UndoRedoControlsProps> = ({ editorState, setEditorSta
   const allowRedo = editorState.getRedoStack().size === 0;
 
   const toggleStyle = (style: UndoRedoItem['style']) => {
-    EditorState[style](editorState);
+    setEditorState(EditorState[style](editorState));
   };
 
   return (
