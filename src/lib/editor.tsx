@@ -24,6 +24,8 @@ import DividerBlock from './controls/DividerControl/DividerBlock';
 import DividerControl from './controls/DividerControl';
 import decorator from './decorators';
 import { ExtendedDraftEditorCommand } from './interface/editor';
+import MediaEntity from './entries/MediaEntry';
+import { createMediaEntity } from './entries/createMediaEntity';
 
 const { Title } = Typography;
 
@@ -45,6 +47,16 @@ const UltraEditor: FC = () => {
         return 'handled';
       }
       return 'not-handled';
+    }
+    return 'not-handled';
+  };
+
+  const handlePastedFiles = (files: Blob[]): DraftHandleValue => {
+    // upload to server logic
+    const res = '';
+    if (res) {
+      setEditorState(createMediaEntity(editorState, ENTITY_TYPE.IMAGE, { src: res }));
+      return 'handled';
     }
     return 'not-handled';
   };
@@ -102,6 +114,7 @@ const UltraEditor: FC = () => {
             customStyleMap={styleMap}
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={mapKeyToEditorCommand}
+            handlePastedFiles={handlePastedFiles}
             stripPastedStyles
             placeholder="请输入..."
             ref={editorRef}
@@ -146,6 +159,13 @@ function blockRendererFn(block: ContentBlock, editorState: EditorState) {
       case ENTITY_TYPE.HORIZONTAL_RULE:
         return {
           component: DividerBlock,
+          editable: false,
+        };
+      case ENTITY_TYPE.AUDIO:
+      case ENTITY_TYPE.IMAGE:
+      case ENTITY_TYPE.VIDEO:
+        return {
+          component: MediaEntity,
           editable: false,
         };
       // case ENTITY_TYPE.LINK:
