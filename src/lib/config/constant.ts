@@ -1,6 +1,9 @@
 export const ENTITY_TYPE = {
   LINK: 'LINK',
   IMAGE: 'IMAGE',
+  AUDIO: 'AUDIO',
+  VIDEO: 'VIDEO',
+  EMBED: 'EMBED',
   HORIZONTAL_RULE: 'HORIZONTAL_RULE',
 };
 
