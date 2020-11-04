@@ -23,7 +23,7 @@ const LinkEntry: FC<LinkEntryProps> = props => {
 
     if (!isBetweenLink) return;
 
-    const { entityKey, blockKey, url, label } = isBetweenLink;
+    const { entityKey } = isBetweenLink;
 
     if (entityKey === null) {
       return;

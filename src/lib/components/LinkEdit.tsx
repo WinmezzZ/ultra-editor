@@ -12,7 +12,6 @@ interface LinkEditProps {
 }
 
 const LinkEdit: FC<LinkEditProps> = props => {
-  const [linkLabel, setLinkLabel] = useState('');
   const [linkUrl, setLinkUrl] = useState('');
   const { editorState, setEditorState, visible, onChange } = props;
 
@@ -21,7 +20,7 @@ const LinkEdit: FC<LinkEditProps> = props => {
 
     if (!isBetweenLink) return;
 
-    const { entityKey, blockKey, url, label } = isBetweenLink;
+    const { entityKey, blockKey, url } = isBetweenLink;
 
     if (entityKey === null) {
       return;
@@ -43,7 +42,6 @@ const LinkEdit: FC<LinkEditProps> = props => {
         });
         const newEditorState = EditorState.forceSelection(editorState, selection);
         setEditorState(newEditorState);
-        setLinkLabel(label);
         setLinkUrl(url);
         onChange(true);
       },
