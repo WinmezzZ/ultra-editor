@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { AtomicBlockUtils, EditorState, Modifier, SelectionState } from 'draft-js';
+import { EditorState, Modifier, SelectionState } from 'draft-js';
 import { Input, Modal } from 'antd';
 import { LinkOutlined, createFromIconfontCN } from '@ant-design/icons';
 import ControlContainer from 'lib/components/ControlContainer';
