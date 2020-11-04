@@ -102,6 +102,7 @@ const UltraEditor: FC = () => {
             customStyleMap={styleMap}
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={mapKeyToEditorCommand}
+            stripPastedStyles
             placeholder="请输入..."
             ref={editorRef}
             spellCheck={true}
