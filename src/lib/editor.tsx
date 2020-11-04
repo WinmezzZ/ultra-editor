@@ -7,7 +7,7 @@ import {
   getDefaultKeyBinding,
   ContentBlock,
   DraftHandleValue,
-  DraftEditorCommand,
+  KeyBindingUtil,
 } from 'draft-js';
 import 'draft-js/dist/Draft.css';
 import InlineControls from './controls/InlineControls';
@@ -23,8 +23,11 @@ import { ENTITY_TYPE } from './config/constant';
 import DividerBlock from './controls/DividerControl/DividerBlock';
 import DividerControl from './controls/DividerControl';
 import decorator from './decorators';
+import { ExtendedDraftEditorCommand } from './interface/editor';
 
 const { Title } = Typography;
+
+const { hasCommandModifier } = KeyBindingUtil;
 
 const UltraEditor: FC = () => {
   const [editorState, setEditorState] = React.useState(() => EditorState.createEmpty(decorator));
@@ -34,22 +37,27 @@ const UltraEditor: FC = () => {
     editorRef.current?.focus();
   }
 
-  const handleKeyCommand = (command: string, editorState: EditorState): DraftHandleValue => {
+  const handleKeyCommand = (command: ExtendedDraftEditorCommand, editorState: EditorState): DraftHandleValue => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
-      setEditorState(newState);
-      return 'handled';
+      if (command === 'on-save') {
+        setEditorState(newState);
+        return 'handled';
+      }
+      return 'not-handled';
     }
     return 'not-handled';
   };
 
-  const mapKeyToEditorCommand = (e: React.KeyboardEvent): DraftEditorCommand | null => {
+  const mapKeyToEditorCommand = (e: React.KeyboardEvent): ExtendedDraftEditorCommand | null => {
     if (e.key === 'Tab') {
-      const newEditorState = RichUtils.onTab(e, editorState, 4 /* maxDepth */);
+      const newEditorState = RichUtils.onTab(e, editorState, 4);
       if (newEditorState !== editorState) {
         setEditorState(newEditorState);
       }
       return null;
+    } else if (e.key === 'S' && hasCommandModifier(e)) {
+      return 'on-save';
     }
     return getDefaultKeyBinding(e);
   };
