@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { ContentState } from 'draft-js';
+import { ContentBlock, ContentState } from 'draft-js';
+import { ENTITY_TYPE } from 'lib/config/constant';
 
 interface CommonProps {
   src: string;
@@ -22,22 +23,22 @@ const Video: FC<CommonProps> = ({ src }) => {
 
 interface MediaEntityProps {
   contentState: ContentState;
-  entityKey: string;
+  block: ContentBlock;
 }
 
 const MediaEntity: FC<MediaEntityProps> = props => {
-  const { contentState, entityKey } = props;
   console.log(props);
-  const entity = contentState.getEntity(entityKey);
+  const { contentState, block } = props;
+  const entity = contentState.getEntity(block.getEntityAt(0));
   const data = entity.getData();
   const type = entity.getType();
 
   switch (type) {
-    case 'image':
+    case ENTITY_TYPE.IMAGE:
       return <Image src={data.src} />;
-    case 'audio':
+    case ENTITY_TYPE.AUDIO:
       return <Audio src={data.src} />;
-    case 'video':
+    case ENTITY_TYPE.VIDEO:
       return <Video src={data.src} />;
     default:
       return null;
