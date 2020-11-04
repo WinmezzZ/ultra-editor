@@ -11,9 +11,6 @@ interface LinkEntryProps {
 
 const LinkEntry: FC<LinkEntryProps> = props => {
   const { contentState, entityKey } = props;
-
-  console.log(props);
-
   const [visible, setVisible] = useState(false);
   const data = contentState.getEntity(entityKey).getData();
   const { label, url } = data;

@@ -27,7 +27,6 @@ interface MediaEntityProps {
 }
 
 const MediaEntity: FC<MediaEntityProps> = props => {
-  console.log(props);
   const { contentState, block } = props;
   const entity = contentState.getEntity(block.getEntityAt(0));
   const data = entity.getData();
