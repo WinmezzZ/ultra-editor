@@ -1,14 +1,12 @@
 import React, { FC, useState } from 'react';
 import { Menu, Dropdown, Button } from 'antd';
-import { EditorState, RichUtils } from 'draft-js';
+import { RichUtils } from 'draft-js';
 import { HEADER_STYLES, CoreDraftHeaderType } from './headerStyles';
+import { useContext } from 'react';
+import { EditorStore } from 'lib/store';
 
-interface InlineControlsProps {
-  editorState: EditorState;
-  setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
-}
-
-const HeaderControls: FC<InlineControlsProps> = ({ editorState, setEditorState }) => {
+const HeaderControls: FC = () => {
+  const { editorState, setEditorState } = useContext(EditorStore);
   const [currentHeader, setCurrentHeader] = useState<CoreDraftHeaderType>('unstyled');
 
   const currentHeaderName = HEADER_STYLES.find(header => header.style === currentHeader)?.title;

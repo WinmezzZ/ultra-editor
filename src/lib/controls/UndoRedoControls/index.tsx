@@ -1,14 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import ControlContainer from 'lib/components/ControlContainer';
 import { EditorState } from 'draft-js';
 import { UNDO_REDO_STYLES, UndoRedoItem } from './UndoRedoStyles';
+import { EditorStore } from 'lib/store';
 
-interface UndoRedoControlsProps {
-  editorState: EditorState;
-  setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
-}
-
-const UndoRedoControls: FC<UndoRedoControlsProps> = ({ editorState, setEditorState }) => {
+const UndoRedoControls: FC = () => {
+  const { editorState, setEditorState } = useContext(EditorStore);
   const allowUndo = editorState.getUndoStack().size === 0;
   const allowRedo = editorState.getRedoStack().size === 0;
 

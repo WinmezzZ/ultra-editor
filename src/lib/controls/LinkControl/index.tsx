@@ -1,9 +1,10 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useContext, useState } from 'react';
 import { EditorState, Modifier, SelectionState } from 'draft-js';
 import { Input, Modal } from 'antd';
 import { LinkOutlined, createFromIconfontCN } from '@ant-design/icons';
 import ControlContainer from 'lib/components/ControlContainer';
 import { ENTITY_TYPE } from 'lib/config/constant';
+import { EditorStore } from 'lib/store';
 
 const TextIcon = createFromIconfontCN({
   scriptUrl: '//at.alicdn.com/t/font_2170513_opqjpd9r6us.js',
@@ -11,12 +12,8 @@ const TextIcon = createFromIconfontCN({
 
 const ValidUrlReg = /^(?:(http|https|ftp):\/\/)?((?:[\w-]+\.)+[a-z0-9]+)((?:\/[^/?#]*)+)?(\?[^#]+)?(#.+)?$/i;
 
-interface LinkControlProps {
-  editorState: EditorState;
-  setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
-}
-
-const LinkControl: FC<LinkControlProps> = ({ editorState, setEditorState }) => {
+const LinkControl: FC = () => {
+  const { editorState, setEditorState } = useContext(EditorStore);
   const [linkModalVisible, setLinkModalVisible] = useState(false);
   const [linkLabel, setLinkLabel] = useState('');
   const [linkUrl, setLinkUrl] = useState('http://baidu.com');

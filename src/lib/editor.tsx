@@ -26,13 +26,15 @@ import decorator from './decorators';
 import { ExtendedDraftEditorCommand } from './interface/editor';
 import MediaEntity from './entries/MediaEntry';
 import { createMediaEntity } from './entries/createMediaEntity';
+import { EditorStore } from './store';
+import { useStateWithCallback } from './hooks/useStateWithCallback';
 
 const { Title } = Typography;
 
 const { hasCommandModifier } = KeyBindingUtil;
 
 const UltraEditor: FC = () => {
-  const [editorState, setEditorState] = React.useState(() => EditorState.createEmpty(decorator));
+  const [editorState, setEditorState] = useStateWithCallback(EditorState.createEmpty(decorator));
   const editorRef = useRef<Editor>(null);
 
   function focus() {
@@ -83,7 +85,7 @@ const UltraEditor: FC = () => {
   }
 
   return (
-    <>
+    <EditorStore.Provider value={{ editorState, setEditorState, focus }}>
       <br />
       <Title>Ultra Editor</Title>
       <Card
@@ -91,17 +93,17 @@ const UltraEditor: FC = () => {
         bodyStyle={{ minHeight: 400 }}
         title={
           <div className="UltraEditor-controls">
-            <UndoRedoControls editorState={editorState} setEditorState={setEditorState} />
+            <UndoRedoControls />
             <Divider type="vertical" />
-            <HeaderControls editorState={editorState} setEditorState={setEditorState} />
+            <HeaderControls />
             <Divider type="vertical" />
-            <InlineControls editorState={editorState} setEditorState={setEditorState} />
+            <InlineControls />
             <Divider type="vertical" />
-            <BlockControls editorState={editorState} setEditorState={setEditorState} />
-            <DividerControl editorState={editorState} setEditorState={setEditorState} />
-            <LinkControl editorState={editorState} setEditorState={setEditorState} />
-            <ImageControl editorState={editorState} setEditorState={setEditorState} />
-            <EmojiControl editorState={editorState} setEditorState={setEditorState} />
+            <BlockControls />
+            <DividerControl />
+            <LinkControl />
+            <ImageControl />
+            <EmojiControl />
           </div>
         }
       >
@@ -122,7 +124,7 @@ const UltraEditor: FC = () => {
           />
         </div>
       </Card>
-    </>
+    </EditorStore.Provider>
   );
 };
 

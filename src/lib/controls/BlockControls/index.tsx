@@ -1,14 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import ControlContainer from 'lib/components/ControlContainer';
-import { EditorState, RichUtils } from 'draft-js';
+import { RichUtils } from 'draft-js';
 import { BLOCK_STYLES } from './blockStyles';
+import { EditorStore } from 'lib/store';
 
-interface BlockControlsProps {
-  editorState: EditorState;
-  setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
-}
-
-const BlockControls: FC<BlockControlsProps> = ({ editorState, setEditorState }) => {
+const BlockControls: FC = () => {
+  const { editorState, setEditorState } = useContext(EditorStore);
   const selection = editorState.getSelection();
   const blockType = editorState.getCurrentContent().getBlockForKey(selection.getStartKey()).getType();
 

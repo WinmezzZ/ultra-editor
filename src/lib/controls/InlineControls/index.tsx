@@ -1,14 +1,12 @@
 import React, { FC } from 'react';
 import ControlContainer from 'lib/components/ControlContainer';
-import { EditorState, RichUtils } from 'draft-js';
+import { RichUtils } from 'draft-js';
 import { INLINE_STYLES } from './inlineStyles';
+import { useContext } from 'react';
+import { EditorStore } from 'lib/store';
 
-interface InlineControlsProps {
-  editorState: EditorState;
-  setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
-}
-
-const InlineControls: FC<InlineControlsProps> = ({ editorState, setEditorState }) => {
+const InlineControls: FC = () => {
+  const { editorState, setEditorState } = useContext(EditorStore);
   const currentStyle = editorState.getCurrentInlineStyle();
 
   const toggleStyle = (style: string) => {

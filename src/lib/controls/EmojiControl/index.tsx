@@ -1,15 +1,11 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useContext } from 'react';
 import { EditorState, Modifier } from 'draft-js';
 import { Popover } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
 import ControlContainer from 'lib/components/ControlContainer';
 import { emojis } from 'lib/controls/EmojiControl/emojis';
 import './index.css';
-
-interface EmojiControlProps {
-  editorState: EditorState;
-  setEditorState: React.Dispatch<React.SetStateAction<EditorState>>;
-}
+import { EditorStore } from 'lib/store';
 
 // const insertEmoji = (event, props) => {
 //   let emoji = event.currentTarget.dataset.emoji;
@@ -29,7 +25,8 @@ interface EmojiControlProps {
 //   return true;
 // };
 
-const EmojiControl: FC<EmojiControlProps> = ({ editorState, setEditorState }) => {
+const EmojiControl: FC = () => {
+  const { editorState, setEditorState } = useContext(EditorStore);
   const [popoverVisible, setPopoverVisible] = useState(false);
 
   const onShowPopover = () => {
