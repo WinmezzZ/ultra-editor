@@ -37,9 +37,9 @@ const UltraEditor: FC = () => {
   const [editorState, setEditorState] = useStateWithCallback(EditorState.createEmpty(decorator));
   const editorRef = useRef<Editor>(null);
 
-  function focus() {
+  const focus = () => {
     editorRef.current?.focus();
-  }
+  };
 
   const handleKeyCommand = (command: ExtendedDraftEditorCommand, editorState: EditorState): DraftHandleValue => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
