@@ -1,0 +1,14 @@
+node_modules
+.DS_Store
+
+dist
+es
+lib
+
+website/.docusaurus
+
+*.svg
+*.ico
+.gitignore
+*.log
+*.lock

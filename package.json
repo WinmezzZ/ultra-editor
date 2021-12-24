@@ -1,0 +1,65 @@
+{
+  "name": "ultra-editor",
+  "version": "0.0.1",
+  "keywords": [
+    "react",
+    "react-editor",
+    "ultra-editor",
+    "rich-editor"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "files": [
+    "dist",
+    "lib",
+    "es"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:WinmezzZ/ultra-editor.git",
+    "branch": "master",
+    "platform": "github"
+  },
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "typings": "es/index.d.ts",
+  "scripts": {
+    "build:types": "tsc && tsc --project tsconfig.json --declarationDir lib",
+    "build:packages": "rollup -c",
+    "build": "npm run build:packages && npm run build:types",
+    "lint": "eslint . --ext js,ts,tsx",
+    "format": "prettier --write **/*.{js,tsx,ts,md,json} && eslint . --ext js,ts,tsx --fix",
+    "release": "yarn build && yarn publish --non-interactive"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.16.3",
+    "@emotion/babel-plugin": "^11.3.0",
+    "@emotion/react": "^11.7.0",
+    "@icon-park/react": "^1.3.5",
+    "draft-js": "^0.11.7",
+    "ultra-design": "^0.0.22-beta"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/plugin-transform-runtime": "^7.16.4",
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-react": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.0",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.0.6",
+    "@types/draft-js": "^0.11.8",
+    "@types/node": "^16.11.12",
+    "@types/react": "^17.0.33",
+    "@types/react-dom": "^17.0.10",
+    "@winme/eslint-config-react-base": "^0.0.7",
+    "rollup": "^2.60.2",
+    "typescript": "^4.4.4"
+  }
+}

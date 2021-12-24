@@ -1,0 +1,21 @@
+node_modules
+.DS_Store
+
+dist
+es
+lib
+
+.vscode
+
+website/.docusaurus
+website/node_modules
+
+# testing
+coverage
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+.idea
