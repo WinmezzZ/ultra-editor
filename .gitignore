@@ -5,8 +5,6 @@ dist
 es
 lib
 
-.vscode
-
 website/.docusaurus
 website/node_modules
 
