@@ -6,6 +6,7 @@ import { ENTITY_TYPE } from '../../config/constans';
 import { useEditContext } from '../../utils/useEditorContext';
 import { Link, Text } from '@icon-park/react';
 import { isCursorBetweenLink } from '../../utils/isCursorBetweenLink';
+import { createEntry } from '../../utils/createEntry';
 
 const ValidUrlReg = /^(?:(http|https|ftp):\/\/)?((?:[\w-]+\.)+[a-z0-9]+)((?:\/[^/?#]*)+)?(\?[^#]+)?(#.+)?$/i;
 
@@ -42,27 +43,11 @@ const LinkControl: FC = () => {
   };
 
   const onOk = () => {
-    const contentState = editorState.getCurrentContent();
-    const selection = editorState.getSelection();
-    const textWithSpace = linkLabel.concat(' ');
-    const newContent = Modifier.insertText(contentState, selection, textWithSpace);
-    const newContentWithEntity = newContent.createEntity(ENTITY_TYPE.LINK, 'MUTABLE', {
-      label: linkLabel,
-      url: linkUrl,
-    });
-    const entityKey = newContentWithEntity.getLastCreatedEntityKey();
-    const anchorOffset = selection.getAnchorOffset();
-    const newSelection = new SelectionState({
-      anchorKey: selection.getAnchorKey(),
-      anchorOffset,
-      focusKey: selection.getAnchorKey(),
-      focusOffset: anchorOffset + linkLabel.length,
-    });
-    const newContentWithLink = Modifier.applyEntity(newContentWithEntity, newSelection, entityKey);
-    const withLinkText = EditorState.push(editorState, newContentWithLink, 'insert-characters');
-    const withProperCursor = EditorState.forceSelection(withLinkText, newContent.getSelectionAfter());
+    const newEditorState = createEntry(editorState, 'LINK', { url: linkUrl, label: linkLabel });
 
-    setEditorState(withProperCursor);
+    console.log(newEditorState);
+
+    setEditorState(newEditorState);
     setLinkModalVisible(false);
   };
 

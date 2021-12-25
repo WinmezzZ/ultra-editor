@@ -127,6 +127,7 @@ const blockRendererFn = (contentBlock: ContentBlock, editorState: EditorState) =
       case ENTITY_TYPE.LINK:
         return {
           component: LinkEntry,
+          editable: false,
           props: {
             editorState,
           },

@@ -1,8 +1,9 @@
 import { FC } from 'react';
-import { ContentBlock, ContentState } from 'draft-js';
+import { ContentBlock, ContentState, EditorState, RichUtils } from 'draft-js';
 import { Popover } from 'ultra-design';
 import { Edit, Share, Unlink } from '@icon-park/react';
 import { css } from '@emotion/react';
+import { useEditContext } from '../utils/useEditorContext';
 
 interface LinkEntryProps {
   contentState: ContentState;
@@ -14,16 +15,32 @@ const LinkEntry: FC<LinkEntryProps> = props => {
   const data = contentState.getEntity(entityKey).getData();
   const { label, url } = data;
 
+  const { editorState, setEditorState } = useEditContext();
+
+  const handleUnLink = () => {
+    const selection = editorState.getSelection();
+
+    if (!selection.isCollapsed()) {
+      const newEditorState = RichUtils.toggleLink(editorState, selection, entityKey);
+
+      console.log(entityKey, newEditorState);
+
+      setEditorState(newEditorState);
+    }
+  };
+
   return (
     <Popover
       layerClassName="UltraEditor-LinkEdit"
       getLayerContainer={node => node.parentNode as HTMLElement}
       content={
-        <div css={linkEditLayerStyles}>
-          <Share className="ultra-icon" title="访问链接" />
+        <div css={linkEditLayerStyles} contentEditable={false}>
+          <a className="ultra-edit-link" href={url} target="_blank" title={url}>
+            {url}
+          </a>
           {/* <Tooltip title="编辑链接"></Tooltip> */}
           <Edit className="ultra-icon" title="编辑链接" />
-          <Unlink className="ultra-icon" title="取消链接" />
+          <Unlink className="ultra-icon" title="取消链接" onClick={handleUnLink} />
         </div>
       }
       trigger="hover"
@@ -50,6 +67,12 @@ export function findLinkEntities(
 const linkEditLayerStyles = css`
   display: flex;
   align-items: center;
+  .ultra-edit-link {
+    display: block;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .ultra-icon {
     cursor: pointer;
     display: inline-flex;
