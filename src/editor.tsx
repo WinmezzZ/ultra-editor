@@ -15,10 +15,9 @@ export default function UltraEditor() {
     const newState = RichUtils.handleKeyCommand(editorState, command);
 
     if (newState) {
-      console.log(command);
-      if (command === 'editor-save') {
-        setEditorState(editorState);
+      setEditorState(newState);
 
+      if (command === 'editor-save') {
         return 'handled';
       } else {
         return 'not-handled';
@@ -31,6 +30,14 @@ export default function UltraEditor() {
   const keyBindingFn: EditorProps['keyBindingFn'] = e => {
     if (e.key === 's' && hasCommandModifier(e)) {
       return 'editor-save';
+    } else if (e.key === 'Tab') {
+      const newEditorState = RichUtils.onTab(e, editorState, 2);
+
+      if (newEditorState !== editorState) {
+        setEditorState(newEditorState);
+      }
+
+      return null;
     }
 
     return getDefaultKeyBinding(e);

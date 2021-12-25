@@ -12,7 +12,6 @@ const ControlWrapper: FC<ControlContainerProps> = props => {
   const { disabled, active, children, title, onToggle } = props;
 
   const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
     onToggle(e);
   };
 
