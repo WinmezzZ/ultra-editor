@@ -10,11 +10,13 @@ import UndoRedoControls from './controls/undo-redo/undo-redo-controls';
 import { BlOCK_TYPE } from './config/constans';
 import HRBlock from './controls/hr/hr-block';
 import EmojiControl from './controls/emoji/emoji-control';
+import LinkControl from './controls/link/link-control';
+import { decorator } from './entries';
 
 const { hasCommandModifier } = KeyBindingUtil;
 
 export default function UltraEditor() {
-  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty(decorator));
 
   const handleKeyCommand: EditorProps['handleKeyCommand'] = (command, editorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
@@ -62,6 +64,7 @@ export default function UltraEditor() {
           <HeadingControl />
           <BlockControls />
           <EmojiControl />
+          <LinkControl />
           <HRControl />
         </div>
         <div className="ultra-editor">
