@@ -1,10 +1,11 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { EditorState, Modifier, SelectionState } from 'draft-js';
 import { Input, Modal } from 'ultra-design';
 import ControlContainer from '../../components/control-wrapper';
 import { ENTITY_TYPE } from '../../config/constans';
 import { useEditContext } from '../../utils/useEditorContext';
 import { Link, Text } from '@icon-park/react';
+import { isCursorBetweenLink } from '../../utils/isCursorBetweenLink';
 
 const ValidUrlReg = /^(?:(http|https|ftp):\/\/)?((?:[\w-]+\.)+[a-z0-9]+)((?:\/[^/?#]*)+)?(\?[^#]+)?(#.+)?$/i;
 
@@ -65,9 +66,23 @@ const LinkControl: FC = () => {
     setLinkModalVisible(false);
   };
 
+  const disabledLink = useMemo(() => {
+    const isBetweenLink = isCursorBetweenLink(editorState);
+
+    if (!isBetweenLink) return false;
+
+    const { entityKey } = isBetweenLink;
+
+    if (entityKey === null) {
+      return false;
+    }
+
+    return true;
+  }, [editorState]);
+
   return (
     <>
-      <ControlContainer title="Link" onToggle={onShowLinkModalVisible}>
+      <ControlContainer title="Link" disabled={disabledLink} onToggle={onShowLinkModalVisible}>
         <Link />
       </ControlContainer>
       <Modal
