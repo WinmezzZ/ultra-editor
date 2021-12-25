@@ -43,7 +43,7 @@
     "@emotion/react": "^11.7.0",
     "@icon-park/react": "^1.3.5",
     "draft-js": "^0.11.7",
-    "ultra-design": "^0.0.23-beta"
+    "ultra-design": "^0.0.24-beta"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

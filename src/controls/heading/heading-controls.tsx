@@ -1,5 +1,5 @@
-import React, { FC, useState } from 'react';
-import { RichUtils } from 'draft-js';
+import React, { FC, useEffect, useState } from 'react';
+import { EditorState, RichUtils } from 'draft-js';
 import { HEADER_STYLES, CoreDraftHeaderType } from './heading-styles';
 import { Select } from 'ultra-design';
 import { useEditContext } from '../../utils/useEditorContext';
@@ -8,10 +8,23 @@ import { css } from '@emotion/react';
 const HeadingControl: FC = () => {
   const { editorState, setEditorState } = useEditContext();
   const [currentHeader, setCurrentHeader] = useState<CoreDraftHeaderType>('unstyled');
+  const selection = editorState.getSelection();
+  const blockType = editorState
+    .getCurrentContent()
+    .getBlockForKey(selection.getStartKey())
+    .getType() as CoreDraftHeaderType;
+
+  useEffect(() => {
+    setCurrentHeader(blockType);
+  }, [blockType]);
 
   const onSelect = (value: CoreDraftHeaderType) => {
     setCurrentHeader(value);
-    setEditorState(RichUtils.toggleBlockType(editorState, value));
+
+    const contentState = editorState.getCurrentContent();
+    const newEditorStateWithFocus = EditorState.forceSelection(editorState, contentState.getSelectionAfter());
+
+    setEditorState(RichUtils.toggleBlockType(newEditorStateWithFocus, value));
   };
 
   const createElement = (title: string) => {
