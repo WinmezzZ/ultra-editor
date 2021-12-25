@@ -1,4 +1,12 @@
-import { Editor, EditorState, RichUtils, EditorProps, KeyBindingUtil, getDefaultKeyBinding } from 'draft-js';
+import {
+  Editor,
+  EditorState,
+  RichUtils,
+  EditorProps,
+  KeyBindingUtil,
+  getDefaultKeyBinding,
+  ContentBlock,
+} from 'draft-js';
 import { useState } from 'react';
 import { editorStyles } from './index.styles';
 import { EditorProvider } from './utils/useEditorContext';
@@ -7,11 +15,12 @@ import BlockControls from './controls/block/block-controls';
 import HeadingControl from './controls/heading/heading-controls';
 import InlineControls from './controls/inline/inline-controls';
 import UndoRedoControls from './controls/undo-redo/undo-redo-controls';
-import { BlOCK_TYPE } from './config/constans';
+import { BlOCK_TYPE, ENTITY_TYPE } from './config/constans';
 import HRBlock from './controls/hr/hr-block';
 import EmojiControl from './controls/emoji/emoji-control';
 import LinkControl from './controls/link/link-control';
 import { decorator } from './entries';
+import LinkEntry from './entries/link-entry';
 
 const { hasCommandModifier } = KeyBindingUtil;
 
@@ -75,7 +84,7 @@ export default function UltraEditor() {
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={keyBindingFn}
             blockStyleFn={blockStyleFn}
-            blockRendererFn={blockRendererFn}
+            blockRendererFn={c => blockRendererFn(c, editorState)}
             customStyleMap={styleMap}
           />
         </div>
@@ -93,7 +102,7 @@ const blockStyleFn: EditorProps['blockStyleFn'] = block => {
   }
 };
 
-const blockRendererFn: EditorProps['blockRendererFn'] = contentBlock => {
+const blockRendererFn = (contentBlock: ContentBlock, editorState: EditorState) => {
   const type = contentBlock.getType();
 
   if (type === BlOCK_TYPE.HR) {
@@ -102,6 +111,27 @@ const blockRendererFn: EditorProps['blockRendererFn'] = contentBlock => {
       editable: false,
       props: {},
     };
+  } else if (type === 'atomic') {
+    const contentState = editorState.getCurrentContent();
+    const entityKey = contentBlock.getEntityAt(0);
+    const entity = contentState.getEntity(entityKey);
+
+    switch (entity.getType()) {
+      // case ENTITY_TYPE.AUDIO:
+      // case ENTITY_TYPE.IMAGE:
+      // case ENTITY_TYPE.VIDEO:
+      //   return {
+      //     component: MediaEntity,
+      //     editable: false,
+      //   };
+      case ENTITY_TYPE.LINK:
+        return {
+          component: LinkEntry,
+          props: {
+            editorState,
+          },
+        };
+    }
   }
 };
 

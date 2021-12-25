@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { EditorState, Modifier, SelectionState } from 'draft-js';
 import { Input, Modal } from 'ultra-design';
 import ControlContainer from '../../components/control-wrapper';
@@ -44,15 +44,12 @@ const LinkControl: FC = () => {
     const contentState = editorState.getCurrentContent();
     const selection = editorState.getSelection();
     const textWithSpace = linkLabel.concat(' ');
-    // create new content with text
     const newContent = Modifier.insertText(contentState, selection, textWithSpace);
-    // create new link entity
     const newContentWithEntity = newContent.createEntity(ENTITY_TYPE.LINK, 'MUTABLE', {
       label: linkLabel,
       url: linkUrl,
     });
     const entityKey = newContentWithEntity.getLastCreatedEntityKey();
-    // create new selection with the inserted text
     const anchorOffset = selection.getAnchorOffset();
     const newSelection = new SelectionState({
       anchorKey: selection.getAnchorKey(),
@@ -60,11 +57,8 @@ const LinkControl: FC = () => {
       focusKey: selection.getAnchorKey(),
       focusOffset: anchorOffset + linkLabel.length,
     });
-    // and aply link entity to the inserted text
     const newContentWithLink = Modifier.applyEntity(newContentWithEntity, newSelection, entityKey);
-    // create new state with link text
     const withLinkText = EditorState.push(editorState, newContentWithLink, 'insert-characters');
-    // now lets add cursor right after the inserted link
     const withProperCursor = EditorState.forceSelection(withLinkText, newContent.getSelectionAfter());
 
     setEditorState(withProperCursor);
