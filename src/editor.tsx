@@ -64,6 +64,7 @@ export default function UltraEditor() {
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={keyBindingFn}
             blockStyleFn={blockStyleFn}
+            customStyleMap={styleMap}
           />
         </div>
       </div>
@@ -78,4 +79,13 @@ const blockStyleFn: EditorProps['blockStyleFn'] = block => {
     default:
       return '';
   }
+};
+
+const styleMap = {
+  CODE: {
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
+    fontSize: 16,
+    padding: 2,
+  },
 };

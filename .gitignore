@@ -5,6 +5,9 @@ dist
 es
 lib
 
+components
+demo
+
 website/.docusaurus
 website/node_modules
 
