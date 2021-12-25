@@ -1,11 +1,14 @@
 import { Editor, EditorState, RichUtils, EditorProps, KeyBindingUtil, getDefaultKeyBinding } from 'draft-js';
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { editorStyles } from './index.styles';
+import { EditorProvider } from './utils/useEditorContext';
+import HRControl from './controls/hr/hr-control';
 import BlockControls from './controls/block/block-controls';
 import HeadingControl from './controls/heading/heading-controls';
 import InlineControls from './controls/inline/inline-controls';
 import UndoRedoControls from './controls/undo-redo/undo-redo-controls';
-import { editorStyles } from './index.styles';
-import { EditorProvider } from './utils/useEditorContext';
+import { BlOCK_TYPE } from './config/constans';
+import HRBlock from './controls/hr/hr-block';
 
 const { hasCommandModifier } = KeyBindingUtil;
 
@@ -57,6 +60,7 @@ export default function UltraEditor() {
           <InlineControls />
           <HeadingControl />
           <BlockControls />
+          <HRControl />
         </div>
         <div className="ultra-editor">
           <Editor
@@ -66,6 +70,7 @@ export default function UltraEditor() {
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={keyBindingFn}
             blockStyleFn={blockStyleFn}
+            blockRendererFn={blockRendererFn}
             customStyleMap={styleMap}
           />
         </div>
@@ -80,6 +85,18 @@ const blockStyleFn: EditorProps['blockStyleFn'] = block => {
       return 'RichEditor-blockquote';
     default:
       return '';
+  }
+};
+
+const blockRendererFn: EditorProps['blockRendererFn'] = contentBlock => {
+  const type = contentBlock.getType();
+
+  if (type === BlOCK_TYPE.HR) {
+    return {
+      component: HRBlock,
+      editable: false,
+      props: {},
+    };
   }
 };
 
