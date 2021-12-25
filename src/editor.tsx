@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import BlockControls from './controls/block/block-controls';
 import HeadingControl from './controls/heading/heading-controls';
 import InlineControls from './controls/inline/inline-controls';
+import UndoRedoControls from './controls/undo-redo/undo-redo-controls';
 import { editorStyles } from './index.styles';
 import { EditorProvider } from './utils/useEditorContext';
 
@@ -52,6 +53,7 @@ export default function UltraEditor() {
     >
       <div css={editorStyles} className="ultra-editor-root">
         <div className="ultra-editor-toolbar">
+          <UndoRedoControls />
           <InlineControls />
           <HeadingControl />
           <BlockControls />
