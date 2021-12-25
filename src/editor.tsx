@@ -9,6 +9,7 @@ import InlineControls from './controls/inline/inline-controls';
 import UndoRedoControls from './controls/undo-redo/undo-redo-controls';
 import { BlOCK_TYPE } from './config/constans';
 import HRBlock from './controls/hr/hr-block';
+import EmojiControl from './controls/emoji/emoji-control';
 
 const { hasCommandModifier } = KeyBindingUtil;
 
@@ -60,6 +61,7 @@ export default function UltraEditor() {
           <InlineControls />
           <HeadingControl />
           <BlockControls />
+          <EmojiControl />
           <HRControl />
         </div>
         <div className="ultra-editor">

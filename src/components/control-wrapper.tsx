@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Button, Tooltip } from 'ultra-design';
 
 interface ControlContainerProps {
@@ -6,22 +6,36 @@ interface ControlContainerProps {
   disabled?: boolean;
   title: React.ReactNode;
   onToggle: (e: React.MouseEvent) => void;
+  tooltip?: boolean;
 }
 
-const ControlWrapper: FC<ControlContainerProps> = props => {
-  const { disabled, active, children, title, onToggle } = props;
+const ControlWrapperComponent: React.ForwardRefRenderFunction<any, React.PropsWithChildren<ControlContainerProps>> = (
+  props,
+  ref,
+) => {
+  const { disabled, active, children, title, onToggle, tooltip } = props;
 
   const handleClick = (e: React.MouseEvent) => {
     onToggle(e);
   };
 
-  return (
+  return tooltip ? (
     <Tooltip title={title} placement="top">
-      <Button disabled={disabled} type={active ? 'primary' : 'default'} onClick={handleClick}>
+      <Button ref={ref} disabled={disabled} type={active ? 'primary' : 'default'} onClick={handleClick}>
         {children}
       </Button>
     </Tooltip>
+  ) : (
+    <Button ref={ref} disabled={disabled} type={active ? 'primary' : 'default'} onClick={handleClick}>
+      {children}
+    </Button>
   );
+};
+
+const ControlWrapper = React.forwardRef(ControlWrapperComponent);
+
+ControlWrapper.defaultProps = {
+  tooltip: true,
 };
 
 export default ControlWrapper;

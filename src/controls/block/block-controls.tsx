@@ -10,7 +10,6 @@ const BlockControls: FC = () => {
   const blockType = editorState.getCurrentContent().getBlockForKey(selection.getStartKey()).getType();
 
   const toggleStyle = (style: string) => {
-    console.log(editorState);
     setEditorState(RichUtils.toggleBlockType(editorState, style));
   };
 
