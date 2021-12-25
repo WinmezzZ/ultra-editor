@@ -3,6 +3,7 @@ import { RichUtils } from 'draft-js';
 import { HEADER_STYLES, CoreDraftHeaderType } from './heading-styles';
 import { Select } from 'ultra-design';
 import { useEditContext } from '../../utils/useEditorContext';
+import { css } from '@emotion/react';
 
 const HeadingControl: FC = () => {
   const { editorState, setEditorState } = useEditContext();
@@ -20,7 +21,7 @@ const HeadingControl: FC = () => {
   };
 
   return (
-    <Select value={currentHeader} onChange={onSelect}>
+    <Select css={headingStyles} value={currentHeader} onChange={onSelect}>
       {HEADER_STYLES.map(header => {
         return (
           <Select.Option key={header.style} value={header.style}>
@@ -33,3 +34,14 @@ const HeadingControl: FC = () => {
 };
 
 export default HeadingControl;
+
+const headingStyles = css`
+  .ultra-select__selection {
+    font-size: 13px;
+    * {
+      font-size: 13px;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+  }
+`;
