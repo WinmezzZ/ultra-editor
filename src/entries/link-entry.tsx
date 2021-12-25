@@ -1,8 +1,8 @@
-import React, { FC, useEffect, useState } from 'react';
-// import { Button, Popover } from 'antd';
-// import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { FC } from 'react';
 import { ContentBlock, ContentState } from 'draft-js';
-// import { isCursorBetweenLink } from 'lib/util/isCursorBetweenLink';
+import { Popover } from 'ultra-design';
+import { Edit, Share, Unlink } from '@icon-park/react';
+import { css } from '@emotion/react';
 
 interface LinkEntryProps {
   contentState: ContentState;
@@ -11,46 +11,25 @@ interface LinkEntryProps {
 
 const LinkEntry: FC<LinkEntryProps> = props => {
   const { contentState, entityKey } = props;
-  const [visible, setVisible] = useState(false);
   const data = contentState.getEntity(entityKey).getData();
   const { label, url } = data;
 
-  // useEffect(() => {
-  //   const isBetweenLink = isCursorBetweenLink({} as any);
-
-  //   if (!isBetweenLink) return;
-
-  //   const { entityKey } = isBetweenLink;
-
-  //   if (entityKey === null) {
-  //     return;
-  //   }
-
-  //   setVisible(true);
-
-  // }, []);
-
   return (
-    // <Popover
-    //   content={
-    //     <div className="LinkEdit-wrapper">
-    //       <p>
-    //         <a href={url}>{label}</a>
-    //       </p>
-    //       <div>
-    //         <Button icon={<EditOutlined />}>Edit</Button>
-    //         <Button icon={<DeleteOutlined />}>Remove</Button>
-    //       </div>
-    //     </div>
-    //   }
-    //   trigger={['click', 'hover', 'focus']}
-    //   placement="bottom"
-    //   mouseLeaveDelay={0}
-    //   visible={visible}
-    //   onVisibleChange={e => setVisible(e)}
-    // >
-    <a href={url}>{label}</a>
-    // </Popover>
+    <Popover
+      layerClassName="UltraEditor-LinkEdit"
+      getLayerContainer={node => node.parentNode as HTMLElement}
+      content={
+        <div css={linkEditLayerStyles}>
+          <Share className="ultra-icon" title="访问链接" />
+          {/* <Tooltip title="编辑链接"></Tooltip> */}
+          <Edit className="ultra-icon" title="编辑链接" />
+          <Unlink className="ultra-icon" title="取消链接" />
+        </div>
+      }
+      trigger="hover"
+    >
+      <a href={url}>{label}</a>
+    </Popover>
   );
 };
 
@@ -67,3 +46,14 @@ export function findLinkEntities(
     return entityKey !== null && contentState.getEntity(entityKey).getType() === 'LINK';
   }, callback);
 }
+
+const linkEditLayerStyles = css`
+  display: flex;
+  align-items: center;
+  .ultra-icon {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    margin: 0 12px;
+  }
+`;
