@@ -4,7 +4,8 @@ export type HeaderType = 'header-one' | 'header-two' | 'header-three' | 'header-
 
 export type BlockStyleType = HeaderType | 'unordered-list-item' | 'ordered-list-item' | 'blockquote' | 'code-block';
 
-export type AtomicType = 'LINK' | 'HR' | 'IMAGE' | 'VIDEO';
+export type MediaType = 'IMAGE' | 'VIDEO';
+export type AtomicType = 'LINK' | 'HR' | MediaType;
 
 export type CustomCharactersType = 'EMOJI';
 

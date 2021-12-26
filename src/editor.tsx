@@ -7,7 +7,7 @@ import {
   getDefaultKeyBinding,
   ContentBlock,
 } from 'draft-js';
-import { useState } from 'react';
+import { FC, useState } from 'react';
 import { editorStyles } from './index.styles';
 import { EditorProvider } from './utils/useEditorContext';
 import HRControl from './controls/hr/hr-control';
@@ -21,10 +21,14 @@ import EmojiControl from './controls/emoji/emoji-control';
 import LinkControl from './controls/link/link-control';
 import { decorator } from './entries';
 import LinkEntry from './entries/link-entry';
+import MediaEntity from './entries/media-entry';
+import MediaControl from './controls/media/media-control';
 
 const { hasCommandModifier } = KeyBindingUtil;
 
-export default function UltraEditor() {
+export interface UltraEditorProps {}
+
+const UltraEditor: FC<UltraEditorProps> = props => {
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty(decorator));
 
   const handleKeyCommand: EditorProps['handleKeyCommand'] = (command, editorState) => {
@@ -64,6 +68,7 @@ export default function UltraEditor() {
       value={{
         editorState,
         setEditorState,
+        ...props,
       }}
     >
       <div css={editorStyles} className="ultra-editor-root">
@@ -75,6 +80,7 @@ export default function UltraEditor() {
           <EmojiControl />
           <LinkControl />
           <HRControl />
+          <MediaControl />
         </div>
         <div className="ultra-editor">
           <Editor
@@ -91,7 +97,9 @@ export default function UltraEditor() {
       </div>
     </EditorProvider>
   );
-}
+};
+
+export default UltraEditor;
 
 const blockStyleFn: EditorProps['blockStyleFn'] = block => {
   switch (block.getType()) {
@@ -117,19 +125,16 @@ const blockRendererFn = (contentBlock: ContentBlock, editorState: EditorState) =
     const entity = contentState.getEntity(entityKey);
 
     switch (entity.getType()) {
-      // case ENTITY_TYPE.AUDIO:
-      // case ENTITY_TYPE.IMAGE:
-      // case ENTITY_TYPE.VIDEO:
-      //   return {
-      //     component: MediaEntity,
-      //     editable: false,
-      //   };
+      case ENTITY_TYPE.AUDIO:
+      case ENTITY_TYPE.IMAGE:
+      case ENTITY_TYPE.VIDEO:
+        return {
+          component: MediaEntity,
+          editable: false,
+        };
       case ENTITY_TYPE.LINK:
         return {
           component: LinkEntry,
-          props: {
-            editorState,
-          },
         };
     }
   }
