@@ -1,12 +1,12 @@
 import React, { FC, useMemo, useState } from 'react';
-import { EditorState, Modifier, SelectionState } from 'draft-js';
+import { EditorState, Modifier, RichUtils } from 'draft-js';
 import { Input, Modal } from 'ultra-design';
 import ControlContainer from '../../components/control-wrapper';
 import { ENTITY_TYPE } from '../../config/constans';
 import { useEditContext } from '../../utils/useEditorContext';
 import { Link, Text } from '@icon-park/react';
 import { isCursorBetweenLink } from '../../utils/isCursorBetweenLink';
-import { createEntry } from '../../utils/createEntry';
+import { getCurrentTextSelection } from '../../utils/getCurrentTextSelection';
 
 const ValidUrlReg = /^(?:(http|https|ftp):\/\/)?((?:[\w-]+\.)+[a-z0-9]+)((?:\/[^/?#]*)+)?(\?[^#]+)?(#.+)?$/i;
 
@@ -14,18 +14,20 @@ const LinkControl: FC = () => {
   const { editorState, setEditorState } = useEditContext();
   const [linkModalVisible, setLinkModalVisible] = useState(false);
   const [linkLabel, setLinkLabel] = useState('');
-  const [linkUrl, setLinkUrl] = useState('http://baidu.com');
+  const [linkUrl, setLinkUrl] = useState('https://www.baidu.com');
 
-  const onShowLinkModalVisible = (e: any) => {
-    setLinkModalVisible(true);
+  const onShowLinkModalVisible = (e: React.MouseEvent) => {
     e.preventDefault();
     const selection = editorState.getSelection();
+
+    setLinkModalVisible(true);
 
     if (!selection.isCollapsed()) {
       const contentState = editorState.getCurrentContent();
       const startKey = editorState.getSelection().getStartKey();
       const startOffset = editorState.getSelection().getStartOffset();
       const blockWithLinkAtBeginning = contentState.getBlockForKey(startKey);
+
       const linkKey = blockWithLinkAtBeginning.getEntityAt(startOffset);
 
       if (linkKey) {
@@ -34,22 +36,53 @@ const LinkControl: FC = () => {
 
         setLinkLabel(label);
         setLinkUrl(url);
+      } else {
+        const textSelection = getCurrentTextSelection(editorState);
+
+        if (textSelection) {
+          setLinkLabel(textSelection);
+        }
       }
     }
   };
 
   const onCancel = () => {
+    setLinkLabel('');
+    setLinkUrl('');
     setLinkModalVisible(false);
   };
 
-  const onOk = () => {
-    const newEditorState = createEntry(editorState, 'LINK', { url: linkUrl, label: linkLabel });
+  const onOk = (e: React.MouseEvent) => {
+    e.preventDefault();
 
-    console.log(newEditorState);
+    const selection = editorState.getSelection();
+    const contentStateWithEntity = editorState
+      .getCurrentContent()
+      .createEntity(ENTITY_TYPE.LINK, 'MUTABLE', { url: linkUrl, label: linkLabel });
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
 
-    setEditorState(newEditorState);
+    const contentState = Modifier.replaceText(
+      editorState.getCurrentContent(),
+      selection,
+      `${linkLabel} `,
+      editorState.getCurrentInlineStyle(),
+      entityKey,
+    );
+
+    const newEditorState = EditorState.push(editorState, contentState, 'insert-characters');
+    const selectionState = EditorState.forceSelection(newEditorState, editorState.getSelection());
+
+    const new2 = RichUtils.toggleLink(selectionState, selectionState.getSelection(), entityKey);
+
+    setEditorState(new2);
     setLinkModalVisible(false);
   };
+
+  // const updateLink = () => {
+  //   const contentState = editorState.getCurrentContent();
+
+  //   // contentState.replaceEntityData(linkKey, { url: linkUrl, label: linkLabel });
+  // };
 
   const disabledLink = useMemo(() => {
     const isBetweenLink = isCursorBetweenLink(editorState);
@@ -86,9 +119,15 @@ const LinkControl: FC = () => {
           onChange={value => setLinkLabel(value)}
           placeholder="Enter the link label"
           icon={<Text />}
-          autoFocus
+          autoFocus={!linkLabel}
         />
-        <Input value={linkUrl} onChange={value => setLinkUrl(value)} placeholder="Enter the link url" icon={<Link />} />
+        <Input
+          value={linkUrl}
+          onChange={value => setLinkUrl(value)}
+          placeholder="Enter the link url"
+          icon={<Link />}
+          autoFocus={!linkUrl || !!linkLabel}
+        />
       </Modal>
     </>
   );

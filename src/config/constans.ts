@@ -4,7 +4,7 @@ export const ENTITY_TYPE = {
   AUDIO: 'AUDIO',
   VIDEO: 'VIDEO',
   EMBED: 'EMBED',
-};
+} as const;
 
 export const BlOCK_TYPE = {
   UNSTYLED: 'unstyled',

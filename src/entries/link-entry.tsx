@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 import { ContentBlock, ContentState, EditorState, RichUtils } from 'draft-js';
 import { Popover } from 'ultra-design';
 import { Edit, Share, Unlink } from '@icon-park/react';
@@ -17,11 +17,12 @@ const LinkEntry: FC<LinkEntryProps> = props => {
 
   const { editorState, setEditorState } = useEditContext();
 
-  const handleUnLink = () => {
+  const handleUnLink = (e: React.MouseEvent) => {
+    e.preventDefault();
     const selection = editorState.getSelection();
 
     if (!selection.isCollapsed()) {
-      const newEditorState = RichUtils.toggleLink(editorState, selection, entityKey);
+      const newEditorState = RichUtils.toggleLink(editorState, selection, null);
 
       console.log(entityKey, newEditorState);
 
