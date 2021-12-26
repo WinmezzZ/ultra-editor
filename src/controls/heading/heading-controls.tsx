@@ -15,7 +15,10 @@ const HeadingControl: FC = () => {
     .getType() as CoreDraftHeaderType;
 
   useEffect(() => {
-    if (HEADER_STYLES.every(header => header.style !== blockType)) return;
+    if (HEADER_STYLES.every(header => header.style !== blockType)) {
+      return setCurrentHeader('unstyled');
+    }
+
     setCurrentHeader(blockType);
   }, [blockType]);
 
