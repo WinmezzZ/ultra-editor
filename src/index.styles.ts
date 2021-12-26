@@ -4,7 +4,7 @@ export const editorStyles = css`
   background: #fff;
   border: 1px solid #ddd;
   font-size: 14px;
-  padding: 15px;
+  padding: 7px 15px 15px;
 
   .ultra-editor {
     border-top: 1px solid #ddd;
@@ -49,6 +49,7 @@ export const editorStyles = css`
     margin-bottom: 5px;
     user-select: none;
     > * {
+      margin-top: 8px;
       margin-right: 8px;
     }
   }
