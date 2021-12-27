@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
-import { ContentBlock, ContentState, EditorState, RichUtils } from 'draft-js';
-import { Popover } from 'ultra-design';
-import { Edit, Share, Unlink } from '@icon-park/react';
+import { ContentBlock, ContentState, RichUtils } from 'draft-js';
+import { Popover, Tooltip } from 'ultra-design';
+import { Edit, Unlink } from '@icon-park/react';
 import { css } from '@emotion/react';
 import { useEditContext } from '../utils/useEditorContext';
 
@@ -36,12 +36,18 @@ const LinkEntry: FC<LinkEntryProps> = props => {
       getLayerContainer={node => node.parentNode as HTMLElement}
       content={
         <div css={linkEditLayerStyles} contentEditable={false}>
-          <a className="ultra-edit-link" href={url} target="_blank" title={url}>
-            {url}
-          </a>
-          {/* <Tooltip title="编辑链接"></Tooltip> */}
-          <Edit className="ultra-icon" title="编辑链接" />
-          <Unlink className="ultra-icon" title="取消链接" onClick={handleUnLink} />
+          <Tooltip title="访问链接">
+            <a className="ultra-edit-link" href={url} target="_blank">
+              {url}
+            </a>
+          </Tooltip>
+          <Tooltip title="编辑链接">
+            <Edit className="ultra-icon" />
+          </Tooltip>
+
+          <Tooltip title="取消链接">
+            <Unlink className="ultra-icon" onClick={handleUnLink} />
+          </Tooltip>
         </div>
       }
       trigger="hover"
