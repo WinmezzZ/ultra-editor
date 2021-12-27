@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import ControlContainer from '../../components/control-wrapper';
+import ControlWrapper from '../../components/control-wrapper';
 import { ENTITY_TYPE } from '../../config/constans';
 import { insertAtomicBlock } from '../../utils/insertAtomicBlock';
 import { useEditContext } from '../../utils/useEditorContext';
@@ -20,9 +20,9 @@ const MediaControl: FC = () => {
   return (
     <>
       {MEDIA_STYLES.map(media => (
-        <ControlContainer key={media.style} title={media.title} onToggle={() => onSelectPicture(media.style)}>
+        <ControlWrapper key={media.style} title={media.title} onToggle={() => onSelectPicture(media.style)}>
           {media.label}
-        </ControlContainer>
+        </ControlWrapper>
       ))}
     </>
   );

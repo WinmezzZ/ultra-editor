@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import ControlContainer from '../../components/control-wrapper';
+import ControlWrapper from '../../components/control-wrapper';
 import { BlOCK_TYPE } from '../../config/constans';
 import { Minus } from '@icon-park/react';
 import { useEditContext } from '../../utils/useEditorContext';
@@ -16,9 +16,9 @@ const HRControl: FC = () => {
 
   return (
     <>
-      <ControlContainer title="Divider" onToggle={onSelectPicture}>
+      <ControlWrapper title="Divider" onToggle={onSelectPicture}>
         <Minus />
-      </ControlContainer>
+      </ControlWrapper>
     </>
   );
 };

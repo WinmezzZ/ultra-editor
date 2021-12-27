@@ -1,7 +1,7 @@
 import React, { FC, useMemo, useState } from 'react';
 import { EditorState, Modifier, RichUtils } from 'draft-js';
 import { Input, Modal } from 'ultra-design';
-import ControlContainer from '../../components/control-wrapper';
+import ControlWrapper from '../../components/control-wrapper';
 import { ENTITY_TYPE } from '../../config/constans';
 import { useEditContext } from '../../utils/useEditorContext';
 import { Link, Text } from '@icon-park/react';
@@ -100,9 +100,9 @@ const LinkControl: FC = () => {
 
   return (
     <>
-      <ControlContainer title="Link" disabled={disabledLink} onToggle={onShowLinkModalVisible}>
+      <ControlWrapper title="Link" disabled={disabledLink} onToggle={onShowLinkModalVisible}>
         <Link />
-      </ControlContainer>
+      </ControlWrapper>
       <Modal
         width="400px"
         title="Inset Link"

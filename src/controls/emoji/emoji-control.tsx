@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { EditorState, Modifier } from 'draft-js';
 import { Popover } from 'ultra-design';
-import ControlContainer from '../../components/control-wrapper';
+import ControlWrapper from '../../components/control-wrapper';
 import { emojiData } from './emoji-data';
 import { useEditContext } from '../../utils/useEditorContext';
 import { SmilingFace } from '@icon-park/react';
@@ -48,9 +48,9 @@ const EmojiControl: FC = () => {
           </ul>
         }
       >
-        <ControlContainer tooltip={!popoverVisible} title="Emoji" onToggle={onShowPopover}>
+        <ControlWrapper title="Emoji" onToggle={onShowPopover}>
           <SmilingFace />
-        </ControlContainer>
+        </ControlWrapper>
       </Popover>
 
       <Global

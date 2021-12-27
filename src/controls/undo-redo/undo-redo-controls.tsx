@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import ControlContainer from '../../components/control-wrapper';
+import ControlWrapper from '../../components/control-wrapper';
 import { EditorState } from 'draft-js';
 import { UNDO_REDO_STYLES, UndoRedoItem } from './undo-redo-styles';
 import { useEditContext } from '../../utils/useEditorContext';
@@ -16,14 +16,14 @@ const UndoRedoControls: FC = () => {
   return (
     <>
       {UNDO_REDO_STYLES.map(action => (
-        <ControlContainer
+        <ControlWrapper
           key={action.style}
           disabled={action.style === 'undo' ? allowUndo : allowRedo}
           title={action.title}
           onToggle={() => toggleStyle(action.style)}
         >
           {action.label}
-        </ControlContainer>
+        </ControlWrapper>
       ))}
     </>
   );
