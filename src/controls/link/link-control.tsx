@@ -15,9 +15,11 @@ const LinkControl: FC = () => {
   const [linkModalVisible, setLinkModalVisible] = useState(false);
   const [linkLabel, setLinkLabel] = useState('');
   const [linkUrl, setLinkUrl] = useState('https://www.baidu.com');
+  const [isUpdate, setIsUpdate] = useState(false);
 
   const onShowLinkModalVisible = (e: React.MouseEvent) => {
     e.preventDefault();
+    setIsUpdate(false);
     const selection = editorState.getSelection();
 
     setLinkModalVisible(true);
@@ -31,6 +33,7 @@ const LinkControl: FC = () => {
       const linkKey = blockWithLinkAtBeginning.getEntityAt(startOffset);
 
       if (linkKey) {
+        setIsUpdate(true);
         const linkInstance = contentState.getEntity(linkKey);
         const { label, url } = linkInstance.getData();
 
@@ -56,25 +59,43 @@ const LinkControl: FC = () => {
     e.preventDefault();
 
     const selection = editorState.getSelection();
-    const contentStateWithEntity = editorState
-      .getCurrentContent()
-      .createEntity(ENTITY_TYPE.LINK, 'MUTABLE', { url: linkUrl, label: linkLabel });
-    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const contentState = editorState.getCurrentContent();
 
-    const contentState = Modifier.replaceText(
-      editorState.getCurrentContent(),
-      selection,
-      `${linkLabel} `,
-      editorState.getCurrentInlineStyle(),
-      entityKey,
-    );
+    if (isUpdate) {
+      console.log(isUpdate);
+      const contentStateWithEntity = contentState.createEntity('LINK', 'MUTABLE', {
+        url: linkUrl,
+        label: linkLabel,
+      });
+      const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+      const contentStateWithLink = Modifier.applyEntity(contentStateWithEntity, selection, entityKey);
+      const newEditorState = EditorState.set(editorState, {
+        currentContent: contentStateWithLink,
+      });
 
-    const newEditorState = EditorState.push(editorState, contentState, 'insert-characters');
-    const selectionState = EditorState.forceSelection(newEditorState, editorState.getSelection());
+      setEditorState(newEditorState);
+    } else {
+      const contentStateWithEntity = editorState
+        .getCurrentContent()
+        .createEntity(ENTITY_TYPE.LINK, 'MUTABLE', { url: linkUrl, label: linkLabel });
+      const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
 
-    const new2 = RichUtils.toggleLink(selectionState, selectionState.getSelection(), entityKey);
+      const contentState = Modifier.replaceText(
+        editorState.getCurrentContent(),
+        selection,
+        `${linkLabel}`,
+        editorState.getCurrentInlineStyle(),
+        entityKey,
+      );
 
-    setEditorState(new2);
+      const newEditorState = EditorState.push(editorState, contentState, 'insert-characters');
+      const selectionState = EditorState.moveFocusToEnd(newEditorState);
+
+      // const new2 = RichUtils.toggleLink(selectionState, selectionState.getSelection(), entityKey);
+
+      setEditorState(selectionState);
+    }
+
     setLinkModalVisible(false);
   };
 

@@ -13,7 +13,7 @@ interface LinkEntryProps {
 const LinkEntry: FC<LinkEntryProps> = props => {
   const { contentState, entityKey } = props;
   const data = contentState.getEntity(entityKey).getData();
-  const { label, url } = data;
+  const { url } = data;
 
   const { editorState, setEditorState } = useEditContext();
 
@@ -52,7 +52,7 @@ const LinkEntry: FC<LinkEntryProps> = props => {
       }
       trigger="hover"
     >
-      <a href={url}>{label}</a>
+      <a href={url}>{props.children}</a>
     </Popover>
   );
 };
