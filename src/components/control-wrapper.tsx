@@ -16,6 +16,7 @@ const ControlWrapperComponent: React.ForwardRefRenderFunction<any, React.PropsWi
   const { disabled, active, children, title, onToggle, tooltip } = props;
 
   const handleClick = (e: React.MouseEvent) => {
+    if (disabled) return;
     onToggle(e);
   };
 

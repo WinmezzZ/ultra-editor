@@ -2600,10 +2600,10 @@ ua-parser-js@^0.7.18:
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.31.tgz#649a656b191dffab4f21d5e053e27ca17cbff5c6"
   integrity sha512-qLK/Xe9E2uzmYI3qLeOmI0tEOt+TBBQyUIAh4aAgU05FVYzeZrKUdkAZfBNVGRaHVgV0TDkdEngJSw/SyQchkQ==
 
-ultra-design@^0.0.27-beta:
-  version "0.0.27-beta"
-  resolved "https://registry.yarnpkg.com/ultra-design/-/ultra-design-0.0.27-beta.tgz#e92e5e2a395448287fd94ac80b537b4f0977338d"
-  integrity sha512-KNjO7brmjFqxnqTdNf2hCRx0CDDozFQe5iWFghLLH+9Aa6lmxiit7hxkUK9ErpNUA4NDc5bpqsD8R9UDzx0/Aw==
+ultra-design@^0.0.29-beta:
+  version "0.0.29-beta"
+  resolved "https://registry.yarnpkg.com/ultra-design/-/ultra-design-0.0.29-beta.tgz#b20d3e604d67a5d2804186fe99a2866946fd9e1a"
+  integrity sha512-DZWNe8XGozZ/7y27pI28mUs+3BhWkwOhTGoLnAqvYNOjZykv0AbEB/hUlJlgr9GwDZn9F9xg5XnnIVDKrs3hmg==
   dependencies:
     "@babel/runtime" "^7.16.3"
     "@emotion/babel-plugin" "^11.3.0"
