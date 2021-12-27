@@ -6,7 +6,9 @@ import {
   KeyBindingUtil,
   getDefaultKeyBinding,
   ContentBlock,
+  DefaultDraftBlockRenderMap,
 } from 'draft-js';
+import Immutable from 'immutable';
 import { FC, useEffect, useRef, useState } from 'react';
 import { editorStyles } from './index.styles';
 import { EditorProvider } from './utils/useEditorContext';
@@ -102,6 +104,7 @@ const UltraEditor: FC<UltraEditorProps> = props => {
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={keyBindingFn}
             blockStyleFn={blockStyleFn}
+            blockRenderMap={blockRenderMap}
             blockRendererFn={c => blockRendererFn(c, editorState)}
             customStyleMap={styleMap}
           />
@@ -151,6 +154,14 @@ const blockRendererFn = (contentBlock: ContentBlock, editorState: EditorState) =
     }
   }
 };
+
+const blockRenderMap = DefaultDraftBlockRenderMap.merge(
+  Immutable.Map({
+    'header-seven': {
+      element: 'div',
+    },
+  }),
+);
 
 const styleMap = {
   CODE: {
