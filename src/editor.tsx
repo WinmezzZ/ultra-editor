@@ -7,7 +7,7 @@ import {
   getDefaultKeyBinding,
   ContentBlock,
 } from 'draft-js';
-import { FC, useRef, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { editorStyles } from './index.styles';
 import { EditorProvider } from './utils/useEditorContext';
 import HRControl from './controls/hr/hr-control';
@@ -36,6 +36,10 @@ const UltraEditor: FC<UltraEditorProps> = props => {
       editorRef.current.focus();
     }
   };
+
+  useEffect(() => {
+    focus();
+  }, []);
 
   const handleKeyCommand: EditorProps['handleKeyCommand'] = (command, editorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
@@ -89,7 +93,7 @@ const UltraEditor: FC<UltraEditorProps> = props => {
           <HRControl />
           <MediaControl />
         </div>
-        <div className="ultra-editor">
+        <div className="ultra-editor" onClick={focus}>
           <Editor
             ref={editorRef}
             css={editorStyles}
