@@ -44,16 +44,15 @@ const UltraEditor: FC<UltraEditorProps> = props => {
   }, []);
 
   const handleKeyCommand: EditorProps['handleKeyCommand'] = (command, editorState) => {
+    if (command === 'editor-save') {
+      return 'handled';
+    }
     const newState = RichUtils.handleKeyCommand(editorState, command);
 
     if (newState) {
       setEditorState(newState);
 
-      if (command === 'editor-save') {
-        return 'handled';
-      } else {
-        return 'not-handled';
-      }
+      return 'not-handled';
     }
 
     return 'not-handled';

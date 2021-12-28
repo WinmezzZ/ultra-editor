@@ -16,10 +16,12 @@ const LinkControl: FC = () => {
   const [linkLabel, setLinkLabel] = useState('');
   const [linkUrl, setLinkUrl] = useState('https://www.baidu.com');
   const [isUpdate, setIsUpdate] = useState(false);
+  const [isToggle, setIsToggle] = useState(false);
 
   const onShowLinkModalVisible = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsUpdate(false);
+    setIsToggle(false);
     const selection = editorState.getSelection();
 
     setLinkModalVisible(true);
@@ -44,6 +46,7 @@ const LinkControl: FC = () => {
 
         if (textSelection) {
           setLinkLabel(textSelection);
+          setIsToggle(true);
         }
       }
     }
@@ -58,8 +61,14 @@ const LinkControl: FC = () => {
   const onOk = (e: React.MouseEvent) => {
     e.preventDefault();
 
+    console.log(editorState);
+
     const selection = editorState.getSelection();
+
+    console.log(selection);
     const contentState = editorState.getCurrentContent();
+
+    console.log(contentState);
 
     if (isUpdate) {
       console.log(isUpdate);
@@ -75,25 +84,32 @@ const LinkControl: FC = () => {
 
       setEditorState(newEditorState);
     } else {
-      const contentStateWithEntity = editorState
-        .getCurrentContent()
-        .createEntity(ENTITY_TYPE.LINK, 'MUTABLE', { url: linkUrl, label: linkLabel });
+      const contentStateWithEntity = contentState.createEntity(ENTITY_TYPE.LINK, 'MUTABLE', {
+        url: linkUrl,
+        label: linkLabel,
+      });
       const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
 
-      const contentState = Modifier.replaceText(
-        editorState.getCurrentContent(),
-        selection,
-        `${linkLabel}`,
-        editorState.getCurrentInlineStyle(),
-        entityKey,
-      );
+      if (isToggle) {
+        const newEditorState = EditorState.set(editorState, {
+          currentContent: contentStateWithEntity,
+        });
 
-      const newEditorState = EditorState.push(editorState, contentState, 'insert-characters');
-      const selectionState = EditorState.moveFocusToEnd(newEditorState);
+        setEditorState(RichUtils.toggleLink(newEditorState, selection, entityKey));
+      } else {
+        const contentStateWithText = Modifier.replaceText(
+          editorState.getCurrentContent(),
+          selection,
+          `${linkLabel}`,
+          editorState.getCurrentInlineStyle(),
+          entityKey,
+        );
 
-      // const new2 = RichUtils.toggleLink(selectionState, selectionState.getSelection(), entityKey);
+        const newEditorState = EditorState.push(editorState, contentStateWithText, 'insert-characters');
+        const selectionState = EditorState.moveFocusToEnd(newEditorState);
 
-      setEditorState(selectionState);
+        setEditorState(selectionState);
+      }
     }
 
     setLinkModalVisible(false);
