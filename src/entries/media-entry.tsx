@@ -2,31 +2,14 @@ import { FC } from 'react';
 import { ContentBlock, ContentState } from 'draft-js';
 import { ENTITY_TYPE } from '../config/constans';
 import { css } from '@emotion/react';
+import { styleFunctions } from '../styles';
+import ImageEntity from './image-entity';
 
-interface CommonProps {
+export interface CommonProps {
   src: string;
 }
 
 // const imageIntro = 'add image introduce';
-
-const Image: FC<CommonProps> = ({ src }) => {
-  if (!src) return null;
-
-  return (
-    <div css={imageEntryStyles}>
-      <div>
-        <img src={src} />
-      </div>
-      <figcaption placeholder="输入图片描述" className="UltraEditor-image-intro"></figcaption>
-    </div>
-  );
-};
-
-const imageEntryStyles = css`
-  .UltraEditor-image-intro {
-    height: 20px;
-  }
-`;
 
 const Audio: FC<CommonProps> = ({ src }) => {
   if (!src) return null;
@@ -53,7 +36,7 @@ const MediaEntity: FC<MediaEntityProps> = props => {
 
   switch (type) {
     case ENTITY_TYPE.IMAGE:
-      return <Image src={data.src} />;
+      return <ImageEntity src={data.src} />;
     case ENTITY_TYPE.AUDIO:
       return <Audio src={data.src} />;
     case ENTITY_TYPE.VIDEO:
@@ -64,3 +47,7 @@ const MediaEntity: FC<MediaEntityProps> = props => {
 };
 
 export default MediaEntity;
+
+export const imageEditLayerStyle = css`
+  ${styleFunctions.layerItems()}
+`;
