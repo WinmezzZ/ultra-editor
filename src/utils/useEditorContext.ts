@@ -5,6 +5,8 @@ interface EditorStoreContext {
   editorState: EditorState;
   setEditorState: Dispatch<SetStateAction<EditorState>>;
   focus: () => void;
+  currentEntityKey: string;
+  setCurrentEntityKey: Dispatch<SetStateAction<string>>;
 }
 
 const EditorContext = createContext({} as EditorStoreContext);

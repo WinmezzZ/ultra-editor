@@ -32,6 +32,7 @@ export interface UltraEditorProps {}
 
 const UltraEditor: FC<UltraEditorProps> = props => {
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty(decorator));
+  const [currentEntityKey, setCurrentEntityKey] = useState('');
   const editorRef = useRef<Editor>(null);
   const focus = () => {
     if (editorRef.current) {
@@ -80,6 +81,8 @@ const UltraEditor: FC<UltraEditorProps> = props => {
         editorState,
         setEditorState,
         focus,
+        currentEntityKey,
+        setCurrentEntityKey,
         ...props,
       }}
     >
