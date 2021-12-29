@@ -11,7 +11,7 @@ import {
 import Immutable from 'immutable';
 import { FC, useEffect, useRef, useState } from 'react';
 import { editorStyles } from './index.styles';
-import { EditorProvider } from './utils/useEditorContext';
+import { EditorProvider, LinkData } from './utils/useEditorContext';
 import HRControl from './controls/hr/hr-control';
 import BlockControls from './controls/block/block-controls';
 import HeadingControl from './controls/heading/heading-controls';
@@ -25,6 +25,7 @@ import { decorator } from './entries';
 import LinkEntry from './entries/link-entry';
 import MediaEntity from './entries/media-entry';
 import MediaControl from './controls/media/media-control';
+import LinkEditModal from './controls/link/link-edit-modal';
 
 const { hasCommandModifier } = KeyBindingUtil;
 
@@ -33,6 +34,11 @@ export interface UltraEditorProps {}
 const UltraEditor: FC<UltraEditorProps> = props => {
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty(decorator));
   const [currentEntityKey, setCurrentEntityKey] = useState('');
+  const [linkModalVisible, setLinkModalVisible] = useState(false);
+  const [linkData, setLinkData] = useState<LinkData>({
+    url: 'https://www.baidu.com',
+    label: '',
+  });
   const editorRef = useRef<Editor>(null);
   const focus = () => {
     if (editorRef.current) {
@@ -83,6 +89,10 @@ const UltraEditor: FC<UltraEditorProps> = props => {
         focus,
         currentEntityKey,
         setCurrentEntityKey,
+        linkData,
+        setLinkData,
+        linkModalVisible,
+        setLinkModalVisible,
         ...props,
       }}
     >
@@ -112,6 +122,7 @@ const UltraEditor: FC<UltraEditorProps> = props => {
           />
         </div>
       </div>
+      <LinkEditModal />
     </EditorProvider>
   );
 };

@@ -61,17 +61,12 @@ const LinkControl: FC = () => {
   const onOk = (e: React.MouseEvent) => {
     e.preventDefault();
 
-    console.log(editorState);
-
     const selection = editorState.getSelection();
-
-    console.log(selection);
     const contentState = editorState.getCurrentContent();
 
-    console.log(contentState);
-
     if (isUpdate) {
-      console.log(isUpdate);
+      // const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+      // const  contentStateWithEntity = contentState.mergeEntityData()
       const contentStateWithEntity = contentState.createEntity('LINK', 'MUTABLE', {
         url: linkUrl,
         label: linkLabel,
