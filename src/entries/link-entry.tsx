@@ -15,7 +15,7 @@ const LinkEntry: FC<LinkEntryProps> = props => {
   const data = contentState.getEntity(entityKey).getData();
   const { url } = data;
 
-  const { editorState, setEditorState } = useEditContext();
+  const { editorState, setEditorState, setCurrentEntityKey, setLinkModalVisible } = useEditContext();
 
   const handleUnLink = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -28,6 +28,11 @@ const LinkEntry: FC<LinkEntryProps> = props => {
 
       setEditorState(newEditorState);
     }
+  };
+  const handleUpdateLink = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setCurrentEntityKey(entityKey);
+    setLinkModalVisible(true);
   };
 
   return (
@@ -42,7 +47,7 @@ const LinkEntry: FC<LinkEntryProps> = props => {
             </a>
           </Tooltip>
           <Tooltip title="编辑链接">
-            <Edit className="ultra-icon" />
+            <Edit className="ultra-icon" onClick={handleUpdateLink} />
           </Tooltip>
 
           <Tooltip title="取消链接">
