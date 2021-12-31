@@ -1,44 +1,96 @@
-import { EditorState, RichUtils } from 'draft-js';
+import {
+  CharacterMetadata,
+  ContentBlock,
+  ContentState,
+  EditorState,
+  genKey,
+  RichUtils,
+  SelectionState,
+} from 'draft-js';
+import { List, Repeat } from 'immutable';
 
-export function editorStateSettingLink(editorState: EditorState, data: any) {
-  const selection = editorState.getSelection();
-  const contentState = editorState.getCurrentContent();
-  const entityKey = getCurrentLinkEntityKey(editorState);
-
-  let nextEditorState = editorState;
-
-  if (!entityKey) {
-    const contentStateWithEntity = contentState.createEntity('LINK', 'MUTABLE', data);
-    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-
-    nextEditorState = EditorState.set(editorState, { currentContent: contentStateWithEntity });
-    nextEditorState = RichUtils.toggleLink(nextEditorState, selection, entityKey);
-  } else {
-    nextEditorState = EditorState.set(editorState, {
-      currentContent: editorState.getCurrentContent().replaceEntityData(entityKey, data),
-    });
-    // this is a hack that forces the editor to update
-    // https://github.com/facebook/draft-js/issues/1047
-    nextEditorState = EditorState.forceSelection(nextEditorState, editorState.getSelection());
-  }
-
-  return nextEditorState;
+interface LinkData {
+  url: string;
+  label: string;
 }
 
-export function getCurrentLinkEntityKey(editorState: EditorState) {
+export function insertLink(editorState: EditorState, LinkData: LinkData) {
+  const selectionState = editorState.getSelection();
   const contentState = editorState.getCurrentContent();
-  const startKey = editorState.getSelection().getStartKey();
-  const startOffset = editorState.getSelection().getStartOffset();
-  const block = contentState.getBlockForKey(startKey);
-  const linkKey = block.getEntityAt(Math.min(block.getText().length - 1, startOffset));
+  const currentBlock = contentState.getBlockForKey(selectionState.getStartKey());
+  const currentBlockKey = currentBlock.getKey();
+  const blockMap = contentState.getBlockMap();
+  const blocksBefore = blockMap.toSeq().takeUntil(v => v === currentBlock);
+  const blocksAfter = blockMap
+    .toSeq()
+    .skipUntil(v => v === currentBlock)
+    .rest();
+  const newBlockKey = genKey();
 
-  if (linkKey) {
-    const linkInstance = contentState.getEntity(linkKey);
+  // add new ContentBlock to editor state with appropriate text
+  const newBlock = new ContentBlock({
+    key: newBlockKey,
+    type: 'unstyled',
+    text: LinkData.label,
+    characterList: List(Repeat(CharacterMetadata.create(), LinkData.label.length)),
+  });
 
-    if (linkInstance.getType() === 'LINK') {
-      return linkKey;
-    }
-  }
+  const newBlockMap = blocksBefore
+    .concat(
+      [
+        [currentBlockKey, currentBlock],
+        [newBlockKey, newBlock],
+      ],
+      blocksAfter,
+    )
+    .toOrderedMap();
 
-  return null;
+  const selection = editorState.getSelection();
+
+  const newContent = contentState.merge({
+    blockMap: newBlockMap,
+    selectionBefore: selection,
+    selectionAfter: selection.merge({
+      anchorKey: newBlockKey,
+      anchorOffset: 0,
+      focusKey: newBlockKey,
+      focusOffset: 0,
+      isBackward: false,
+    }),
+  }) as ContentState;
+
+  let newEditorState = EditorState.push(editorState, newContent, 'split-block');
+
+  // programmatically apply selection on this text
+  let newSelection = new SelectionState({
+    anchorKey: newBlockKey,
+    anchorOffset: 0,
+    focusKey: newBlockKey,
+    focusOffset: LinkData.label.length,
+  });
+
+  newEditorState = EditorState.forceSelection(newEditorState, newSelection);
+
+  // create link entity
+  const newContentState = contentState;
+
+  const contentStateWithEntity = newContentState.createEntity('LINK', 'IMMUTABLE', { url: LinkData.url });
+
+  const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+
+  newEditorState = EditorState.set(newEditorState, { currentContent: contentStateWithEntity });
+
+  newEditorState = RichUtils.toggleLink(newEditorState, newEditorState.getSelection(), entityKey);
+
+  // reset selection
+  newSelection = new SelectionState({
+    anchorKey: newBlockKey,
+    anchorOffset: LinkData.label.length,
+    focusKey: newBlockKey,
+    focusOffset: LinkData.label.length,
+  });
+
+  const newEditorStateWithSelection = EditorState.forceSelection(newEditorState, newSelection);
+
+  return newEditorStateWithSelection;
 }
