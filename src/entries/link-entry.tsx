@@ -38,7 +38,7 @@ const LinkEntry: FC<LinkEntryProps> = props => {
   return (
     <Popover
       layerClassName="UltraEditor-LinkEdit"
-      getLayerContainer={node => node.parentNode as HTMLElement}
+      getLayerContainer={node => node?.parentNode as HTMLElement}
       content={
         <div css={linkEditLayerStyles} contentEditable={false}>
           <Tooltip title="访问链接">

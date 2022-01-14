@@ -26,12 +26,16 @@ import LinkEntry from './entries/link-entry';
 import MediaEntity from './entries/media-entry';
 import MediaControl from './controls/media/media-control';
 import LinkEditModal from './controls/link/link-edit-modal';
+import { ConfigProvider } from 'ultra-design';
 
 const { hasCommandModifier } = KeyBindingUtil;
 
-export interface UltraEditorProps {}
+export interface UltraEditorProps {
+  theme?: 'dark' | 'light';
+}
 
-const UltraEditor: FC<UltraEditorProps> = props => {
+const UltraEditor: FC<UltraEditorProps> = p => {
+  const { theme, ...props } = p;
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty(decorator));
   const [currentEntityKey, setCurrentEntityKey] = useState('');
   const [linkModalVisible, setLinkModalVisible] = useState(false);
@@ -82,48 +86,50 @@ const UltraEditor: FC<UltraEditorProps> = props => {
   };
 
   return (
-    <EditorProvider
-      value={{
-        editorState,
-        setEditorState,
-        focus,
-        currentEntityKey,
-        setCurrentEntityKey,
-        linkData,
-        setLinkData,
-        linkModalVisible,
-        setLinkModalVisible,
-        ...props,
-      }}
-    >
-      <div css={editorStyles} className="ultra-editor-root">
-        <div className="ultra-editor-toolbar">
-          <UndoRedoControls />
-          <InlineControls />
-          <HeadingControl />
-          <BlockControls />
-          <EmojiControl />
-          <LinkControl />
-          <HRControl />
-          <MediaControl />
+    <ConfigProvider theme={{ mode: theme }}>
+      <EditorProvider
+        value={{
+          editorState,
+          setEditorState,
+          focus,
+          currentEntityKey,
+          setCurrentEntityKey,
+          linkData,
+          setLinkData,
+          linkModalVisible,
+          setLinkModalVisible,
+          ...props,
+        }}
+      >
+        <div css={editorStyles} className="ultra-editor-root">
+          <div className="ultra-editor-toolbar">
+            <UndoRedoControls />
+            <InlineControls />
+            <HeadingControl />
+            <BlockControls />
+            <EmojiControl />
+            <LinkControl />
+            <HRControl />
+            <MediaControl />
+          </div>
+          <div className="ultra-editor" onClick={focus}>
+            <Editor
+              ref={editorRef}
+              css={editorStyles}
+              editorState={editorState}
+              onChange={setEditorState}
+              handleKeyCommand={handleKeyCommand}
+              keyBindingFn={keyBindingFn}
+              blockStyleFn={blockStyleFn}
+              blockRenderMap={blockRenderMap}
+              blockRendererFn={c => blockRendererFn(c, editorState)}
+              customStyleMap={styleMap}
+            />
+          </div>
         </div>
-        <div className="ultra-editor" onClick={focus}>
-          <Editor
-            ref={editorRef}
-            css={editorStyles}
-            editorState={editorState}
-            onChange={setEditorState}
-            handleKeyCommand={handleKeyCommand}
-            keyBindingFn={keyBindingFn}
-            blockStyleFn={blockStyleFn}
-            blockRenderMap={blockRenderMap}
-            blockRendererFn={c => blockRendererFn(c, editorState)}
-            customStyleMap={styleMap}
-          />
-        </div>
-      </div>
-      <LinkEditModal />
-    </EditorProvider>
+        <LinkEditModal />
+      </EditorProvider>
+    </ConfigProvider>
   );
 };
 

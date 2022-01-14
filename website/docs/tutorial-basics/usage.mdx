@@ -4,6 +4,12 @@ sidebar_position: 1
 
 # Usage
 
+import { useColorTheme } from '../../src/utils/useTheme.ts';
 import Editor from '../../../src';
 
-<Editor />
+export const Com = () => {
+  const theme = useColorTheme();
+  return <Editor theme={theme} />;
+};
+
+<Com />
