@@ -1,12 +1,11 @@
-import { EditorState } from 'lexical';
 import LexicalComposer from '@lexical/react/LexicalComposer';
 import RichTextPlugin from '@lexical/react/LexicalRichTextPlugin';
 import ContentEditable from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import AutoFocusPlugin from '@lexical/react/LexicalAutoFocusPlugin';
-import LexicalOnChangePlugin from '@lexical/react/LexicalOnChangePlugin';
 import Theme from './themes';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
+import TreeViewPlugin from './plugins/TreeViewPlugin';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
 import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
 import { ListItemNode, ListNode } from '@lexical/list';
@@ -21,17 +20,6 @@ import './index.css';
 
 function Placeholder() {
   return <div className="editor-placeholder">Enter some rich text...</div>;
-}
-
-// When the editor changes, you can get notified via the
-// LexicalOnChangePlugin!
-function onChange(editorState: EditorState) {
-  editorState.read(() => {
-    // // Read the contents of the EditorState here.
-    // const root = $getRoot();
-    // const selection = $getSelection();
-    // console.log(root, selection);
-  });
 }
 
 const initialConfig = {
@@ -64,8 +52,8 @@ export default function Editor() {
             contentEditable={<ContentEditable className="editor-input" />}
             placeholder={<Placeholder />}
           />
-          <LexicalOnChangePlugin onChange={onChange} />
           <HistoryPlugin />
+          <TreeViewPlugin />
           <AutoFocusPlugin />
           <CodeHighlightPlugin />
           <ListPlugin />

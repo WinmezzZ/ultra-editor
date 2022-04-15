@@ -6330,6 +6330,11 @@ minimist@^1.2.6:
   resolved "https://registry.npmjs.org/minimist/-/minimist-1.2.6.tgz"
   integrity sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==
 
+mitt@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/mitt/-/mitt-3.0.0.tgz#69ef9bd5c80ff6f57473e8d89326d01c414be0bd"
+  integrity sha512-7dX2/10ITVyqh4aOSVI9gdape+t9l2/8QxHrFmUXu4EEUpdlxl6RudZUPZoc+zuY2hk1j7XxVroIVIan/pD/SQ==
+
 mixin-deep@^1.2.0:
   version "1.3.2"
   resolved "https://registry.npmjs.org/mixin-deep/-/mixin-deep-1.3.2.tgz"
@@ -8819,10 +8824,10 @@ ultra-design@^0.0.40-beta:
     prop-types "^15.8.1"
     react-transition-group "^4.4.2"
 
-ultra-design@^0.0.45-beta:
-  version "0.0.45-beta"
-  resolved "https://registry.yarnpkg.com/ultra-design/-/ultra-design-0.0.45-beta.tgz#90be73a664db5663b3a4a24f27509ad4c5427bda"
-  integrity sha512-gZW/BP10XJUD6zYAv+P2JB6EKBo3LTLZtiw3EjjeMgGzSACjp7e/Np6c7RJe5acHRJ6C+gMIRGikPPFWKpmMzw==
+ultra-design@^0.0.51-beta:
+  version "0.0.51-beta"
+  resolved "https://registry.yarnpkg.com/ultra-design/-/ultra-design-0.0.51-beta.tgz#42309839081493abaaea95d868de43cee9283a7d"
+  integrity sha512-3wYdr4h662k8fYiPXO1BCWiD3gZqy/AawRr6ElNJdDrPoLBFZeWf6/FeAFP4HA0qPgcwlwGpNDdNljXCYv30Fw==
   dependencies:
     "@babel/runtime" "^7.16.3"
     "@emotion/babel-plugin" "^11.3.0"
@@ -8831,6 +8836,7 @@ ultra-design@^0.0.45-beta:
     "@winme/react-hooks" "^0.0.2"
     clsx "^1.1.1"
     lodash-es "^4.17.21"
+    mitt "^3.0.0"
     prop-types "^15.8.1"
     react-transition-group "^4.4.2"
 

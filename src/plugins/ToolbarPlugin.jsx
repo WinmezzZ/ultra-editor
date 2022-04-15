@@ -27,7 +27,7 @@ import {
 import { createPortal } from 'react-dom';
 import { $createHeadingNode, $createQuoteNode, $isHeadingNode } from '@lexical/rich-text';
 import { $createCodeNode, $isCodeNode, getDefaultCodeLanguage, getCodeLanguages } from '@lexical/code';
-import { Select } from 'ultra-design';
+import { Button, Divider, Dropdown, Menu, Select } from 'ultra-design';
 import {
   AlignTextBoth,
   AlignTextCenter,
@@ -52,10 +52,6 @@ import { css } from '@emotion/react';
 const LowPriority = 1;
 
 const supportedBlockTypes = new Set(['paragraph', 'quote', 'code', 'h1', 'h2', 'ul', 'ol']);
-
-function Divider() {
-  return <div className="divider" />;
-}
 
 function positionEditorElement(editor, rect) {
   if (rect === null) {
@@ -495,23 +491,34 @@ export default function ToolbarPlugin() {
     }
   }, [editor, isLink]);
 
+  const onChangeAlign = type => {
+    editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, type);
+  };
+
   return (
     <div className="toolbar" ref={toolbarRef}>
-      <Undo
+      <Button
+        type="pure"
+        className="toolbar-item spaced"
         disabled={!canUndo}
         onClick={() => {
           editor.dispatchCommand(UNDO_COMMAND);
         }}
-        className="toolbar-item spaced"
-      />
-      <Redo
-        disabled={!canRedo}
-        onClick={() => {
-          editor.dispatchCommand(REDO_COMMAND);
-        }}
-        className="toolbar-item"
-      />
-      <Divider />
+      >
+        <Undo />
+      </Button>
+
+      <Button type="pure">
+        <Redo
+          disabled={!canRedo}
+          onClick={() => {
+            editor.dispatchCommand(REDO_COMMAND);
+          }}
+          className="toolbar-item"
+        />
+      </Button>
+
+      <Divider vertical />
       {supportedBlockTypes.has(blockType) && (
         <>
           <BlockOptionsDropdownList
@@ -520,7 +527,7 @@ export default function ToolbarPlugin() {
             setBlockType={setBlockType}
             toolbarRef={toolbarRef}
           />
-          <Divider />
+          <Divider vertical />
         </>
       )}
       {blockType === 'code' ? (
@@ -541,63 +548,86 @@ export default function ToolbarPlugin() {
         </Select>
       ) : (
         <>
-          <TextBold
-            className={'toolbar-item spaced ' + (isBold ? 'active' : '')}
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
-            }}
-          />
-          <TextItalic
+          <Button type="pure" className={'toolbar-item ' + (isBold ? 'ultra-button--active' : '')}>
+            <TextBold
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
+              }}
+            />
+          </Button>
+          <Button
+            type="pure"
+            className={'toolbar-item ' + (isItalic ? 'ultra-button--active' : '')}
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
             }}
-            className={'toolbar-item spaced ' + (isItalic ? 'active' : '')}
-          />
-          <TextUnderline
+          >
+            <TextItalic />
+          </Button>
+
+          <Button
+            type="pure"
+            className={'toolbar-item ' + (isUnderline ? 'ultra-button--active' : '')}
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
             }}
-            className={'toolbar-item spaced ' + (isUnderline ? 'active' : '')}
-          />
-          <Strikethrough
+          >
+            <TextUnderline />
+          </Button>
+
+          <Button
+            type="pure"
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
             }}
             className={'toolbar-item spaced ' + (isStrikethrough ? 'active' : '')}
-          />
-          <Code
+          >
+            <Strikethrough />
+          </Button>
+
+          <Button
+            type="pure"
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
             }}
             className={'toolbar-item spaced ' + (isCode ? 'active' : '')}
-          ></Code>
-          <LinkOne onClick={insertLink} className={'toolbar-item spaced ' + (isLink ? 'active' : '')} />
+          >
+            <Code />
+          </Button>
+
+          <Button type="pure" onClick={insertLink} className={'toolbar-item spaced ' + (isLink ? 'active' : '')}>
+            <LinkOne />
+          </Button>
+
           {isLink && createPortal(<FloatingLinkEditor editor={editor} />, document.body)}
-          <Divider />
-          <AlignTextLeft
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
-            }}
-            className="toolbar-item spaced"
-          />
-          <AlignTextCenter
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
-            }}
-            className="toolbar-item spaced"
-          />
-          <AlignTextRight
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
-            }}
-            className="toolbar-item spaced"
-          />
-          <AlignTextBoth
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
-            }}
-            className="toolbar-item"
-          />
+          <Divider vertical />
+          <Dropdown
+            content={
+              <Menu style={{ padding: 0 }} onClick={onChangeAlign}>
+                <Dropdown.DropdownItem key="left">
+                  <AlignTextLeft /> 左对齐
+                </Dropdown.DropdownItem>
+                <Dropdown.DropdownItem key="center">
+                  <AlignTextCenter /> 居中对齐
+                </Dropdown.DropdownItem>
+                <Dropdown.DropdownItem key="right">
+                  <AlignTextRight /> 右对齐
+                </Dropdown.DropdownItem>
+                <Dropdown.DropdownItem key="justify">
+                  <AlignTextBoth /> 两边对齐
+                </Dropdown.DropdownItem>
+              </Menu>
+            }
+          >
+            <Button className="toolbar-item">
+              <AlignTextLeft
+                css={css`
+                  margin-right: 8px;
+                `}
+              />
+              对齐方式
+            </Button>
+          </Dropdown>
         </>
       )}
     </div>
