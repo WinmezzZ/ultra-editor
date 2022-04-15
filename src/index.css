@@ -46,7 +46,7 @@ h1 {
 .editor-container {
   margin: 20px auto 20px auto;
   border-radius: 2px;
-  max-width: 600px;
+  max-width: 1200px;
   color: #000;
   position: relative;
   line-height: 20px;
@@ -342,127 +342,6 @@ pre::-webkit-scrollbar-thumb {
   background-image: url(./images/emoji/1F642.png);
 }
 
-.toolbar {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1px;
-  background: #fff;
-  padding: 4px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  vertical-align: middle;
-}
-
-.toolbar .i-icon {
-  display: inline-flex;
-  align-items: center;
-}
-
-.toolbar .toolbar-item {
-  padding: 8px;
-}
-
-.toolbar button.toolbar-item:disabled {
-  cursor: not-allowed;
-}
-
-.toolbar button.toolbar-item.spaced {
-  margin-right: 2px;
-}
-
-.toolbar button.toolbar-item i.format {
-  background-size: contain;
-  display: inline-block;
-  height: 18px;
-  width: 18px;
-  margin-top: 2px;
-  vertical-align: -0.25em;
-  display: flex;
-  opacity: 0.6;
-}
-.toolbar .toolbar-item:hover:not([disabled]) {
-  background-color: rgba(204, 204, 204, 0.3);
-}
-
-.toolbar .divider {
-  width: 1px;
-  background-color: #13c2c2;
-  margin: 0 4px;
-}
-
-.toolbar select.code-language {
-  text-transform: capitalize;
-  width: 130px;
-}
-
-.toolbar .toolbar-item .text {
-  display: flex;
-  line-height: 20px;
-  width: 200px;
-  vertical-align: middle;
-  font-size: 14px;
-  color: #777;
-  text-overflow: ellipsis;
-  width: 70px;
-  overflow: hidden;
-  height: 20px;
-  text-align: left;
-}
-
-.toolbar .toolbar-item .icon {
-  display: flex;
-  width: 20px;
-  height: 20px;
-  user-select: none;
-  margin-right: 8px;
-  line-height: 16px;
-  background-size: contain;
-}
-
-#block-controls button:hover {
-  background-color: #efefef;
-}
-
-#block-controls button:focus-visible {
-  border-color: blue;
-}
-
-#block-controls span.block-type {
-  background-size: contain;
-  display: block;
-  width: 18px;
-  height: 18px;
-  margin: 2px;
-}
-
-#block-controls span.block-type.paragraph {
-  background-image: url(images/icons/text-paragraph.svg);
-}
-
-#block-controls span.block-type.h1 {
-  background-image: url(images/icons/type-h1.svg);
-}
-
-#block-controls span.block-type.h2 {
-  background-image: url(images/icons/type-h2.svg);
-}
-
-#block-controls span.block-type.quote {
-  background-image: url(images/icons/chat-square-quote.svg);
-}
-
-#block-controls span.block-type.ul {
-  background-image: url(images/icons/list-ul.svg);
-}
-
-#block-controls span.block-type.ol {
-  background-image: url(images/icons/list-ol.svg);
-}
-
-#block-controls span.block-type.code {
-  background-image: url(images/icons/code.svg);
-}
-
 .link-editor {
   position: absolute;
   z-index: 100;
@@ -626,4 +505,109 @@ i.right-align {
 
 i.justify-align {
   background-image: url(images/icons/justify.svg);
+}
+
+.editor-shell span.editor-image {
+  cursor: default;
+  display: inline-block;
+  position: relative;
+}
+
+.editor-shell .editor-image img {
+  max-width: 100%;
+}
+
+.editor-shell .editor-image img.focused {
+  outline: 2px solid rgb(60, 132, 244);
+  user-select: none;
+}
+
+.editor-shell .editor-image .image-caption-container .tree-view-output {
+  margin: 0;
+  border-radius: 0;
+}
+
+.editor-shell .editor-image .image-caption-container {
+  display: block;
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid #fff;
+  background-color: rgba(255, 255, 255, 0.9);
+  min-width: 100px;
+  color: #000;
+  overflow: hidden;
+}
+
+.editor-shell .editor-image .image-caption-button {
+  display: block;
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  width: 30%;
+  padding: 10px;
+  margin: 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  min-width: 100px;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+}
+
+.editor-shell .editor-image .image-caption-button:hover {
+  background-color: rgba(60, 132, 244, 0.5);
+}
+
+.editor-shell .editor-image .image-resizer-sw {
+  display: block;
+  width: 7px;
+  height: 7px;
+  position: absolute;
+  bottom: -2px;
+  left: -6px;
+  background-color: rgb(60, 132, 244);
+  border: 1px solid #fff;
+  cursor: sw-resize;
+}
+
+.editor-shell .editor-image .image-resizer-ne {
+  display: block;
+  width: 7px;
+  height: 7px;
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: rgb(60, 132, 244);
+  border: 1px solid #fff;
+  cursor: ne-resize;
+}
+
+.editor-shell .editor-image .image-resizer-nw {
+  display: block;
+  width: 7px;
+  height: 7px;
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  background-color: rgb(60, 132, 244);
+  border: 1px solid #fff;
+  cursor: nw-resize;
+}
+
+.editor-shell .editor-image .image-resizer-se {
+  display: block;
+  width: 7px;
+  height: 7px;
+  position: absolute;
+  bottom: -2px;
+  right: -6px;
+  background-color: rgb(60, 132, 244);
+  border: 1px solid #fff;
+  cursor: nwse-resize;
 }

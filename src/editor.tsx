@@ -5,18 +5,15 @@ import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import AutoFocusPlugin from '@lexical/react/LexicalAutoFocusPlugin';
 import Theme from './themes';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
-import TreeViewPlugin from './plugins/TreeViewPlugin';
-import { HeadingNode, QuoteNode } from '@lexical/rich-text';
-import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
-import { ListItemNode, ListNode } from '@lexical/list';
-import { CodeHighlightNode, CodeNode } from '@lexical/code';
-import { AutoLinkNode, LinkNode } from '@lexical/link';
+// import TreeViewPlugin from './plugins/TreeViewPlugin';
 import LinkPlugin from '@lexical/react/LexicalLinkPlugin';
 import ListPlugin from '@lexical/react/LexicalListPlugin';
 import CodeHighlightPlugin from './plugins/CodeHighlightPlugin';
 import AutoLinkPlugin from './plugins/AutolinkPlugin';
+import ImagesPlugin from './plugins/ImagesPlugin';
 import MarkdownShortcutPlugin from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import './index.css';
+import PlaygroundNodes from './nodes/PlaygroundNodes';
 
 function Placeholder() {
   return <div className="editor-placeholder">Enter some rich text...</div>;
@@ -24,19 +21,7 @@ function Placeholder() {
 
 const initialConfig = {
   theme: Theme,
-  nodes: [
-    HeadingNode,
-    ListNode,
-    ListItemNode,
-    QuoteNode,
-    CodeNode,
-    CodeHighlightNode,
-    TableNode,
-    TableCellNode,
-    TableRowNode,
-    AutoLinkNode,
-    LinkNode,
-  ],
+  nodes: PlaygroundNodes,
   onError(error: Error) {
     console.error(error);
   },
@@ -45,7 +30,7 @@ const initialConfig = {
 export default function Editor() {
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="editor-container">
+      <div className="editor-container editor-shell">
         <ToolbarPlugin />
         <div className="editor-inner">
           <RichTextPlugin
@@ -53,13 +38,13 @@ export default function Editor() {
             placeholder={<Placeholder />}
           />
           <HistoryPlugin />
-          <TreeViewPlugin />
           <AutoFocusPlugin />
           <CodeHighlightPlugin />
           <ListPlugin />
           <LinkPlugin />
           <AutoLinkPlugin />
           <MarkdownShortcutPlugin />
+          <ImagesPlugin />
         </div>
       </div>
     </LexicalComposer>

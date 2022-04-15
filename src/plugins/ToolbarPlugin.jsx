@@ -15,7 +15,7 @@ import {
   $getNodeByKey,
 } from 'lexical';
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
-import { $isParentElementRTL, $wrapLeafNodesInElements, $isAtNodeEnd } from '@lexical/selection';
+import { $isParentElementRTL, $wrapLeafNodesInElements, $isAtNodeEnd, $patchStyleText } from '@lexical/selection';
 import { $getNearestNodeOfType, mergeRegister } from '@lexical/utils';
 import {
   INSERT_ORDERED_LIST_COMMAND,
@@ -27,15 +27,20 @@ import {
 import { createPortal } from 'react-dom';
 import { $createHeadingNode, $createQuoteNode, $isHeadingNode } from '@lexical/rich-text';
 import { $createCodeNode, $isCodeNode, getDefaultCodeLanguage, getCodeLanguages } from '@lexical/code';
-import { Button, Divider, Dropdown, Menu, Select } from 'ultra-design';
+import { Button, Divider, Dropdown, Menu, Select, Tooltip } from 'ultra-design';
 import {
+  Add,
   AlignTextBoth,
   AlignTextCenter,
   AlignTextLeft,
   AlignTextRight,
   Code,
+  DividingLine,
   H1,
   H2,
+  H3,
+  HorizontalSpacingBetweenItems,
+  ImageFiles,
   LinkOne,
   ListBottom,
   OrderedList,
@@ -47,7 +52,8 @@ import {
   TextUnderline,
   Undo,
 } from '@icon-park/react';
-import { css } from '@emotion/react';
+import { css, Global } from '@emotion/react';
+import { INSERT_IMAGE_COMMAND } from '../plugins/ImagesPlugin';
 
 const LowPriority = 1;
 
@@ -289,18 +295,6 @@ function BlockOptionsDropdownList({ editor, blockType, setBlockType }) {
     }
   };
 
-  const formatCode = () => {
-    if (blockType !== 'code') {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection)) {
-          $wrapLeafNodesInElements(selection, () => $createCodeNode());
-        }
-      });
-    }
-  };
-
   const onChangeBlockType = type => {
     const typeMap = {
       paragraph: formatParagraph,
@@ -309,7 +303,6 @@ function BlockOptionsDropdownList({ editor, blockType, setBlockType }) {
       ul: formatBulletList,
       ol: formatNumberedList,
       quete: formatQuote,
-      code: formatCode,
     };
 
     setBlockType(type);
@@ -324,7 +317,7 @@ function BlockOptionsDropdownList({ editor, blockType, setBlockType }) {
     <Select css={blockSelectStyle} value={blockType} onChange={onChangeBlockType}>
       <Select.Option value="paragraph">
         <AlignTextBoth theme="outline" size="18" />
-        <span className="text">文本</span>
+        <span className="text">正文</span>
       </Select.Option>
       <Select.Option value="h1">
         <H1 theme="outline" size="18" />
@@ -332,23 +325,11 @@ function BlockOptionsDropdownList({ editor, blockType, setBlockType }) {
       </Select.Option>
       <Select.Option value="h2">
         <H2 theme="outline" size="18" />
-        <span className="h2">小标题</span>
+        <span className="h2">次标题</span>
       </Select.Option>
-      <Select.Option value="ul">
-        <ListBottom theme="outline" size="18" />
-        <span className="ul">列表</span>
-      </Select.Option>
-      <Select.Option value="ol">
-        <OrderedList theme="outline" size="18" />
-        <span className="ol">有序列表</span>
-      </Select.Option>
-      <Select.Option value="quote">
-        <Quote theme="outline" size="18" />
-        <span className="quote">引用</span>
-      </Select.Option>
-      <Select.Option value="code">
-        <Code theme="outline" size="18" />
-        <span className="code">代码块</span>
+      <Select.Option value="h3">
+        <H3 theme="outline" size="18" />
+        <span className="h3">小标题</span>
       </Select.Option>
     </Select>
   );
@@ -495,8 +476,51 @@ export default function ToolbarPlugin() {
     editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, type);
   };
 
+  const applyStyleText = useCallback(
+    styles => {
+      editor.update(() => {
+        const selection = $getSelection();
+
+        if ($isRangeSelection(selection)) {
+          $patchStyleText(selection, styles);
+        }
+      });
+    },
+    [editor],
+  );
+
+  const onFontSizeSelect = useCallback(
+    value => {
+      applyStyleText({ 'font-size': value });
+    },
+    [applyStyleText],
+  );
+
+  const inSertCodeBlock = () => {
+    if (blockType !== 'code') {
+      editor.update(() => {
+        const selection = $getSelection();
+
+        if ($isRangeSelection(selection)) {
+          $wrapLeafNodesInElements(selection, () => $createCodeNode());
+        }
+      });
+    }
+  };
+
   return (
-    <div className="toolbar" ref={toolbarRef}>
+    <div className="toolbar" css={toolbarStyles()} ref={toolbarRef}>
+      <Global
+        styles={css`
+          .i-icon {
+            display: inline-flex;
+            align-items: center;
+            & + * {
+              margin-left: 8px;
+            }
+          }
+        `}
+      ></Global>
       <Button
         type="pure"
         className="toolbar-item spaced"
@@ -530,6 +554,13 @@ export default function ToolbarPlugin() {
           <Divider vertical />
         </>
       )}
+      <Select value="14px" onChange={onFontSizeSelect}>
+        {new Array(10).fill().map((_, index) => (
+          <Select.Option key={index} value={`${index + 10}px`}>
+            {`${index + 10}px`}
+          </Select.Option>
+        ))}
+      </Select>
       {blockType === 'code' ? (
         <Select
           css={css`
@@ -548,88 +579,174 @@ export default function ToolbarPlugin() {
         </Select>
       ) : (
         <>
-          <Button type="pure" className={'toolbar-item ' + (isBold ? 'ultra-button--active' : '')}>
-            <TextBold
+          <Divider vertical />
+          <Tooltip title="加粗">
+            <Button type="pure" className={'toolbar-item ' + (isBold ? 'ultra-button--active' : '')}>
+              <TextBold
+                onClick={() => {
+                  editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
+                }}
+              />
+            </Button>
+          </Tooltip>
+          <Tooltip title="斜体">
+            <Button
+              type="pure"
+              className={'toolbar-item ' + (isItalic ? 'ultra-button--active' : '')}
               onClick={() => {
-                editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
+                editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
               }}
-            />
-          </Button>
-          <Button
-            type="pure"
-            className={'toolbar-item ' + (isItalic ? 'ultra-button--active' : '')}
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
-            }}
-          >
-            <TextItalic />
-          </Button>
-
-          <Button
-            type="pure"
-            className={'toolbar-item ' + (isUnderline ? 'ultra-button--active' : '')}
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
-            }}
-          >
-            <TextUnderline />
-          </Button>
-
-          <Button
-            type="pure"
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
-            }}
-            className={'toolbar-item spaced ' + (isStrikethrough ? 'active' : '')}
-          >
-            <Strikethrough />
-          </Button>
-
-          <Button
-            type="pure"
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
-            }}
-            className={'toolbar-item spaced ' + (isCode ? 'active' : '')}
-          >
-            <Code />
-          </Button>
-
-          <Button type="pure" onClick={insertLink} className={'toolbar-item spaced ' + (isLink ? 'active' : '')}>
-            <LinkOne />
-          </Button>
+            >
+              <TextItalic />
+            </Button>
+          </Tooltip>
+          <Tooltip title="下划线">
+            <Button
+              type="pure"
+              className={'toolbar-item ' + (isUnderline ? 'ultra-button--active' : '')}
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
+              }}
+            >
+              <TextUnderline />
+            </Button>
+          </Tooltip>
+          <Tooltip title="删除线">
+            <Button
+              type="pure"
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
+              }}
+              className={'toolbar-item ' + (isStrikethrough ? 'active' : '')}
+            >
+              <Strikethrough />
+            </Button>
+          </Tooltip>
+          <Tooltip title="代码">
+            <Button
+              type="pure"
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
+              }}
+              className={'toolbar-item ' + (isCode ? 'active' : '')}
+            >
+              <Code />
+            </Button>
+          </Tooltip>
+          <Tooltip title="链接">
+            <Button type="pure" onClick={insertLink} className={'toolbar-item spaced ' + (isLink ? 'active' : '')}>
+              <LinkOne />
+            </Button>
+          </Tooltip>
 
           {isLink && createPortal(<FloatingLinkEditor editor={editor} />, document.body)}
+
+          <Tooltip title="列表">
+            <Button type="pure" className={'toolbar-item ' + (blockType === 'ul' ? 'active' : '')}>
+              <ListBottom theme="outline" size="18" />
+            </Button>
+          </Tooltip>
+          <Tooltip title="有序列表">
+            <Button type="pure" className={'toolbar-item ' + (blockType === 'ol' ? 'active' : '')}>
+              <OrderedList theme="outline" size="18" />
+            </Button>
+          </Tooltip>
+
+          <Tooltip title="引用">
+            <Button type="pure" className={'toolbar-item ' + (blockType === 'quote' ? 'active' : '')}>
+              <Quote theme="outline" size="18" />
+            </Button>
+          </Tooltip>
+
+          <Tooltip title="分隔符">
+            <Button
+              type="pure"
+              className="toolbar-item"
+              onClick={() => {
+                activeEditor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND);
+              }}
+            >
+              <DividingLine size="18" />
+            </Button>
+          </Tooltip>
           <Divider vertical />
           <Dropdown
             content={
               <Menu style={{ padding: 0 }} onClick={onChangeAlign}>
                 <Dropdown.DropdownItem key="left">
-                  <AlignTextLeft /> 左对齐
+                  <AlignTextLeft /> <span>左对齐</span>
                 </Dropdown.DropdownItem>
                 <Dropdown.DropdownItem key="center">
-                  <AlignTextCenter /> 居中对齐
+                  <AlignTextCenter /> <span>居中对齐</span>
                 </Dropdown.DropdownItem>
                 <Dropdown.DropdownItem key="right">
-                  <AlignTextRight /> 右对齐
+                  <AlignTextRight /> <span>居中对齐</span>
                 </Dropdown.DropdownItem>
                 <Dropdown.DropdownItem key="justify">
-                  <AlignTextBoth /> 两边对齐
+                  <AlignTextBoth /> <span>两边对齐</span>
                 </Dropdown.DropdownItem>
               </Menu>
             }
           >
             <Button className="toolbar-item">
-              <AlignTextLeft
-                css={css`
-                  margin-right: 8px;
-                `}
-              />
-              对齐方式
+              <AlignTextLeft />
+              <span>对齐方式</span>
             </Button>
           </Dropdown>
+          <Divider vertical />
+          <Dropdown
+            trigger="click"
+            content={
+              <>
+                <Dropdown.DropdownItem onClick={inSertCodeBlock}>
+                  <Code size="18" />
+                  <span>代码块</span>
+                </Dropdown.DropdownItem>
+                <Dropdown.DropdownItem
+                  onClick={() => {
+                    editor.dispatchCommand(INSERT_IMAGE_COMMAND);
+                  }}
+                >
+                  <ImageFiles size="18" />
+                  <span>图片</span>
+                </Dropdown.DropdownItem>
+              </>
+            }
+          >
+            <Button type="pure">
+              <Add size="18" />
+              <span>插入</span>
+            </Button>
+          </Dropdown>
+          <Divider vertical />
         </>
       )}
     </div>
   );
 }
+
+const toolbarStyles = () => {
+  return css`
+    display: flex;
+    align-items: center;
+    margin-bottom: 1px;
+    background: #fff;
+    padding: 4px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    vertical-align: middle;
+
+    .ultra-divider--vertical {
+      height: 20px;
+      margin: 0 10px;
+    }
+
+    .toolbar-item {
+      padding: 8px;
+    }
+
+    .toolbar-item:hover:not([disabled]) {
+      background-color: rgba(204, 204, 204, 0.3);
+    }
+  `;
+};

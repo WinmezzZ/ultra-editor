@@ -1,0 +1,43 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ *
+ */
+
+.ExcalidrawModal__actions {
+  text-align: end;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  z-index: 1;
+}
+.ExcalidrawModal__actions button {
+  background-color: #fff;
+  border-radius: 5px;
+}
+.ExcalidrawModal__row {
+  position: relative;
+  padding: 40px 5px 5px;
+  width: 70vw;
+  height: 70vh;
+  border-radius: 8px;
+  box-shadow: 0 12px 28px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+.ExcalidrawModal__row > div {
+  border-radius: 5px;
+}
+.ExcalidrawModal__modal {
+  position: fixed;
+  z-index: 2;
+  top: 10px;
+  width: 100%;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #eee;
+}
