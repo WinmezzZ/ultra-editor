@@ -14,6 +14,8 @@ import {
   $getNodeByKey,
   RangeSelection,
   ElementNode,
+  OUTDENT_CONTENT_COMMAND,
+  INDENT_CONTENT_COMMAND,
 } from 'lexical';
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import {
@@ -48,6 +50,8 @@ import {
   H2,
   H3,
   ImageFiles,
+  IndentLeft,
+  IndentRight,
   LevelFourTitle,
   LinkOne,
   ListBottom,
@@ -449,10 +453,6 @@ export default function ToolbarPlugin() {
     }
   }, [editor, isLink]);
 
-  const onChangeAlign = type => {
-    editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, type);
-  };
-
   const applyStyleText = useCallback(
     styles => {
       editor.update(() => {
@@ -686,20 +686,27 @@ export default function ToolbarPlugin() {
           <Divider vertical />
           <Dropdown
             content={
-              <Menu style={{ padding: 0 }} onClick={onChangeAlign}>
-                <Dropdown.Item key="left">
+              <>
+                <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left')}>
                   <AlignTextLeft /> <span>左对齐</span>
                 </Dropdown.Item>
-                <Dropdown.Item key="center">
+                <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center')}>
                   <AlignTextCenter /> <span>居中对齐</span>
                 </Dropdown.Item>
-                <Dropdown.Item key="right">
-                  <AlignTextRight /> <span>居中对齐</span>
+                <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right')}>
+                  <AlignTextRight /> <span>右对齐</span>
                 </Dropdown.Item>
-                <Dropdown.Item key="justify">
+                <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify')}>
                   <AlignTextBoth /> <span>两边对齐</span>
                 </Dropdown.Item>
-              </Menu>
+                <Dropdown.Divider />
+                <Dropdown.Item onClick={() => editor.dispatchCommand(OUTDENT_CONTENT_COMMAND, {})}>
+                  <IndentLeft /> <span>左缩进</span>
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => editor.dispatchCommand(INDENT_CONTENT_COMMAND, {})}>
+                  <IndentRight /> <span>右缩进</span>
+                </Dropdown.Item>
+              </>
             }
           >
             <Button className="toolbar-item">

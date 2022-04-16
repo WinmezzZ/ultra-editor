@@ -18,6 +18,7 @@ import CharacterStylesPopupPlugin from './plugins/CharacterStylesPopupPlugin';
 import HorizontalRulePlugin from './plugins/HorizontalRulePlugin';
 import ExcalidrawPlugin from './plugins/ExcalidrawPlugin';
 import { css } from '@emotion/react';
+import ListMaxIndentLevelPlugin from './plugins/ListMaxIndentLevelPlugin';
 
 function Placeholder() {
   return (
@@ -71,6 +72,7 @@ export default function Editor() {
           <CharacterStylesPopupPlugin />
           <HorizontalRulePlugin />
           <ExcalidrawPlugin />
+          <ListMaxIndentLevelPlugin maxDepth={7} />
           <TreeViewPlugin />
         </div>
       </div>
