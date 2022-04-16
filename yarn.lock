@@ -2057,7 +2057,7 @@
 
 "@types/react@>=16":
   version "18.0.5"
-  resolved "https://registry.npmjs.org/@types/react/-/react-18.0.5.tgz"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.5.tgz#1a4d4b705ae6af5aed369dec22800b20f89f5301"
   integrity sha512-UPxNGInDCIKlfqBrm8LDXYWNfLHwIdisWcsH5GpMyGjhEDLFgTtlRBaoWuCua9HcyuE0rMkmAeZ3FXV1pYLIYQ==
   dependencies:
     "@types/prop-types" "*"
@@ -9020,10 +9020,10 @@ ultra-design@^0.0.40-beta:
     prop-types "^15.8.1"
     react-transition-group "^4.4.2"
 
-ultra-design@^0.0.51-beta:
-  version "0.0.51-beta"
-  resolved "https://registry.yarnpkg.com/ultra-design/-/ultra-design-0.0.51-beta.tgz#42309839081493abaaea95d868de43cee9283a7d"
-  integrity sha512-3wYdr4h662k8fYiPXO1BCWiD3gZqy/AawRr6ElNJdDrPoLBFZeWf6/FeAFP4HA0qPgcwlwGpNDdNljXCYv30Fw==
+ultra-design@^0.0.59-beta:
+  version "0.0.59-beta"
+  resolved "https://registry.yarnpkg.com/ultra-design/-/ultra-design-0.0.59-beta.tgz#f91744f5790a86e56cccb438db77a20a128d4ebc"
+  integrity sha512-FcJLh+DWnIxnL1JQUd+nIljfj1V6IgA2wA3XRd3v+d7WDj2hxOOLfwWkF7LJZ7M/j9kMTzf3VpqS6mYpR/2cHg==
   dependencies:
     "@babel/runtime" "^7.16.3"
     "@emotion/babel-plugin" "^11.3.0"

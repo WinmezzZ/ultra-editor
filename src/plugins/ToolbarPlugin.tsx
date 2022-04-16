@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
@@ -13,6 +12,8 @@ import {
   $isRangeSelection,
   $createParagraphNode,
   $getNodeByKey,
+  RangeSelection,
+  ElementNode,
 } from 'lexical';
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import { $isParentElementRTL, $wrapLeafNodesInElements, $isAtNodeEnd, $patchStyleText } from '@lexical/selection';
@@ -25,7 +26,7 @@ import {
   ListNode,
 } from '@lexical/list';
 import { createPortal } from 'react-dom';
-import { $createHeadingNode, $createQuoteNode, $isHeadingNode } from '@lexical/rich-text';
+import { $createHeadingNode, $createQuoteNode, $isHeadingNode, HeadingTagType } from '@lexical/rich-text';
 import { $createCodeNode, $isCodeNode, getDefaultCodeLanguage, getCodeLanguages } from '@lexical/code';
 import { Button, Divider, Dropdown, Menu, Select, Tooltip } from 'ultra-design';
 import {
@@ -39,8 +40,8 @@ import {
   H1,
   H2,
   H3,
-  HorizontalSpacingBetweenItems,
   ImageFiles,
+  LevelFourTitle,
   LinkOne,
   ListBottom,
   OrderedList,
@@ -54,10 +55,11 @@ import {
 } from '@icon-park/react';
 import { css, Global } from '@emotion/react';
 import { INSERT_IMAGE_COMMAND } from '../plugins/ImagesPlugin';
+import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
 
 const LowPriority = 1;
 
-const supportedBlockTypes = new Set(['paragraph', 'quote', 'code', 'h1', 'h2', 'ul', 'ol']);
+const supportedBlockTypes = new Set(['paragraph', 'quote', 'code', 'h1', 'h2', 'h3', 'h4', 'h5', 'ul', 'ol']);
 
 function positionEditorElement(editor, rect) {
   if (rect === null) {
@@ -234,7 +236,7 @@ function BlockOptionsDropdownList({ editor, blockType, setBlockType }) {
   const formatParagraph = () => {
     if (blockType !== 'paragraph') {
       editor.update(() => {
-        const selection = $getSelection();
+        const selection = $getSelection() as RangeSelection;
 
         if ($isRangeSelection(selection)) {
           $wrapLeafNodesInElements(selection, () => $createParagraphNode());
@@ -243,93 +245,56 @@ function BlockOptionsDropdownList({ editor, blockType, setBlockType }) {
     }
   };
 
-  const formatLargeHeading = () => {
-    if (blockType !== 'h1') {
+  const formatHeading = (headingType: HeadingTagType) => {
+    if (blockType !== headingType) {
       editor.update(() => {
-        const selection = $getSelection();
+        const selection = $getSelection() as RangeSelection;
 
         if ($isRangeSelection(selection)) {
-          $wrapLeafNodesInElements(selection, () => $createHeadingNode('h1'));
+          $wrapLeafNodesInElements(selection, () => $createHeadingNode(headingType) as unknown as ElementNode);
         }
       });
     }
   };
 
-  const formatSmallHeading = () => {
-    if (blockType !== 'h2') {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection)) {
-          $wrapLeafNodesInElements(selection, () => $createHeadingNode('h2'));
-        }
-      });
-    }
-  };
-
-  const formatBulletList = () => {
-    if (blockType !== 'ul') {
-      editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND);
-    } else {
-      editor.dispatchCommand(REMOVE_LIST_COMMAND);
-    }
-  };
-
-  const formatNumberedList = () => {
-    if (blockType !== 'ol') {
-      editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND);
-    } else {
-      editor.dispatchCommand(REMOVE_LIST_COMMAND);
-    }
-  };
-
-  const formatQuote = () => {
-    if (blockType !== 'quote') {
-      editor.update(() => {
-        const selection = $getSelection();
-
-        if ($isRangeSelection(selection)) {
-          $wrapLeafNodesInElements(selection, () => $createQuoteNode());
-        }
-      });
-    }
+  const typeMap = {
+    paragraph: formatParagraph,
+    h1: () => formatHeading('h1'),
+    h2: () => formatHeading('h2'),
+    h3: () => formatHeading('h3'),
+    h4: () => formatHeading('h4'),
   };
 
   const onChangeBlockType = type => {
-    const typeMap = {
-      paragraph: formatParagraph,
-      h1: formatLargeHeading,
-      h2: formatSmallHeading,
-      ul: formatBulletList,
-      ol: formatNumberedList,
-      quete: formatQuote,
-    };
-
     setBlockType(type);
     typeMap[type]();
   };
 
-  useEffect(() => {
-    console.log(blockType);
-  }, [blockType]);
-
   return (
-    <Select css={blockSelectStyle} value={blockType} onChange={onChangeBlockType}>
+    <Select
+      css={blockSelectStyle}
+      value={Object.keys(typeMap).includes(blockType) ? blockType : 'paragraph'}
+      onChange={onChangeBlockType}
+    >
       <Select.Option value="paragraph">
         <AlignTextBoth theme="outline" size="18" />
         <span className="text">正文</span>
       </Select.Option>
       <Select.Option value="h1">
         <H1 theme="outline" size="18" />
-        <span className="h1">大标题</span>
+        <span className="h1">标题1</span>
       </Select.Option>
       <Select.Option value="h2">
         <H2 theme="outline" size="18" />
-        <span className="h2">次标题</span>
+        <span className="h2">标题2</span>
       </Select.Option>
       <Select.Option value="h3">
         <H3 theme="outline" size="18" />
-        <span className="h3">小标题</span>
+        <span className="h3">标题3</span>
+      </Select.Option>
+      <Select.Option value="h4">
+        <LevelFourTitle size="18" />
+        <span className="h4">标题4</span>
       </Select.Option>
     </Select>
   );
@@ -365,10 +330,10 @@ export default function ToolbarPlugin() {
   const [isCode, setIsCode] = useState(false);
 
   const updateToolbar = useCallback(() => {
-    const selection = $getSelection();
+    const selection = $getSelection() as RangeSelection;
 
     if ($isRangeSelection(selection)) {
-      const anchorNode = selection.anchor.getNode();
+      const anchorNode: any = selection.anchor.getNode();
       const element = anchorNode.getKey() === 'root' ? anchorNode : anchorNode.getTopLevelElementOrThrow();
       const elementKey = element.getKey();
       const elementDOM = editor.getElementByKey(elementKey);
@@ -376,7 +341,7 @@ export default function ToolbarPlugin() {
       if (elementDOM !== null) {
         setSelectedElementKey(elementKey);
         if ($isListNode(element)) {
-          const parentList = $getNearestNodeOfType(anchorNode, ListNode);
+          const parentList: any = $getNearestNodeOfType(anchorNode, ListNode);
           const type = parentList ? parentList.getTag() : element.getTag();
 
           setBlockType(type);
@@ -421,14 +386,14 @@ export default function ToolbarPlugin() {
     return mergeRegister(
       editor.registerCommand(
         SELECTION_CHANGE_COMMAND,
-        (_payload, newEditor) => {
+        _payload => {
           updateToolbar();
 
           return false;
         },
         LowPriority,
       ),
-      editor.registerCommand(
+      editor.registerCommand<boolean>(
         CAN_UNDO_COMMAND,
         payload => {
           setCanUndo(payload);
@@ -437,7 +402,7 @@ export default function ToolbarPlugin() {
         },
         LowPriority,
       ),
-      editor.registerCommand(
+      editor.registerCommand<boolean>(
         CAN_REDO_COMMAND,
         payload => {
           setCanRedo(payload);
@@ -453,7 +418,7 @@ export default function ToolbarPlugin() {
     value => {
       editor.update(() => {
         if (selectedElementKey !== null) {
-          const node = $getNodeByKey(selectedElementKey);
+          const node: any = $getNodeByKey(selectedElementKey);
 
           if ($isCodeNode(node)) {
             node.setLanguage(value);
@@ -479,7 +444,7 @@ export default function ToolbarPlugin() {
   const applyStyleText = useCallback(
     styles => {
       editor.update(() => {
-        const selection = $getSelection();
+        const selection = $getSelection() as RangeSelection;
 
         if ($isRangeSelection(selection)) {
           $patchStyleText(selection, styles);
@@ -499,10 +464,38 @@ export default function ToolbarPlugin() {
   const inSertCodeBlock = () => {
     if (blockType !== 'code') {
       editor.update(() => {
-        const selection = $getSelection();
+        const selection = $getSelection() as RangeSelection;
 
         if ($isRangeSelection(selection)) {
           $wrapLeafNodesInElements(selection, () => $createCodeNode());
+        }
+      });
+    }
+  };
+
+  const formatBulletList = () => {
+    if (blockType !== 'ul') {
+      editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, {});
+    } else {
+      editor.dispatchCommand(REMOVE_LIST_COMMAND, {});
+    }
+  };
+
+  const formatNumberedList = () => {
+    if (blockType !== 'ol') {
+      editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, {});
+    } else {
+      editor.dispatchCommand(REMOVE_LIST_COMMAND, {});
+    }
+  };
+
+  const formatQuote = () => {
+    if (blockType !== 'quote') {
+      editor.update(() => {
+        const selection = $getSelection() as RangeSelection;
+
+        if ($isRangeSelection(selection)) {
+          $wrapLeafNodesInElements(selection, () => $createQuoteNode() as unknown as ElementNode);
         }
       });
     }
@@ -526,36 +519,32 @@ export default function ToolbarPlugin() {
         className="toolbar-item spaced"
         disabled={!canUndo}
         onClick={() => {
-          editor.dispatchCommand(UNDO_COMMAND);
+          editor.dispatchCommand(UNDO_COMMAND, {});
         }}
       >
         <Undo />
       </Button>
 
-      <Button type="pure">
-        <Redo
-          disabled={!canRedo}
-          onClick={() => {
-            editor.dispatchCommand(REDO_COMMAND);
-          }}
-          className="toolbar-item"
-        />
+      <Button
+        type="pure"
+        disabled={!canRedo}
+        onClick={() => {
+          editor.dispatchCommand(REDO_COMMAND, {});
+        }}
+        className="toolbar-item"
+      >
+        <Redo />
       </Button>
 
       <Divider vertical />
       {supportedBlockTypes.has(blockType) && (
         <>
-          <BlockOptionsDropdownList
-            editor={editor}
-            blockType={blockType}
-            setBlockType={setBlockType}
-            toolbarRef={toolbarRef}
-          />
+          <BlockOptionsDropdownList editor={editor} blockType={blockType} setBlockType={setBlockType} />
           <Divider vertical />
         </>
       )}
       <Select value="14px" onChange={onFontSizeSelect}>
-        {new Array(10).fill().map((_, index) => (
+        {new Array(10).fill(undefined).map((_, index) => (
           <Select.Option key={index} value={`${index + 10}px`}>
             {`${index + 10}px`}
           </Select.Option>
@@ -642,18 +631,30 @@ export default function ToolbarPlugin() {
           {isLink && createPortal(<FloatingLinkEditor editor={editor} />, document.body)}
 
           <Tooltip title="列表">
-            <Button type="pure" className={'toolbar-item ' + (blockType === 'ul' ? 'active' : '')}>
+            <Button
+              type="pure"
+              className={'toolbar-item ' + (blockType === 'ul' ? 'active' : '')}
+              onClick={formatBulletList}
+            >
               <ListBottom theme="outline" size="18" />
             </Button>
           </Tooltip>
           <Tooltip title="有序列表">
-            <Button type="pure" className={'toolbar-item ' + (blockType === 'ol' ? 'active' : '')}>
+            <Button
+              type="pure"
+              className={'toolbar-item ' + (blockType === 'ol' ? 'active' : '')}
+              onClick={formatNumberedList}
+            >
               <OrderedList theme="outline" size="18" />
             </Button>
           </Tooltip>
 
           <Tooltip title="引用">
-            <Button type="pure" className={'toolbar-item ' + (blockType === 'quote' ? 'active' : '')}>
+            <Button
+              type="pure"
+              className={'toolbar-item ' + (blockType === 'quote' ? 'active' : '')}
+              onClick={formatQuote}
+            >
               <Quote theme="outline" size="18" />
             </Button>
           </Tooltip>
@@ -663,7 +664,8 @@ export default function ToolbarPlugin() {
               type="pure"
               className="toolbar-item"
               onClick={() => {
-                activeEditor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND);
+                console.log(editor);
+                editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, {});
               }}
             >
               <DividingLine size="18" />
@@ -673,18 +675,18 @@ export default function ToolbarPlugin() {
           <Dropdown
             content={
               <Menu style={{ padding: 0 }} onClick={onChangeAlign}>
-                <Dropdown.DropdownItem key="left">
+                <Dropdown.Item key="left">
                   <AlignTextLeft /> <span>左对齐</span>
-                </Dropdown.DropdownItem>
-                <Dropdown.DropdownItem key="center">
+                </Dropdown.Item>
+                <Dropdown.Item key="center">
                   <AlignTextCenter /> <span>居中对齐</span>
-                </Dropdown.DropdownItem>
-                <Dropdown.DropdownItem key="right">
+                </Dropdown.Item>
+                <Dropdown.Item key="right">
                   <AlignTextRight /> <span>居中对齐</span>
-                </Dropdown.DropdownItem>
-                <Dropdown.DropdownItem key="justify">
+                </Dropdown.Item>
+                <Dropdown.Item key="justify">
                   <AlignTextBoth /> <span>两边对齐</span>
-                </Dropdown.DropdownItem>
+                </Dropdown.Item>
               </Menu>
             }
           >
@@ -698,18 +700,18 @@ export default function ToolbarPlugin() {
             trigger="click"
             content={
               <>
-                <Dropdown.DropdownItem onClick={inSertCodeBlock}>
+                <Dropdown.Item onClick={inSertCodeBlock}>
                   <Code size="18" />
                   <span>代码块</span>
-                </Dropdown.DropdownItem>
-                <Dropdown.DropdownItem
+                </Dropdown.Item>
+                <Dropdown.Item
                   onClick={() => {
-                    editor.dispatchCommand(INSERT_IMAGE_COMMAND);
+                    editor.dispatchCommand(INSERT_IMAGE_COMMAND, {});
                   }}
                 >
                   <ImageFiles size="18" />
                   <span>图片</span>
-                </Dropdown.DropdownItem>
+                </Dropdown.Item>
               </>
             }
           >

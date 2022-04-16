@@ -12,12 +12,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "@emotion/react",
     "declarationDir": "es",
     "declaration": true,
     "emitDeclarationOnly": true,
     "baseUrl": ".",
-    "types": ["@emotion/react/types/css-prop"],
     "paths": {
       "*": ["*"],
       "ultra-editor": ["src/index.ts"]

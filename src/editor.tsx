@@ -5,7 +5,7 @@ import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import AutoFocusPlugin from '@lexical/react/LexicalAutoFocusPlugin';
 import Theme from './themes';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
-// import TreeViewPlugin from './plugins/TreeViewPlugin';
+import TreeViewPlugin from './plugins/TreeViewPlugin';
 import LinkPlugin from '@lexical/react/LexicalLinkPlugin';
 import ListPlugin from '@lexical/react/LexicalListPlugin';
 import CodeHighlightPlugin from './plugins/CodeHighlightPlugin';
@@ -14,6 +14,8 @@ import ImagesPlugin from './plugins/ImagesPlugin';
 import MarkdownShortcutPlugin from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import './index.css';
 import PlaygroundNodes from './nodes/PlaygroundNodes';
+import CharacterStylesPopupPlugin from './plugins/CharacterStylesPopupPlugin';
+import HorizontalRulePlugin from './plugins/HorizontalRulePlugin';
 
 function Placeholder() {
   return <div className="editor-placeholder">Enter some rich text...</div>;
@@ -45,6 +47,9 @@ export default function Editor() {
           <AutoLinkPlugin />
           <MarkdownShortcutPlugin />
           <ImagesPlugin />
+          <CharacterStylesPopupPlugin />
+          <HorizontalRulePlugin />
+          <TreeViewPlugin />
         </div>
       </div>
     </LexicalComposer>
