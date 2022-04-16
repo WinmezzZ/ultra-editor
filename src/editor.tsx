@@ -16,9 +16,30 @@ import './index.css';
 import PlaygroundNodes from './nodes/PlaygroundNodes';
 import CharacterStylesPopupPlugin from './plugins/CharacterStylesPopupPlugin';
 import HorizontalRulePlugin from './plugins/HorizontalRulePlugin';
+import ExcalidrawPlugin from './plugins/ExcalidrawPlugin';
+import { css } from '@emotion/react';
 
 function Placeholder() {
-  return <div className="editor-placeholder">Enter some rich text...</div>;
+  return (
+    <div
+      className="Placeholder__root"
+      css={css`
+        font-size: 15px;
+        color: #999;
+        overflow: hidden;
+        position: absolute;
+        text-overflow: ellipsis;
+        top: 10px;
+        left: 10px;
+        user-select: none;
+        white-space: nowrap;
+        display: inline-block;
+        pointer-events: none;
+      `}
+    >
+      请输入...
+    </div>
+  );
 }
 
 const initialConfig = {
@@ -32,11 +53,11 @@ const initialConfig = {
 export default function Editor() {
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="editor-container editor-shell">
+      <div className="editor-shell">
         <ToolbarPlugin />
-        <div className="editor-inner">
+        <div className="editor-container">
           <RichTextPlugin
-            contentEditable={<ContentEditable className="editor-input" />}
+            contentEditable={<ContentEditable className="ContentEditable__root" />}
             placeholder={<Placeholder />}
           />
           <HistoryPlugin />
@@ -49,6 +70,7 @@ export default function Editor() {
           <ImagesPlugin />
           <CharacterStylesPopupPlugin />
           <HorizontalRulePlugin />
+          <ExcalidrawPlugin />
           <TreeViewPlugin />
         </div>
       </div>

@@ -3,8 +3,8 @@ import './ExcalidrawModal.css';
 
 // $FlowFixMe: Flow doesn't have types for Excalidraw
 import Excalidraw from '@excalidraw/excalidraw';
-import * as React from 'react';
 import { useEffect, useRef, useState } from 'react';
+import { Button } from 'ultra-design';
 
 type ExcalidrawElementFragment = {
   isDeleted?: boolean;
@@ -72,28 +72,24 @@ export default function ExcalidrawModal({ onSave, initialElements, isShown = fal
     setElements(els);
   };
 
-  // This is a hacky work-around for Excalidraw + Vite.
-  // In DEV, Vite pulls this in fine, in prod it doesn't. It seems
-  // like a module resolution issue with ESM vs CJS?
-  const _Excalidraw = Excalidraw.$$typeof != null ? Excalidraw : Excalidraw.default;
-
   return (
     <div className="ExcalidrawModal__modal">
       <div className="ExcalidrawModal__row">
-        <_Excalidraw
+        <Excalidraw
+          langCode="zh-CN"
           onChange={onChange}
           initialData={{
             appState: { isLoading: false },
-            elements: initialElements,
+            elements: initialElements as any,
           }}
         />
         <div className="ExcalidrawModal__actions">
-          <button className="action-button" onClick={discard}>
-            Discard
-          </button>
-          <button className="action-button" onClick={save}>
-            Save
-          </button>
+          <Button className="action-button" onClick={discard}>
+            撤销
+          </Button>
+          <Button type="primary" className="action-button" onClick={save}>
+            保存
+          </Button>
         </div>
       </div>
     </div>

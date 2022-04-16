@@ -90,7 +90,7 @@ export class TweetNode extends DecoratorNode<React.ReactNode> {
     return false;
   }
 
-  decorate(): React.ReactNode {
+  decorate() {
     return <TweetComponent loadingComponent="Loading..." tweetID={this.__id} />;
   }
 }

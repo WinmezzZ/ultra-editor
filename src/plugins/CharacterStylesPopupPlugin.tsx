@@ -21,13 +21,13 @@ import { css } from '@emotion/react';
 
 function setPopupPosition(editor, rect) {
   if (rect === null) {
-    editor.updateLayerStyle({
+    editor?.updateLayerStyle({
       opacity: 0,
       top: '-1000px',
       left: '-1000px',
     });
   } else {
-    editor.updateLayerStyle({
+    editor?.updateLayerStyle({
       opacity: 1,
       top: `${rect.top - 20 + window.pageYOffset}px`,
       left: `${rect.left + window.pageXOffset + editor.layerElement.offsetWidth / 2 + rect.width / 2}px`,

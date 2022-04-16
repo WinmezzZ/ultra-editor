@@ -15,7 +15,7 @@ export default function DropDown({
   buttonIconClassName?: string;
   buttonLabel?: string;
   children: React.ReactNode;
-}): React.ReactNode {
+}) {
   const dropDownRef = useRef<HTMLElement | null>(null);
   const buttonRef = useRef<HTMLElement | null>(null);
   const [showDropDown, setShowDropDown] = useState(false);

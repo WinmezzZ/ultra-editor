@@ -11,7 +11,7 @@ type Props = {
   onConfirm: (string, boolean) => void;
 };
 
-export default function KatexEquationAlterer({ onConfirm, initialEquation = '' }: Props): React.ReactNode {
+export default function KatexEquationAlterer({ onConfirm, initialEquation = '' }: Props) {
   const [equation, setEquation] = useState<string>(initialEquation);
   const [inline, setInline] = useState<boolean>(true);
 

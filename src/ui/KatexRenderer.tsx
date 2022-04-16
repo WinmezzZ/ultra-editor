@@ -11,7 +11,7 @@ export default function KatexRenderer({
   equation: string;
   inline: boolean;
   onClick: () => void;
-}>): React.ReactNode {
+}>) {
   const katexElementRef = useRef(null);
 
   useEffect(() => {

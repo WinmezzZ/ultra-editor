@@ -242,7 +242,7 @@ function ImageResizer({
             setShowCaption(!showCaption);
           }}
         >
-          Add Caption
+          添加图片描述
         </button>
       )}
       <div
@@ -437,7 +437,7 @@ function ImageComponent({
                 )}
                 <RichTextPlugin
                   contentEditable={<ContentEditable className="ImageNode__contentEditable" />}
-                  placeholder={<Placeholder className="ImageNode__placeholder">Enter a caption...</Placeholder>}
+                  placeholder={<Placeholder className="ImageNode__placeholder">输入图片描述...</Placeholder>}
                   initialEditorState={null}
                 />
                 {showNestedEditorTreeView && <TreeViewPlugin />}

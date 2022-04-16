@@ -60,7 +60,7 @@ function PollOptionComponent({
   options: Options;
   totalVotes: number;
   withPollNode: (d: (d: PollNode) => void) => void;
-}): React.ReactNode {
+}) {
   const { clientID } = useCollaborationContext();
   const checkboxRef = useRef(null);
   const votesArray = option.votes;
@@ -118,15 +118,7 @@ function PollOptionComponent({
   );
 }
 
-function PollComponent({
-  question,
-  options,
-  nodeKey,
-}: {
-  nodeKey: NodeKey;
-  options: Options;
-  question: string;
-}): React.ReactNode {
+function PollComponent({ question, options, nodeKey }: { nodeKey: NodeKey; options: Options; question: string }) {
   const [editor] = useLexicalComposerContext();
   const totalVotes = useMemo(() => getTotalVotes(options), [options]);
 
@@ -251,7 +243,7 @@ export class PollNode extends DecoratorNode<React.ReactNode> {
     return false;
   }
 
-  decorate(): React.ReactNode {
+  decorate() {
     return <PollComponent question={this.__question} options={this.__options} nodeKey={this.__key} />;
   }
 }

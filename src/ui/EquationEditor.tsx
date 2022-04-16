@@ -9,12 +9,7 @@ type BaseEquationEditorProps = {
   setEquation: (x: string) => void;
 };
 
-export default function EquationEditor({
-  equation,
-  setEquation,
-  inline,
-  inputRef,
-}: BaseEquationEditorProps): React.ReactNode {
+export default function EquationEditor({ equation, setEquation, inline, inputRef }: BaseEquationEditorProps) {
   const onChange = useCallback(
     event => {
       setEquation(event.target.value);
@@ -37,7 +32,7 @@ type EquationEditorImplProps = {
   onChange: (e: React.SyntheticEvent<HTMLInputElement>) => void;
 };
 
-function InlineEquationEditor({ equation, onChange, inputRef }: EquationEditorImplProps): React.ReactNode {
+function InlineEquationEditor({ equation, onChange, inputRef }: EquationEditorImplProps) {
   return (
     <span className="EquationEditor_inputBackground">
       <span className="EquationEditor_dollarSign">$</span>
@@ -53,7 +48,7 @@ function InlineEquationEditor({ equation, onChange, inputRef }: EquationEditorIm
   );
 }
 
-function BlockEquationEditor({ equation, onChange, inputRef }: EquationEditorImplProps): React.ReactNode {
+function BlockEquationEditor({ equation, onChange, inputRef }: EquationEditorImplProps) {
   return (
     <div className="EquationEditor_inputBackground">
       <span className="EquationEditor_dollarSign">{'$$\n'}</span>

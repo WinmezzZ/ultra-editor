@@ -20,7 +20,7 @@ export default function Switch({
   id?: string,
   onClick: (SyntheticMouseEvent<>) => void,
   text: string,
-}): React.ReactNode {
+}) {
   const buttonId = useMemo(() => 'id_' + Math.floor(Math.random() * 10000), []);
   return (
     <div className="switch" id={id}>

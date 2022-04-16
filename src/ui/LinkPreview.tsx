@@ -40,7 +40,7 @@ function LinkPreviewContent({
   url,
 }: Readonly<{
   url: string;
-}>): React.ReactNode {
+}>) {
   const { preview } = useSuspenseRequest(url);
 
   if (preview === null) {
@@ -61,7 +61,7 @@ function LinkPreviewContent({
   );
 }
 
-function Glimmer(props): React.ReactNode {
+function Glimmer(props) {
   return (
     <div
       className="LinkPreview__glimmer"
@@ -75,7 +75,7 @@ export default function LinkPreview({
   url,
 }: Readonly<{
   url: string;
-}>): React.ReactNode {
+}>) {
   return (
     <Suspense
       fallback={

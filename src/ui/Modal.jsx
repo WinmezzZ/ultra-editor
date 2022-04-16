@@ -29,6 +29,7 @@ function PortalImpl({ onClose, children, title }: { children: React.ReactNode, o
         onClose();
       }
     };
+
     window.addEventListener('keydown', handler);
 
     return () => {
@@ -57,7 +58,7 @@ export default function Modal({
   children: React.ReactNode,
   onClose: () => void,
   title: string,
-}): React.ReactNode {
+}) {
   return createPortal(
     <PortalImpl onClose={onClose} title={title}>
       {children}

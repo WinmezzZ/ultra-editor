@@ -1,6 +1,4 @@
-// $FlowFixMe: node modules are ignored by flow
 import { exportToSvg } from '@excalidraw/excalidraw';
-import * as React from 'react';
 import { useEffect, useState } from 'react';
 
 type ImageType = 'svg' | 'canvas';
@@ -52,9 +50,9 @@ const removeStyleFromSvg_HACK = svg => {
  */
 export default function ExcalidrawImage({
   elements,
-  className = '',
-  height = null,
-  width = null,
+  className: _className = '',
+  height: _height = null,
+  width: _width = null,
   appState = null,
   rootClassName = null,
 }: Props) {
@@ -65,6 +63,7 @@ export default function ExcalidrawImage({
       const svg: Element = await exportToSvg({
         appState,
         elements,
+        files: null,
       });
 
       removeStyleFromSvg_HACK(svg);

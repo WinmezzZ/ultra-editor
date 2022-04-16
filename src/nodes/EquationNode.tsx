@@ -26,7 +26,7 @@ type EquationComponentProps = {
   nodeKey: NodeKey;
 };
 
-function EquationComponent({ equation, inline, nodeKey }: EquationComponentProps): React.ReactNode {
+function EquationComponent({ equation, inline, nodeKey }: EquationComponentProps) {
   const [editor] = useLexicalComposerContext();
   const [equationValue, setEquationValue] = useState(equation);
   const [showEquationEditor, setShowEquationEditor] = useState<boolean>(false);
@@ -136,7 +136,7 @@ export class EquationNode extends DecoratorNode<React.ReactNode> {
     writable.__equation = equation;
   }
 
-  decorate(): React.ReactNode {
+  decorate() {
     return <EquationComponent equation={this.__equation} inline={this.__inline} nodeKey={this.__key} />;
   }
 }

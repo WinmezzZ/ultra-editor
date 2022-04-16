@@ -576,7 +576,7 @@ function MentionsTypeahead({
   close: () => void;
   editor: LexicalEditor;
   resolution: Resolution;
-}): React.ReactNode {
+}) {
   const divRef = useRef(null);
   const match = resolution.match;
   const results = useMentionLookupService(match.matchingString);
@@ -961,7 +961,7 @@ function isSelectionOnEntityBoundary(editor: LexicalEditor, offset: number): boo
   });
 }
 
-function useMentions(editor: LexicalEditor): React.ReactNode {
+function useMentions(editor: LexicalEditor) {
   const [resolution, setResolution] = useState<Resolution | null>(null);
 
   useEffect(() => {
@@ -1022,7 +1022,7 @@ function useMentions(editor: LexicalEditor): React.ReactNode {
     : createPortal(<MentionsTypeahead close={closeTypeahead} resolution={resolution} editor={editor} />, document.body);
 }
 
-export default function MentionsPlugin(): React.ReactNode {
+export default function MentionsPlugin() {
   const [editor] = useLexicalComposerContext();
 
   return useMentions(editor);

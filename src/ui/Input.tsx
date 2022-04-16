@@ -9,7 +9,7 @@ type Props = Readonly<{
   value: string;
 }>;
 
-export default function Input({ label, value, onChange, placeholder = '' }: Props): React.ReactNode {
+export default function Input({ label, value, onChange, placeholder = '' }: Props) {
   return (
     <div className="Input__wrapper">
       <label className="Input__label">{label}</label>

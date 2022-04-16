@@ -41,7 +41,7 @@ function StickyComponent({
   nodeKey: NodeKey;
   x: number;
   y: number;
-}): React.ReactNode {
+}) {
   const [editor] = useLexicalComposerContext();
   const stickyContainerRef = useRef<null | HTMLElement>(null);
   const positioningRef = useRef<{
@@ -280,7 +280,7 @@ export class StickyNode extends DecoratorNode<React.ReactNode> {
     writable.__color = writable.__color === 'pink' ? 'yellow' : 'pink';
   }
 
-  decorate(editor: LexicalEditor): React.ReactNode {
+  decorate(editor: LexicalEditor) {
     return createPortal(
       <StickyComponent
         color={this.__color}

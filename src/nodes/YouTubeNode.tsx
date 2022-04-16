@@ -60,7 +60,7 @@ export class YouTubeNode extends DecoratorNode<React.ReactNode> {
     return false;
   }
 
-  decorate(): React.ReactNode {
+  decorate() {
     return <YouTubeComponent videoID={this.__id} />;
   }
 }

@@ -16,7 +16,13 @@ import {
   ElementNode,
 } from 'lexical';
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
-import { $isParentElementRTL, $wrapLeafNodesInElements, $isAtNodeEnd, $patchStyleText } from '@lexical/selection';
+import {
+  $getSelectionStyleValueForProperty,
+  $isParentElementRTL,
+  $wrapLeafNodesInElements,
+  $isAtNodeEnd,
+  $patchStyleText,
+} from '@lexical/selection';
 import { $getNearestNodeOfType, mergeRegister } from '@lexical/utils';
 import {
   INSERT_ORDERED_LIST_COMMAND,
@@ -37,6 +43,7 @@ import {
   AlignTextRight,
   Code,
   DividingLine,
+  Formula,
   H1,
   H2,
   H3,
@@ -56,10 +63,13 @@ import {
 import { css, Global } from '@emotion/react';
 import { INSERT_IMAGE_COMMAND } from '../plugins/ImagesPlugin';
 import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
+import { INSERT_EXCALIDRAW_COMMAND } from './ExcalidrawPlugin';
 
 const LowPriority = 1;
 
 const supportedBlockTypes = new Set(['paragraph', 'quote', 'code', 'h1', 'h2', 'h3', 'h4', 'h5', 'ul', 'ol']);
+
+const fontSizeList = ['12px', '13px', '14px', '15px', '16px', '18px', '20px', '24px', '28px', '30px', '32px', '40px'];
 
 function positionEditorElement(editor, rect) {
   if (rect === null) {
@@ -319,6 +329,7 @@ export default function ToolbarPlugin() {
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
   const [blockType, setBlockType] = useState('paragraph');
+  const [fontSize, setFontSize] = useState('14px');
   const [selectedElementKey, setSelectedElementKey] = useState(null);
   const [codeLanguage, setCodeLanguage] = useState('');
   const [isRTL, setIsRTL] = useState(false);
@@ -356,6 +367,7 @@ export default function ToolbarPlugin() {
       }
       // Update text format
       setIsBold(selection.hasFormat('bold'));
+      setFontSize($getSelectionStyleValueForProperty(selection, 'font-size', '14px'));
       setIsItalic(selection.hasFormat('italic'));
       setIsUnderline(selection.hasFormat('underline'));
       setIsStrikethrough(selection.hasFormat('strikethrough'));
@@ -543,10 +555,10 @@ export default function ToolbarPlugin() {
           <Divider vertical />
         </>
       )}
-      <Select value="14px" onChange={onFontSizeSelect}>
-        {new Array(10).fill(undefined).map((_, index) => (
-          <Select.Option key={index} value={`${index + 10}px`}>
-            {`${index + 10}px`}
+      <Select value={fontSize} onChange={onFontSizeSelect}>
+        {fontSizeList.map(font => (
+          <Select.Option value={font} key={font}>
+            {font}
           </Select.Option>
         ))}
       </Select>
@@ -712,6 +724,14 @@ export default function ToolbarPlugin() {
                   <ImageFiles size="18" />
                   <span>图片</span>
                 </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => {
+                    editor.dispatchCommand(INSERT_EXCALIDRAW_COMMAND, {});
+                  }}
+                >
+                  <Formula size="18" />
+                  <span>公式</span>
+                </Dropdown.Item>
               </>
             }
           >
@@ -733,10 +753,11 @@ const toolbarStyles = () => {
     align-items: center;
     margin-bottom: 1px;
     background: #fff;
-    padding: 4px;
+    padding: 4px 10px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     vertical-align: middle;
+    overflow: auto;
 
     .ultra-divider--vertical {
       height: 20px;

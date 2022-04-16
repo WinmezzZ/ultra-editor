@@ -1,12 +1,3 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow strict
- */
-
 import type { CommandListenerLowPriority, EditorConfig, LexicalEditor, LexicalNode, NodeKey } from 'lexical';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
@@ -29,10 +20,10 @@ import ExcalidrawModal from './ExcalidrawModal';
 
 const LowPriority: CommandListenerLowPriority = 1;
 
-function ExcalidrawComponent({ nodeKey, data }: { data: string; nodeKey: NodeKey }): React.ReactNode {
+function ExcalidrawComponent({ nodeKey, data }: { data: string; nodeKey: NodeKey }) {
   const [isModalOpen, setModalOpen] = useState<boolean>(data === '[]');
   const [editor] = useLexicalComposerContext();
-  const buttonRef = useRef<HTMLElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [isSelected, setSelected, clearSelection] = useLexicalNodeSelection(nodeKey);
 
   const onDelete = useCallback(
@@ -63,7 +54,7 @@ function ExcalidrawComponent({ nodeKey, data }: { data: string; nodeKey: NodeKey
         (event: MouseEvent) => {
           const buttonElem = buttonRef.current;
           // $FlowFixMe: this will work
-          const eventTarget: Element = event.target;
+          const eventTarget = event.target as Element;
 
           if (buttonElem !== null && buttonElem.contains(eventTarget)) {
             if (!event.shiftKey) {
@@ -99,7 +90,7 @@ function ExcalidrawComponent({ nodeKey, data }: { data: string; nodeKey: NodeKey
   const setData = useCallback(
     (newData: string) => {
       return editor.update(() => {
-        const node = $getNodeByKey(nodeKey);
+        const node: any = $getNodeByKey(nodeKey);
 
         if ($isExcalidrawNode(node)) {
           node.setData(newData);
@@ -141,7 +132,7 @@ export class ExcalidrawNode extends DecoratorNode<React.ReactNode> {
     return new ExcalidrawNode(node.__data, node.__key);
   }
 
-  constructor(data? = '[]', key?: NodeKey) {
+  constructor(data = '[]', key?: NodeKey) {
     super(key);
     this.__data = data;
   }
@@ -164,12 +155,12 @@ export class ExcalidrawNode extends DecoratorNode<React.ReactNode> {
   }
 
   setData(data: string): void {
-    const self = this.getWritable();
+    const self: any = this.getWritable();
 
     self.__data = data;
   }
 
-  decorate(editor: LexicalEditor): React.ReactNode {
+  decorate(_editor: LexicalEditor) {
     return <ExcalidrawComponent nodeKey={this.getKey()} data={this.__data} />;
   }
 }
