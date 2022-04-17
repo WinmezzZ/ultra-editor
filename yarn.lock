@@ -5660,10 +5660,17 @@ lexical@^0.2.0:
   resolved "https://registry.npmjs.org/lexical/-/lexical-0.2.0.tgz"
   integrity sha512-twisYBj/APmlzbt2KcGg1HoZGTU0cQRmbym9xij4PUbPPxfdHAbHg03zsLEMKeCrCZ0iw+eV/1afCmO1BoJOkg==
 
-lib0@^0.2.31, lib0@^0.2.42, lib0@^0.2.49:
+lib0@^0.2.31, lib0@^0.2.42:
   version "0.2.49"
   resolved "https://registry.yarnpkg.com/lib0/-/lib0-0.2.49.tgz#7addb5075063d66ea2c55749e5aeaa48e36278c8"
   integrity sha512-ziwYLe/pmI9bjHsAehm4ApuVfZ+q+sbC+vO6Z5+KM+0Fe0MrTLwZSDkJ+cElnhFNQ0P6z/wVkRmc5+vTmImJ9A==
+  dependencies:
+    isomorphic.js "^0.2.4"
+
+lib0@^0.2.49:
+  version "0.2.51"
+  resolved "https://registry.yarnpkg.com/lib0/-/lib0-0.2.51.tgz#23b1271a26f39120a4d0f86b9dfb44577f5ce98c"
+  integrity sha512-05Erb3465CxJa38LQlMz4EbetNvRna1S3BzqEjC0/pmp5cQuQSfNNmeS0722Wev1dRlMUp2Cql0gQ55krSXf2Q==
   dependencies:
     isomorphic.js "^0.2.4"
 
@@ -9020,10 +9027,10 @@ ultra-design@^0.0.40-beta:
     prop-types "^15.8.1"
     react-transition-group "^4.4.2"
 
-ultra-design@^0.0.60-beta:
-  version "0.0.60-beta"
-  resolved "https://registry.yarnpkg.com/ultra-design/-/ultra-design-0.0.60-beta.tgz#be39b094700d8c653c6f13d2d0f0a7203de21b86"
-  integrity sha512-gxpsEeCnEn2fLcYDSPu1ARK9LtGOjpY7++lFNLXitePsawA6q7Oq9+waxnkE+blcOL1owrD1G4pbjhy3Vc0EMQ==
+ultra-design@^0.0.63-beta:
+  version "0.0.63-beta"
+  resolved "https://registry.yarnpkg.com/ultra-design/-/ultra-design-0.0.63-beta.tgz#15146de37e8b78561cf304e61534ba4ec91744a3"
+  integrity sha512-JP2F+Ewt+HiHhipM3VLeZV7mrHy18lm1rEGnmQzNrNJwvXmm2v4ry8LNYse0eT+w5pxf7/6reJMFKv58s87wQg==
   dependencies:
     "@babel/runtime" "^7.16.3"
     "@emotion/babel-plugin" "^11.3.0"

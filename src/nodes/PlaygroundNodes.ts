@@ -7,8 +7,7 @@ import { ListItemNode, ListNode } from '@lexical/list';
 import { OverflowNode } from '@lexical/overflow';
 import { HorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
 import { HeadingNode, QuoteNode } from '@lexical/rich-text';
-import { TableCellNode, TableNode, TableRowNode } from '@lexical/table';
-
+import { TableCellNode, TableNode, TableRowNode } from './TableNode';
 import { EmojiNode } from './EmojiNode';
 import { EquationNode } from './EquationNode';
 import { ExcalidrawNode } from './ExcalidrawNode';
@@ -16,7 +15,7 @@ import { ImageNode } from './ImageNode';
 import { KeywordNode } from './KeywordNode';
 import { MentionNode } from './MentionNode';
 import { PollNode } from './PollNode';
-import { StickyNode } from './StickyNode';
+// import { StickyNode } from './StickyNode';
 import { TweetNode } from './TweetNode';
 import { TypeaheadNode } from './TypeaheadNode';
 import { YouTubeNode } from './YouTubeNode';
@@ -36,7 +35,7 @@ const PlaygroundNodes: Array<new (...args: any[]) => LexicalNode> = [
   LinkNode,
   OverflowNode,
   PollNode,
-  StickyNode,
+  // StickyNode,
   ImageNode,
   MentionNode,
   EmojiNode,

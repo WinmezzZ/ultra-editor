@@ -14,12 +14,20 @@ import {
   getTableSelectionFromTableElement,
   TableCellHeaderStates,
   TableCellNode,
-} from '@lexical/table';
-import { $getSelection, $isGridSelection, $isRangeSelection, $setSelection } from 'lexical';
+} from '../nodes/TableNode';
+import {
+  $getSelection,
+  $isGridSelection,
+  $isRangeSelection,
+  $setSelection,
+  GridSelection,
+  RangeSelection,
+} from 'lexical';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-// $FlowFixMe
 import { createPortal } from 'react-dom';
+import { Dropdown } from 'ultra-design';
+import { TriggerRef } from 'ultra-design/es/trigger/trigger';
 
 type TableCellActionMenuProps = Readonly<{
   contextRef: { current: null | HTMLElement };
@@ -35,7 +43,7 @@ function TableActionMenu({
   contextRef,
 }: TableCellActionMenuProps) {
   const [editor] = useLexicalComposerContext();
-  const dropDownRef = useRef();
+  const dropDownRef = useRef<TriggerRef>();
   const [tableCellNode, updateTableCellNode] = useState(_tableCellNode);
   const [selectionCounts, updateSelectionCounts] = useState({
     columns: 1,
@@ -43,7 +51,7 @@ function TableActionMenu({
   });
 
   useEffect(() => {
-    return editor.registerMutationListener(TableCellNode, nodeMutations => {
+    return editor.registerMutationListener(TableCellNode, (nodeMutations: any) => {
       const nodeUpdated = nodeMutations.get(tableCellNode.getKey()) === 'updated';
 
       if (nodeUpdated) {
@@ -56,7 +64,7 @@ function TableActionMenu({
 
   useEffect(() => {
     editor.getEditorState().read(() => {
-      const selection = $getSelection();
+      const selection = $getSelection() as GridSelection;
 
       if ($isGridSelection(selection)) {
         const selectionShape = selection.getShape();
@@ -71,7 +79,7 @@ function TableActionMenu({
 
   useEffect(() => {
     const menuButtonElement = contextRef.current;
-    const dropDownElement = dropDownRef.current;
+    const dropDownElement: any = dropDownRef.current?.layerElement;
 
     if (menuButtonElement != null && dropDownElement != null) {
       const menuButtonRect = menuButtonElement.getBoundingClientRect();
@@ -89,7 +97,7 @@ function TableActionMenu({
       if (
         dropDownRef.current != null &&
         contextRef.current != null &&
-        !dropDownRef.current.contains(event.target) &&
+        !dropDownRef.current.layerElement.contains(event.target) &&
         !contextRef.current.contains(event.target)
       ) {
         setIsMenuOpen(false);
@@ -126,7 +134,7 @@ function TableActionMenu({
   const insertTableRowAtSelection = useCallback(
     shouldInsertAfter => {
       editor.update(() => {
-        const selection = $getSelection();
+        const selection = $getSelection() as GridSelection;
 
         const tableNode = $getTableNodeFromLexicalNodeOrThrow(tableCellNode);
 
@@ -155,7 +163,7 @@ function TableActionMenu({
   const insertTableColumnAtSelection = useCallback(
     shouldInsertAfter => {
       editor.update(() => {
-        const selection = $getSelection();
+        const selection = $getSelection() as GridSelection;
 
         const tableNode = $getTableNodeFromLexicalNodeOrThrow(tableCellNode);
 
@@ -216,7 +224,7 @@ function TableActionMenu({
   }, [editor, tableCellNode, clearTableSelection, onClose]);
 
   const toggleTableRowIsHeader = useCallback(
-    isHeader => {
+    (isHeader?: boolean) => {
       editor.update(() => {
         const tableNode = $getTableNodeFromLexicalNodeOrThrow(tableCellNode);
 
@@ -250,7 +258,7 @@ function TableActionMenu({
   );
 
   const toggleTableColumnIsHeader = useCallback(
-    isHeader => {
+    (isHeader?: boolean) => {
       editor.update(() => {
         const tableNode = $getTableNodeFromLexicalNodeOrThrow(tableCellNode);
 
@@ -287,15 +295,8 @@ function TableActionMenu({
     [editor, tableCellNode, clearTableSelection, onClose],
   );
 
-  return createPortal(
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div
-      className="dropdown"
-      ref={dropDownRef}
-      onClick={e => {
-        e.stopPropagation();
-      }}
-    >
+  return (
+    <Dropdown triggerRef={dropDownRef}>
       <button className="item" onClick={() => insertTableRowAtSelection(false)}>
         <span className="text">Insert {selectionCounts.rows === 1 ? 'row' : `${selectionCounts.rows} rows`} above</span>
       </button>
@@ -338,12 +339,11 @@ function TableActionMenu({
           column header
         </span>
       </button>
-    </div>,
-    document.body,
+    </Dropdown>
   );
 }
 
-function TableCellActionMenuContainer(): React.MixedElement {
+function TableCellActionMenuContainer() {
   const [editor] = useLexicalComposerContext();
 
   const menuButtonRef = useRef(null);
@@ -354,7 +354,7 @@ function TableCellActionMenuContainer(): React.MixedElement {
 
   const moveMenu = useCallback(() => {
     const menu = menuButtonRef.current;
-    const selection = $getSelection();
+    const selection = $getSelection() as RangeSelection;
     const nativeSelection = window.getSelection();
     const activeElement = document.activeElement;
 
@@ -458,7 +458,7 @@ function TableCellActionMenuContainer(): React.MixedElement {
   );
 }
 
-export default function TableActionMenuPlugin(): React.Portal {
+export default function TableActionMenuPlugin(): React.ReactPortal {
   const [editor] = useLexicalComposerContext();
 
   return useMemo(() => createPortal(<TableCellActionMenuContainer editor={editor} />, document.body), [editor]);

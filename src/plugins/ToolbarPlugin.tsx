@@ -17,6 +17,7 @@ import {
   OUTDENT_CONTENT_COMMAND,
   INDENT_CONTENT_COMMAND,
 } from 'lexical';
+import { INSERT_TABLE_COMMAND } from '../nodes/TableNode';
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import {
   $getSelectionStyleValueForProperty,
@@ -52,6 +53,7 @@ import {
   ImageFiles,
   IndentLeft,
   IndentRight,
+  InsertTable,
   LevelFourTitle,
   LinkOne,
   ListBottom,
@@ -738,6 +740,14 @@ export default function ToolbarPlugin() {
                 >
                   <Formula size="18" />
                   <span>公式</span>
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => {
+                    editor.dispatchCommand(INSERT_TABLE_COMMAND, { rows: 4, columns: 4 });
+                  }}
+                >
+                  <InsertTable size="18" />
+                  <span>表格</span>
                 </Dropdown.Item>
               </>
             }

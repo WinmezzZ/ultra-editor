@@ -5,13 +5,16 @@ import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import AutoFocusPlugin from '@lexical/react/LexicalAutoFocusPlugin';
 import Theme from './themes';
 import ToolbarPlugin from './plugins/ToolbarPlugin';
-import TreeViewPlugin from './plugins/TreeViewPlugin';
+// import TreeViewPlugin from './plugins/TreeViewPlugin';
 import LinkPlugin from '@lexical/react/LexicalLinkPlugin';
 import ListPlugin from '@lexical/react/LexicalListPlugin';
 import CodeHighlightPlugin from './plugins/CodeHighlightPlugin';
 import AutoLinkPlugin from './plugins/AutolinkPlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
 import MarkdownShortcutPlugin from '@lexical/react/LexicalMarkdownShortcutPlugin';
+import TablePlugin from './plugins/TablePlugin';
+import TableCellResizerPlugin from './plugins/TableCellResizerPlugin';
+// import TableActionMenuPlugin from './plugins/TableActionMenuPlugin';
 import './index.css';
 import PlaygroundNodes from './nodes/PlaygroundNodes';
 import CharacterStylesPopupPlugin from './plugins/CharacterStylesPopupPlugin';
@@ -44,6 +47,7 @@ function Placeholder() {
 }
 
 const initialConfig = {
+  namespace: 'UltraEditor',
   theme: Theme,
   nodes: PlaygroundNodes,
   onError(error: Error) {
@@ -56,6 +60,7 @@ export default function Editor() {
     <LexicalComposer initialConfig={initialConfig}>
       <div className="editor-shell">
         <ToolbarPlugin />
+
         <div className="editor-container">
           <RichTextPlugin
             contentEditable={<ContentEditable className="ContentEditable__root" />}
@@ -69,11 +74,14 @@ export default function Editor() {
           <AutoLinkPlugin />
           <MarkdownShortcutPlugin />
           <ImagesPlugin />
+          <TablePlugin />
+          <TableCellResizerPlugin />
+          {/* <TableActionMenuPlugin /> */}
           <CharacterStylesPopupPlugin />
           <HorizontalRulePlugin />
           <ExcalidrawPlugin />
           <ListMaxIndentLevelPlugin maxDepth={7} />
-          <TreeViewPlugin />
+          {/* <TreeViewPlugin /> */}
         </div>
       </div>
     </LexicalComposer>
