@@ -22,6 +22,9 @@ import HorizontalRulePlugin from './plugins/HorizontalRulePlugin';
 import ExcalidrawPlugin from './plugins/ExcalidrawPlugin';
 import { css } from '@emotion/react';
 import ListMaxIndentLevelPlugin from './plugins/ListMaxIndentLevelPlugin';
+import PollPlugin from './plugins/PollPlugin';
+import { ConfigProvider } from 'ultra-design';
+import zh_CN from 'ultra-design/es/locale/zh_CN';
 
 function Placeholder() {
   return (
@@ -57,33 +60,36 @@ const initialConfig = {
 
 export default function Editor() {
   return (
-    <LexicalComposer initialConfig={initialConfig}>
-      <div className="editor-shell">
-        <ToolbarPlugin />
+    <ConfigProvider locale={zh_CN}>
+      <LexicalComposer initialConfig={initialConfig}>
+        <div className="editor-shell">
+          <ToolbarPlugin />
 
-        <div className="editor-container">
-          <RichTextPlugin
-            contentEditable={<ContentEditable className="ContentEditable__root" />}
-            placeholder={<Placeholder />}
-          />
-          <HistoryPlugin />
-          <AutoFocusPlugin />
-          <CodeHighlightPlugin />
-          <ListPlugin />
-          <LinkPlugin />
-          <AutoLinkPlugin />
-          <MarkdownShortcutPlugin />
-          <ImagesPlugin />
-          <TablePlugin />
-          <TableCellResizerPlugin />
-          {/* <TableActionMenuPlugin /> */}
-          <CharacterStylesPopupPlugin />
-          <HorizontalRulePlugin />
-          <ExcalidrawPlugin />
-          <ListMaxIndentLevelPlugin maxDepth={7} />
-          {/* <TreeViewPlugin /> */}
+          <div className="editor-container">
+            <RichTextPlugin
+              contentEditable={<ContentEditable className="ContentEditable__root" />}
+              placeholder={<Placeholder />}
+            />
+            <HistoryPlugin />
+            <AutoFocusPlugin />
+            <CodeHighlightPlugin />
+            <ListPlugin />
+            <LinkPlugin />
+            <AutoLinkPlugin />
+            <MarkdownShortcutPlugin />
+            <ImagesPlugin />
+            <TablePlugin />
+            <TableCellResizerPlugin />
+            {/* <TableActionMenuPlugin /> */}
+            <CharacterStylesPopupPlugin />
+            <HorizontalRulePlugin />
+            <ExcalidrawPlugin />
+            <ListMaxIndentLevelPlugin maxDepth={7} />
+            <PollPlugin />
+            {/* <TreeViewPlugin /> */}
+          </div>
         </div>
-      </div>
-    </LexicalComposer>
+      </LexicalComposer>
+    </ConfigProvider>
   );
 }

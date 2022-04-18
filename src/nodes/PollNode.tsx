@@ -1,15 +1,15 @@
 import type { LexicalNode, NodeKey } from 'lexical';
 
-import './PollNode.css';
-
 import { useCollaborationContext } from '@lexical/react/LexicalCollaborationPlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $getNodeByKey, DecoratorNode } from 'lexical';
 import * as React from 'react';
 import { useCallback, useMemo, useRef } from 'react';
 
-import Button from '../ui/Button';
 import joinClasses from '../utils/join-classes';
+import { css } from '@emotion/react';
+import { Button, Checkbox, Input } from 'ultra-design';
+import { Close } from '@icon-park/react';
 
 type Options = ReadonlyArray<Option>;
 
@@ -26,7 +26,7 @@ function createUID(): string {
     .substr(0, 5);
 }
 
-function createPollOption(text? = ''): Option {
+function createPollOption(text = ''): Option {
   return {
     text,
     uid: createUID(),
@@ -62,7 +62,6 @@ function PollOptionComponent({
   withPollNode: (d: (d: PollNode) => void) => void;
 }) {
   const { clientID } = useCollaborationContext();
-  const checkboxRef = useRef(null);
   const votesArray = option.votes;
   const checkedIndex = votesArray.indexOf(clientID);
   const checked = checkedIndex !== -1;
@@ -71,40 +70,37 @@ function PollOptionComponent({
 
   return (
     <div className="PollNode__optionContainer">
-      <div className={joinClasses('PollNode__optionCheckboxWrapper', checked && 'PollNode__optionCheckboxChecked')}>
-        <input
-          ref={checkboxRef}
-          className="PollNode__optionCheckbox"
-          type="checkbox"
-          onChange={e => {
-            withPollNode(node => {
-              node.toggleVote(option, clientID);
-            });
-          }}
-          checked={checked}
-        />
-      </div>
+      <Checkbox
+        className="PollNode__optionCheckbox"
+        onChange={() => {
+          withPollNode(node => {
+            node.toggleVote(option, clientID);
+          });
+        }}
+        checked={checked}
+      />
       <div className="PollNode__optionInputWrapper">
         <div
           className="PollNode__optionInputVotes"
           style={{ width: `${votes === 0 ? 0 : (votes / totalVotes) * 100}%` }}
         />
         <span className="PollNode__optionInputVotesCount">
-          {votes > 0 && (votes === 1 ? '1 vote' : `${votes} votes`)}
+          {votes > 0 && (votes === 1 ? '1 票' : `${votes} votes`)}
         </span>
-        <input
+        <Input
           className="PollNode__optionInput"
           type="text"
           value={text}
           onChange={e => {
             withPollNode(node => {
-              node.setOptionText(option, e.target.value);
+              node.setOptionText(option, e);
             });
           }}
-          placeholder={`Option ${index + 1}`}
+          placeholder={`选项 ${index + 1}`}
         />
       </div>
-      <button
+      <Button
+        type="pure"
         disabled={options.length < 3}
         className={joinClasses('PollNode__optionDelete', options.length < 3 && 'PollNode__optionDeleteDisabled')}
         arial-label="Remove"
@@ -113,7 +109,9 @@ function PollOptionComponent({
             node.deleteOption(option);
           });
         }}
-      />
+      >
+        <Close size="18" />
+      </Button>
     </div>
   );
 }
@@ -125,7 +123,7 @@ function PollComponent({ question, options, nodeKey }: { nodeKey: NodeKey; optio
   const withPollNode = useCallback(
     (cb: (node: PollNode) => void): void => {
       editor.update(() => {
-        const node = $getNodeByKey(nodeKey);
+        const node = $getNodeByKey(nodeKey) as PollNode;
 
         if ($isPollNode(node)) {
           cb(node);
@@ -142,7 +140,7 @@ function PollComponent({ question, options, nodeKey }: { nodeKey: NodeKey; optio
   }, [withPollNode]);
 
   return (
-    <div className="PollNode__container">
+    <div className="PollNode__container" css={pollNodeStyles()}>
       <h2 className="PollNode__heading">{question}</h2>
       {options.map((option, index) => {
         const key = option.uid;
@@ -159,13 +157,128 @@ function PollComponent({ question, options, nodeKey }: { nodeKey: NodeKey; optio
         );
       })}
       <div className="PollNode__footer">
-        <Button onClick={addOption} small={true}>
-          Add Option
+        <Button onClick={addOption} size="small">
+          添加选项
         </Button>
       </div>
     </div>
   );
 }
+
+const pollNodeStyles = () => {
+  return css`
+    border: 1px solid #eee;
+    background-color: #fcfcfc;
+    padding: 15px;
+    border-radius: 10px;
+    max-width: 600px;
+    min-width: 400px;
+    .PollNode__heading {
+      margin-left: 0px;
+      margin-top: 0px;
+      margin-right: 0px;
+      margin-bottom: 15px;
+      color: #444;
+      text-align: center;
+      font-size: 18px;
+    }
+    .PollNode__optionContainer {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    .PollNode__optionInputWrapper {
+      display: flex;
+      flex: 10px;
+      border-radius: 5px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .PollNode__optionInput {
+      display: flex;
+      flex: 1px;
+      background-color: transparent;
+      font-weight: bold;
+      outline: 0px;
+      z-index: 0;
+    }
+    .PollNode__optionInput::placeholder {
+      font-weight: normal;
+      color: #999;
+    }
+    .PollNode__optionInputVotes {
+      background-color: rgb(236, 243, 254);
+      height: 100%;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      transition: width 1s ease;
+      z-index: 0;
+    }
+    .PollNode__optionInputVotesCount {
+      color: rgb(61, 135, 245);
+      position: absolute;
+      right: 15px;
+      font-size: 12px;
+      top: 5px;
+    }
+    .PollNode__optionCheckboxWrapper {
+      position: relative;
+      display: flex;
+      width: 22px;
+      height: 22px;
+      border: 1px solid #999;
+      margin-right: 10px;
+      border-radius: 5px;
+    }
+    .PollNode__optionCheckboxChecked {
+      border: 1px solid rgb(61, 135, 245);
+      background-color: rgb(61, 135, 245);
+      background-position: 3px 3px;
+      background-repeat: no-repeat;
+    }
+    .PollNode__optionCheckbox {
+      border: 0px;
+      position: absolute;
+      display: block;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .PollNode__optionDelete {
+      display: flex;
+      width: 28px;
+      height: 28px;
+      margin-left: 6px;
+      border: 0px;
+      background-color: transparent;
+      background-position: 6px 6px;
+      background-repeat: no-repeat;
+      z-index: 0;
+      cursor: pointer;
+      border-radius: 5px;
+      opacity: 0.3;
+    }
+    .PollNode__optionDelete:hover {
+      opacity: 1;
+      background-color: #eee;
+    }
+    .PollNode__optionDeleteDisabled {
+      cursor: not-allowed;
+    }
+    .PollNode__optionDeleteDisabled:hover {
+      opacity: 0.3;
+      background-color: transparent;
+    }
+    .PollNode__footer {
+      display: flex;
+      justify-content: center;
+    }
+  `;
+};
 
 export class PollNode extends DecoratorNode<React.ReactNode> {
   __question: string;
@@ -186,7 +299,7 @@ export class PollNode extends DecoratorNode<React.ReactNode> {
   }
 
   addOption(option: Option): void {
-    const self = this.getWritable();
+    const self = this.getWritable() as PollNode;
     const options = Array.from(self.__options);
 
     options.push(option);
@@ -194,7 +307,7 @@ export class PollNode extends DecoratorNode<React.ReactNode> {
   }
 
   deleteOption(option: Option): void {
-    const self = this.getWritable();
+    const self = this.getWritable() as PollNode;
     const options = Array.from(self.__options);
     const index = options.indexOf(option);
 
@@ -203,7 +316,7 @@ export class PollNode extends DecoratorNode<React.ReactNode> {
   }
 
   setOptionText(option: Option, text: string): void {
-    const self = this.getWritable();
+    const self = this.getWritable() as PollNode;
     const clonedOption = cloneOption(option, text);
     const options = Array.from(self.__options);
     const index = options.indexOf(option);
@@ -213,7 +326,7 @@ export class PollNode extends DecoratorNode<React.ReactNode> {
   }
 
   toggleVote(option: Option, clientID: number): void {
-    const self = this.getWritable();
+    const self = this.getWritable() as PollNode;
     const votes = option.votes;
     const votesClone = Array.from(votes);
     const voteIndex = votes.indexOf(clientID);

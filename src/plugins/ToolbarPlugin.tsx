@@ -44,6 +44,7 @@ import {
   AlignTextCenter,
   AlignTextLeft,
   AlignTextRight,
+  Checklist,
   Code,
   DividingLine,
   Formula,
@@ -70,6 +71,7 @@ import { css, Global } from '@emotion/react';
 import { INSERT_IMAGE_COMMAND } from '../plugins/ImagesPlugin';
 import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
 import { INSERT_EXCALIDRAW_COMMAND } from './ExcalidrawPlugin';
+import { INSERT_POLL_COMMAND } from './PollPlugin';
 
 const LowPriority = 1;
 
@@ -347,6 +349,7 @@ export default function ToolbarPlugin() {
   const [isCode, setIsCode] = useState(false);
   const rowsRef = useRef<HTMLInputElement>();
   const columnsRef = useRef<HTMLInputElement>();
+  const questionRef = useRef<HTMLInputElement>();
 
   const updateToolbar = useCallback(() => {
     const selection = $getSelection() as RangeSelection;
@@ -778,6 +781,26 @@ export default function ToolbarPlugin() {
                 >
                   <InsertTable size="18" />
                   <span>表格</span>
+                </Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() => {
+                    Modal.confirm({
+                      title: '插入投票',
+                      content: <Input label="投票标题" defaultValue="" ref={questionRef} />,
+                      onOk: () => {
+                        if (!questionRef.current.value) {
+                          questionRef.current.focus();
+
+                          return false;
+                        }
+
+                        editor.dispatchCommand(INSERT_POLL_COMMAND, questionRef.current.value);
+                      },
+                    });
+                  }}
+                >
+                  <Checklist size="18" />
+                  <span>投票</span>
                 </Dropdown.Item>
               </>
             }
