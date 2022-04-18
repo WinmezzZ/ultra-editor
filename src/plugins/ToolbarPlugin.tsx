@@ -37,7 +37,7 @@ import {
 import { createPortal } from 'react-dom';
 import { $createHeadingNode, $createQuoteNode, $isHeadingNode, HeadingTagType } from '@lexical/rich-text';
 import { $createCodeNode, $isCodeNode, getDefaultCodeLanguage, getCodeLanguages } from '@lexical/code';
-import { Button, Divider, Dropdown, Menu, Select, Tooltip } from 'ultra-design';
+import { Button, Divider, Dropdown, Input, Menu, Modal, Select, Toast, Tooltip } from 'ultra-design';
 import {
   Add,
   AlignTextBoth,
@@ -345,6 +345,8 @@ export default function ToolbarPlugin() {
   const [isUnderline, setIsUnderline] = useState(false);
   const [isStrikethrough, setIsStrikethrough] = useState(false);
   const [isCode, setIsCode] = useState(false);
+  const rowsRef = useRef<HTMLInputElement>();
+  const columnsRef = useRef<HTMLInputElement>();
 
   const updateToolbar = useCallback(() => {
     const selection = $getSelection() as RangeSelection;
@@ -739,11 +741,39 @@ export default function ToolbarPlugin() {
                   }}
                 >
                   <Formula size="18" />
-                  <span>公式</span>
+                  <span>画板</span>
                 </Dropdown.Item>
                 <Dropdown.Item
                   onClick={() => {
-                    editor.dispatchCommand(INSERT_TABLE_COMMAND, { rows: 4, columns: 4 });
+                    Modal.confirm({
+                      title: '插入表格',
+                      content: (
+                        <>
+                          <Input key="1" label="行数" defaultValue="4" ref={rowsRef} />
+                          <br />
+                          <Input key="2" label="列数" defaultValue="4" ref={columnsRef} />
+                        </>
+                      ),
+                      onOk: () => {
+                        const rows = parseInt(rowsRef.current.value);
+                        const columns = parseInt(columnsRef.current.value);
+                        const r = typeof rows === 'number' && rows >= 2 ? rows : 4;
+                        const c = typeof columns === 'number' && columns >= 2 ? columns : 4;
+
+                        if (r > 10) {
+                          Toast.warning('最多添加 10 行');
+
+                          return false;
+                        }
+                        if (c > 10) {
+                          Toast.warning('最多添加 10 列');
+
+                          return false;
+                        }
+
+                        editor.dispatchCommand(INSERT_TABLE_COMMAND, { rows: r, columns: c });
+                      },
+                    });
                   }}
                 >
                   <InsertTable size="18" />

@@ -21,17 +21,13 @@ import { css } from '@emotion/react';
 
 function setPopupPosition(editor, rect) {
   if (rect === null) {
-    editor?.updateLayerStyle({
-      opacity: 0,
-      top: '-1000px',
-      left: '-1000px',
-    });
+    editor.style.opacity = '0';
+    editor.style.top = '-1000px';
+    editor.style.left = '-1000px';
   } else {
-    editor?.updateLayerStyle({
-      opacity: 1,
-      top: `${rect.top - 20 + window.pageYOffset}px`,
-      left: `${rect.left + window.pageXOffset + editor.layerElement.offsetWidth / 2 + rect.width / 2}px`,
-    });
+    editor.style.opacity = '1';
+    (editor.style.top = `${rect.top - 20 + window.pageYOffset}px`),
+      (editor.style.left = `${rect.left + window.pageXOffset + editor.offsetWidth / 2 + rect.width / 2}px`);
   }
 }
 
@@ -98,7 +94,7 @@ function FloatingCharacterStylesEditor({
       }
 
       if (!mouseDownRef.current) {
-        setPopupPosition(popupCharStylesEditorRef.current, rect);
+        setPopupPosition(popupCharStylesEditorRef.current.layerElement, rect);
       }
     }
   }, [editor]);
