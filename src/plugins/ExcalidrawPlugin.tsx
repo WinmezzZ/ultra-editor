@@ -1,12 +1,10 @@
-import type { CommandListenerEditorPriority, LexicalCommand, RangeSelection } from 'lexical';
+import type { LexicalCommand, RangeSelection } from 'lexical';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $getSelection, $isRangeSelection, createCommand } from 'lexical';
+import { COMMAND_PRIORITY_EDITOR, $getSelection, $isRangeSelection, createCommand } from 'lexical';
 import { useEffect } from 'react';
 
 import { $createExcalidrawNode, ExcalidrawNode } from '../nodes/ExcalidrawNode';
-
-const EditorPriority: CommandListenerEditorPriority = 0;
 
 export const INSERT_EXCALIDRAW_COMMAND: LexicalCommand<void> = createCommand();
 
@@ -31,7 +29,7 @@ export default function ExcalidrawPlugin() {
 
         return true;
       },
-      EditorPriority,
+      COMMAND_PRIORITY_EDITOR,
     );
   }, [editor]);
 

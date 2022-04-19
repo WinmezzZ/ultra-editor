@@ -1,12 +1,10 @@
-import type { CommandListenerEditorPriority, LexicalCommand, RangeSelection } from 'lexical';
+import type { LexicalCommand, RangeSelection } from 'lexical';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $getSelection, $isRangeSelection, $isRootNode, createCommand } from 'lexical';
+import { COMMAND_PRIORITY_EDITOR, $getSelection, $isRangeSelection, $isRootNode, createCommand } from 'lexical';
 import { useEffect } from 'react';
 
 import { $createPollNode, PollNode } from '../nodes/PollNode';
-
-const EditorPriority: CommandListenerEditorPriority = 0;
 
 export const INSERT_POLL_COMMAND: LexicalCommand<string> = createCommand();
 
@@ -35,7 +33,7 @@ export default function PollPlugin() {
 
         return true;
       },
-      EditorPriority,
+      COMMAND_PRIORITY_EDITOR,
     );
   }, [editor]);
 

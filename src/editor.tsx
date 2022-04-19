@@ -25,6 +25,12 @@ import ListMaxIndentLevelPlugin from './plugins/ListMaxIndentLevelPlugin';
 import PollPlugin from './plugins/PollPlugin';
 import { ConfigProvider } from 'ultra-design';
 import zh_CN from 'ultra-design/es/locale/zh_CN';
+import ActionsPlugins from './plugins/ActionPlugin';
+import SpeechToTextPlugin from './plugins/SpeechToTextPlugin';
+import TableActionMenuPlugin from './plugins/TableActionMenuPlugin';
+import MentionsPlugin from './plugins/MentionsPlugin';
+import HashtagsPlugin from '@lexical/react/LexicalHashtagPlugin';
+import EmojisPlugin from './plugins/EmojisPlugin';
 
 function Placeholder() {
   return (
@@ -80,13 +86,18 @@ export default function Editor() {
             <ImagesPlugin />
             <TablePlugin />
             <TableCellResizerPlugin />
-            {/* <TableActionMenuPlugin /> */}
+            <TableActionMenuPlugin />
             <CharacterStylesPopupPlugin />
             <HorizontalRulePlugin />
             <ExcalidrawPlugin />
             <ListMaxIndentLevelPlugin maxDepth={7} />
             <PollPlugin />
             {/* <TreeViewPlugin /> */}
+            <MentionsPlugin />
+            <ActionsPlugins />
+            <SpeechToTextPlugin />
+            <HashtagsPlugin />
+            <EmojisPlugin />
           </div>
         </div>
       </LexicalComposer>

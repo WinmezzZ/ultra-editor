@@ -836,6 +836,7 @@ const toolbarStyles = () => {
 
     .toolbar-item {
       padding: 8px;
+      margin: 0 4px;
     }
 
     .toolbar-item:hover:not([disabled]) {

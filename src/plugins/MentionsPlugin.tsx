@@ -1,4 +1,4 @@
-import type { CommandListenerLowPriority, LexicalEditor, RangeSelection } from 'lexical';
+import type { LexicalEditor, RangeSelection } from 'lexical';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
@@ -11,12 +11,14 @@ import {
   KEY_ENTER_COMMAND,
   KEY_ESCAPE_COMMAND,
   KEY_TAB_COMMAND,
+  COMMAND_PRIORITY_LOW,
 } from 'lexical';
-import React, { startTransition, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-// $FlowFixMe
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { $createMentionNode, MentionNode } from '../nodes/MentionNode';
+import { Dropdown } from 'ultra-design';
+import { css } from '@emotion/react';
 
 type MentionMatch = {
   leadOffset: number;
@@ -43,19 +45,9 @@ const PUNC = DocumentMentionsRegex.PUNCTUATION;
 
 const TRIGGERS = ['@', '\\uff20'].join('');
 
-// Chars we expect to see in a mention (non-space, non-punctuation).
 const VALID_CHARS = '[^' + TRIGGERS + PUNC + '\\s]';
 
-// Non-standard series of chars. Each series must be preceded and followed by
-// a valid char.
-const VALID_JOINS =
-  '(?:' +
-  '\\.[ |$]|' + // E.g. "r. " in "Mr. Smith"
-  ' |' + // E.g. " " in "Josh Duck"
-  '[' +
-  PUNC +
-  ']|' + // E.g. "-' in "Salier-Hellendag"
-  ')';
+const VALID_JOINS = '(?:' + '\\.[ |$]|' + ' |' + '[' + PUNC + ']|' + ')';
 
 const LENGTH_LIMIT = 75;
 
@@ -63,17 +55,12 @@ const AtSignMentionsRegex = new RegExp(
   '(^|\\s|\\()(' + '[' + TRIGGERS + ']' + '((?:' + VALID_CHARS + VALID_JOINS + '){0,' + LENGTH_LIMIT + '})' + ')$',
 );
 
-// 50 is the longest alias length limit.
 const ALIAS_LENGTH_LIMIT = 50;
 
-// Regex used to match alias.
 const AtSignMentionsRegexAliasRegex = new RegExp(
   '(^|\\s|\\()(' + '[' + TRIGGERS + ']' + '((?:' + VALID_CHARS + '){0,' + ALIAS_LENGTH_LIMIT + '})' + ')$',
 );
 
-const LowPriority: CommandListenerLowPriority = 1;
-
-// At most, 5 suggestions are shown in the popup.
 const SUGGESTION_LIST_LENGTH_LIMIT = 5;
 
 const mentionsCache = new Map();
@@ -523,20 +510,15 @@ function useMentionLookupService(mentionString) {
 }
 
 function MentionsTypeaheadItem({
-  index,
   isHovered,
   isSelected,
   onClick,
-  onMouseEnter,
-  onMouseLeave,
   result,
 }: {
   index: number;
   isHovered: boolean;
   isSelected: boolean;
   onClick: () => void;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
   result: string;
 }) {
   const liRef = useRef(null);
@@ -551,20 +533,9 @@ function MentionsTypeaheadItem({
   }
 
   return (
-    <li
-      key={result}
-      tabIndex={-1}
-      className={className}
-      ref={liRef}
-      role="option"
-      aria-selected={isSelected}
-      id={'typeahead-item-' + index}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      onClick={onClick}
-    >
+    <Dropdown.Item key={result} className={className} ref={liRef} aria-selected={isSelected} onClick={onClick}>
       {result}
-    </li>
+    </Dropdown.Item>
   );
 }
 
@@ -581,7 +552,8 @@ function MentionsTypeahead({
   const match = resolution.match;
   const results = useMentionLookupService(match.matchingString);
   const [selectedIndex, setSelectedIndex] = useState<null | number>(null);
-  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [hoveredIndex] = useState(null);
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     const div = divRef.current;
@@ -619,7 +591,6 @@ function MentionsTypeahead({
       const rootElem = editor.getRootElement();
 
       if (rootElem !== null) {
-        rootElem.setAttribute('aria-activedescendant', 'typeahead-item-' + index);
         setSelectedIndex(index);
       }
     },
@@ -649,7 +620,7 @@ function MentionsTypeahead({
       editor.registerCommand(
         KEY_ARROW_DOWN_COMMAND,
         payload => {
-          const event: KeyboardEvent = payload;
+          const event = payload as KeyboardEvent;
 
           if (results !== null && selectedIndex !== null) {
             if (selectedIndex < SUGGESTION_LIST_LENGTH_LIMIT - 1 && selectedIndex !== results.length - 1) {
@@ -661,12 +632,12 @@ function MentionsTypeahead({
 
           return true;
         },
-        LowPriority,
+        COMMAND_PRIORITY_LOW,
       ),
       editor.registerCommand(
         KEY_ARROW_UP_COMMAND,
         payload => {
-          const event: KeyboardEvent = payload;
+          const event = payload as KeyboardEvent;
 
           if (results !== null && selectedIndex !== null) {
             if (selectedIndex !== 0) {
@@ -678,12 +649,12 @@ function MentionsTypeahead({
 
           return true;
         },
-        LowPriority,
+        COMMAND_PRIORITY_LOW,
       ),
       editor.registerCommand(
         KEY_ESCAPE_COMMAND,
         payload => {
-          const event: KeyboardEvent = payload;
+          const event = payload as KeyboardEvent;
 
           if (results === null || selectedIndex === null) {
             return false;
@@ -694,12 +665,12 @@ function MentionsTypeahead({
 
           return true;
         },
-        LowPriority,
+        COMMAND_PRIORITY_LOW,
       ),
       editor.registerCommand(
         KEY_TAB_COMMAND,
         payload => {
-          const event: KeyboardEvent = payload;
+          const event = payload as KeyboardEvent;
 
           if (results === null || selectedIndex === null) {
             return false;
@@ -710,12 +681,12 @@ function MentionsTypeahead({
 
           return true;
         },
-        LowPriority,
+        COMMAND_PRIORITY_LOW,
       ),
       editor.registerCommand(
         KEY_ENTER_COMMAND,
         payload => {
-          const event: KeyboardEvent = payload;
+          const event = payload as KeyboardEvent;
 
           if (results === null || selectedIndex === null) {
             return false;
@@ -726,7 +697,7 @@ function MentionsTypeahead({
 
           return true;
         },
-        LowPriority,
+        COMMAND_PRIORITY_LOW,
       ),
     );
   }, [applyCurrentSelected, close, editor, results, selectedIndex, updateSelectedIndex]);
@@ -736,38 +707,55 @@ function MentionsTypeahead({
   }
 
   return (
-    <div aria-label="Suggested mentions" id="mentions-typeahead" ref={divRef} role="listbox">
-      <ul>
-        {results.slice(0, SUGGESTION_LIST_LENGTH_LIMIT).map((result, i) => (
-          <MentionsTypeaheadItem
-            index={i}
-            isHovered={i === hoveredIndex}
-            isSelected={i === selectedIndex}
-            onClick={() => {
-              setSelectedIndex(i);
-              applyCurrentSelected();
-            }}
-            onMouseEnter={() => {
-              setHoveredIndex(i);
-            }}
-            onMouseLeave={() => {
-              setHoveredIndex(null);
-            }}
-            key={result}
-            result={result}
-          />
-        ))}
-      </ul>
-    </div>
+    <Dropdown
+      visible={visible}
+      onVisibleChange={v => setVisible(v)}
+      trigger="click"
+      content={
+        <ul css={mentionStyles()}>
+          {results.slice(0, SUGGESTION_LIST_LENGTH_LIMIT).map((result, i) => (
+            <MentionsTypeaheadItem
+              index={i}
+              isHovered={i === hoveredIndex}
+              isSelected={i === selectedIndex}
+              onClick={() => {
+                setSelectedIndex(i);
+                applyCurrentSelected();
+              }}
+              key={result}
+              result={result}
+            />
+          ))}
+        </ul>
+      }
+      aria-label="Suggested mentions"
+      id="mentions-typeahead"
+      ref={divRef}
+    ></Dropdown>
   );
 }
+
+const mentionStyles = () => {
+  return css`
+    border-radius: 8px;
+    padding: 0;
+    list-style: none;
+    margin: 0;
+
+    li.selected {
+      background: #eee;
+    }
+
+    li.hovered {
+      background: #ddd;
+    }
+  `;
+};
 
 function checkForCapitalizedNameMentions(text, minMatchLength): MentionMatch | null {
   const match = CapitalizedNameMentionsRegex.exec(text);
 
   if (match !== null) {
-    // The strategy ignores leading whitespace but we need to know it's
-    // length to add it to the leadOffset
     const maybeLeadingWhitespace = match[1];
 
     const matchingString = match[2];
@@ -791,8 +779,6 @@ function checkForAtSignMentions(text, minMatchLength): MentionMatch | null {
     match = AtSignMentionsRegexAliasRegex.exec(text);
   }
   if (match !== null) {
-    // The strategy ignores leading whitespace but we need to know it's
-    // length to add it to the leadOffset
     const maybeLeadingWhitespace = match[1];
 
     const matchingString = match[3];
@@ -822,9 +808,6 @@ function getTextUpToAnchor(selection: RangeSelection): string | null {
     return null;
   }
   const anchorNode = anchor.getNode();
-  // We should not be attempting to extract mentions out of nodes
-  // that are already being used for other core things. This is
-  // especially true for immutable nodes, which can't be mutated at all.
 
   if (!anchorNode.isSimpleText()) {
     return null;
@@ -858,7 +841,7 @@ function getMentionsTextToSearch(editor: LexicalEditor): string | null {
   let text = null;
 
   editor.getEditorState().read(() => {
-    const selection = $getSelection();
+    const selection = $getSelection() as RangeSelection;
 
     if (!$isRangeSelection(selection)) {
       return;
@@ -895,7 +878,7 @@ function getMentionOffset(documentText: string, entryText: string, offset: numbe
  */
 function createMentionNodeFromSearchResult(editor: LexicalEditor, entryText: string, match: MentionMatch): void {
   editor.update(() => {
-    const selection = $getSelection();
+    const selection = $getSelection() as RangeSelection;
 
     if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
       return;
@@ -906,9 +889,6 @@ function createMentionNodeFromSearchResult(editor: LexicalEditor, entryText: str
       return;
     }
     const anchorNode = anchor.getNode();
-    // We should not be attempting to extract mentions out of nodes
-    // that are already being used for other core things. This is
-    // especially true for immutable nodes, which can't be mutated at all.
 
     if (!anchorNode.isSimpleText()) {
       return;
@@ -916,9 +896,6 @@ function createMentionNodeFromSearchResult(editor: LexicalEditor, entryText: str
     const selectionOffset = anchor.offset;
     const textContent = anchorNode.getTextContent().slice(0, selectionOffset);
     const characterOffset = match.replaceableString.length;
-
-    // Given a known offset for the mention match, look backward in the
-    // text to see if there's a longer match to replace.
     const mentionOffset = getMentionOffset(textContent, entryText, characterOffset);
     const startOffset = selectionOffset - mentionOffset;
 
@@ -947,12 +924,12 @@ function isSelectionOnEntityBoundary(editor: LexicalEditor, offset: number): boo
   }
 
   return editor.getEditorState().read(() => {
-    const selection = $getSelection();
+    const selection = $getSelection() as RangeSelection;
 
     if ($isRangeSelection(selection)) {
       const anchor = selection.anchor;
       const anchorNode = anchor.getNode();
-      const prevSibling = anchorNode.getPreviousSibling();
+      const prevSibling = anchorNode.getPreviousSibling() as any;
 
       return $isTextNode(prevSibling) && prevSibling.isTextEntity();
     }
@@ -992,17 +969,18 @@ function useMentions(editor: LexicalEditor) {
         const isRangePositioned = tryToPositionRange(match, range);
 
         if (isRangePositioned !== null) {
-          startTransition(() =>
-            setResolution({
-              match,
-              range,
-            }),
-          );
+          // startTransition(() =>
+          setResolution({
+            match,
+            range,
+          });
+          // );
 
           return;
         }
       }
-      startTransition(() => setResolution(null));
+      // startTransition(() => );
+      setResolution(null);
     };
 
     const removeUpdateListener = editor.registerUpdateListener(updateListener);

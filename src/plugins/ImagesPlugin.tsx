@@ -1,13 +1,11 @@
-import type { CommandListenerEditorPriority, LexicalCommand, RangeSelection } from 'lexical';
+import type { LexicalCommand, RangeSelection } from 'lexical';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $getSelection, $isRangeSelection, $isRootNode, createCommand } from 'lexical';
+import { COMMAND_PRIORITY_EDITOR, $getSelection, $isRangeSelection, $isRootNode, createCommand } from 'lexical';
 import { useEffect } from 'react';
 
 import yellowFlowerImage from '../images/yellow-flower.jpg';
 import { $createImageNode, ImageNode } from '../nodes/ImageNode';
-
-const EditorPriority: CommandListenerEditorPriority = 0;
 
 export const INSERT_IMAGE_COMMAND: LexicalCommand<void> = createCommand();
 
@@ -35,7 +33,7 @@ export default function ImagesPlugin() {
 
         return true;
       },
-      EditorPriority,
+      COMMAND_PRIORITY_EDITOR,
     );
   }, [editor]);
 
