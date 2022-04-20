@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import type { CommandListenerLowPriority, EditorConfig, LexicalEditor, LexicalNode, NodeKey } from 'lexical';
+import type { EditorConfig, LexicalEditor, LexicalNode, NodeKey } from 'lexical';
 
 import './ImageNode.css';
 
@@ -30,6 +30,7 @@ import {
   DecoratorNode,
   KEY_BACKSPACE_COMMAND,
   KEY_DELETE_COMMAND,
+  COMMAND_PRIORITY_LOW,
 } from 'lexical';
 import * as React from 'react';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
@@ -45,8 +46,6 @@ import TableCellActionMenuPlugin from '../plugins/TableActionMenuPlugin';
 import TreeViewPlugin from '../plugins/TreeViewPlugin';
 import ContentEditable from '../ui/ContentEditable';
 import Placeholder from '../ui/Placeholder';
-
-const LowPriority: CommandListenerLowPriority = 1;
 
 const imageCache = new Set();
 
@@ -347,10 +346,10 @@ function ImageComponent({
 
           return false;
         },
-        LowPriority,
+        COMMAND_PRIORITY_LOW,
       ),
-      editor.registerCommand(KEY_DELETE_COMMAND, onDelete, LowPriority),
-      editor.registerCommand(KEY_BACKSPACE_COMMAND, onDelete, LowPriority),
+      editor.registerCommand(KEY_DELETE_COMMAND, onDelete, COMMAND_PRIORITY_LOW),
+      editor.registerCommand(KEY_BACKSPACE_COMMAND, onDelete, COMMAND_PRIORITY_LOW),
     );
   }, [clearSelection, editor, isResizing, isSelected, nodeKey, onDelete, setSelected]);
 
@@ -428,7 +427,7 @@ function ImageComponent({
                 <KeywordsPlugin />
                 {isCollab ? (
                   <CollaborationPlugin
-                    id={caption.getKey()}
+                    id={(caption as any).getKey()}
                     providerFactory={createWebsocketProvider}
                     shouldBootstrap={true}
                   />
@@ -507,14 +506,14 @@ export class ImageNode extends DecoratorNode<React.ReactNode> {
   }
 
   setWidthAndHeight(width: 'inherit' | number, height: 'inherit' | number): void {
-    const writable = this.getWritable();
+    const writable = this.getWritable() as ImageNode;
 
     writable.__width = width;
     writable.__height = height;
   }
 
   setShowCaption(showCaption: boolean): void {
-    const writable = this.getWritable();
+    const writable = this.getWritable() as ImageNode;
 
     writable.__showCaption = showCaption;
   }

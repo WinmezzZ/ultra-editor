@@ -31,6 +31,8 @@ import TableActionMenuPlugin from './plugins/TableActionMenuPlugin';
 import MentionsPlugin from './plugins/MentionsPlugin';
 import HashtagsPlugin from '@lexical/react/LexicalHashtagPlugin';
 import EmojisPlugin from './plugins/EmojisPlugin';
+import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
+import KeywordsPlugin from './plugins/KeywordsPlugin';
 
 function Placeholder() {
   return (
@@ -98,6 +100,8 @@ export default function Editor() {
             <SpeechToTextPlugin />
             <HashtagsPlugin />
             <EmojisPlugin />
+            <ClickableLinkPlugin />
+            <KeywordsPlugin />
           </div>
         </div>
       </LexicalComposer>

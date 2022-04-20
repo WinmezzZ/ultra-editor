@@ -21,7 +21,6 @@ import { INSERT_TABLE_COMMAND } from '../nodes/TableNode';
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import {
   $getSelectionStyleValueForProperty,
-  $isParentElementRTL,
   $wrapLeafNodesInElements,
   $isAtNodeEnd,
   $patchStyleText,
@@ -37,7 +36,7 @@ import {
 import { createPortal } from 'react-dom';
 import { $createHeadingNode, $createQuoteNode, $isHeadingNode, HeadingTagType } from '@lexical/rich-text';
 import { $createCodeNode, $isCodeNode, getDefaultCodeLanguage, getCodeLanguages } from '@lexical/code';
-import { Button, Divider, Dropdown, Input, Menu, Modal, Select, Toast, Tooltip } from 'ultra-design';
+import { Button, Divider, Dropdown, Input, Modal, Select, Toast, Tooltip } from 'ultra-design';
 import {
   Add,
   AlignTextBoth,
@@ -340,7 +339,6 @@ export default function ToolbarPlugin() {
   const [fontSize, setFontSize] = useState('14px');
   const [selectedElementKey, setSelectedElementKey] = useState(null);
   const [codeLanguage, setCodeLanguage] = useState('');
-  const [isRTL, setIsRTL] = useState(false);
   const [isLink, setIsLink] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
@@ -383,7 +381,6 @@ export default function ToolbarPlugin() {
       setIsUnderline(selection.hasFormat('underline'));
       setIsStrikethrough(selection.hasFormat('strikethrough'));
       setIsCode(selection.hasFormat('code'));
-      setIsRTL($isParentElementRTL(selection));
 
       // Update links
       const node = getSelectedNode(selection);
@@ -555,20 +552,6 @@ export default function ToolbarPlugin() {
         <Redo />
       </Button>
 
-      <Divider vertical />
-      {supportedBlockTypes.has(blockType) && (
-        <>
-          <BlockOptionsDropdownList editor={editor} blockType={blockType} setBlockType={setBlockType} />
-          <Divider vertical />
-        </>
-      )}
-      <Select value={fontSize} onChange={onFontSizeSelect}>
-        {fontSizeList.map(font => (
-          <Select.Option value={font} key={font}>
-            {font}
-          </Select.Option>
-        ))}
-      </Select>
       {blockType === 'code' ? (
         <Select
           css={css`
@@ -587,6 +570,20 @@ export default function ToolbarPlugin() {
         </Select>
       ) : (
         <>
+          <Divider vertical />
+          {supportedBlockTypes.has(blockType) && (
+            <>
+              <BlockOptionsDropdownList editor={editor} blockType={blockType} setBlockType={setBlockType} />
+              <Divider vertical />
+            </>
+          )}
+          <Select value={fontSize} onChange={onFontSizeSelect}>
+            {fontSizeList.map(font => (
+              <Select.Option value={font} key={font}>
+                {font}
+              </Select.Option>
+            ))}
+          </Select>
           <Divider vertical />
           <Tooltip title="加粗">
             <Button type="pure" className={'toolbar-item ' + (isBold ? 'ultra-button--active' : '')}>

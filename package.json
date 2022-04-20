@@ -31,6 +31,7 @@
     "build:types": "tsc && tsc --project tsconfig.json --declarationDir lib",
     "build:packages": "rollup -c",
     "build": "npm run build:packages && npm run build:types",
+    "build:doc": "winme build",
     "lint": "eslint . --ext js,ts,tsx",
     "format": "prettier --write **/*.{js,tsx,ts,md,json} && eslint . --ext js,ts,tsx --fix",
     "release": "yarn build && yarn publish --non-interactive"
@@ -49,7 +50,7 @@
     "antd": "^4.19.5",
     "katex": "^0.15.3",
     "lexical": "^0.2.2",
-    "ultra-design": "^0.0.66-beta",
+    "ultra-design": "^0.0.68-beta",
     "y-websocket": "^1.4.0",
     "yjs": "^13.5.34"
   },
