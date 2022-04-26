@@ -8,7 +8,7 @@ import {
   $isTableCellNode,
   $isTableRowNode,
   getCellFromTarget,
-} from '../nodes/TableNode';
+} from '@lexical/table';
 import { $getNearestNodeFromDOMNode, $getSelection, $isGridSelection } from 'lexical';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';

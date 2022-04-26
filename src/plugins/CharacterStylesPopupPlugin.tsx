@@ -26,8 +26,8 @@ function setPopupPosition(editor, rect) {
     editor.style.left = '-1000px';
   } else {
     editor.style.opacity = '1';
-    (editor.style.top = `${rect.top - 20 + window.pageYOffset}px`),
-      (editor.style.left = `${rect.left + window.pageXOffset + editor.offsetWidth / 2 + rect.width / 2}px`);
+    editor.style.top = `${rect.top + 10 + window.pageYOffset}px`;
+    editor.style.left = `${rect.left + 20 + window.pageXOffset - editor.offsetWidth + rect.width}px`;
   }
 }
 
@@ -123,7 +123,7 @@ function FloatingCharacterStylesEditor({
     <Popover
       visible={true}
       ref={popupCharStylesEditorRef}
-      placement="top"
+      placement="right"
       content={
         <div
           className="character-style-popup"

@@ -14,7 +14,7 @@ import {
   getTableSelectionFromTableElement,
   TableCellHeaderStates,
   TableCellNode,
-} from '../nodes/TableNode';
+} from '@lexical/table';
 import {
   $getSelection,
   $isGridSelection,

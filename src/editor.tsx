@@ -12,12 +12,13 @@ import CodeHighlightPlugin from './plugins/CodeHighlightPlugin';
 import AutoLinkPlugin from './plugins/AutolinkPlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
 import MarkdownShortcutPlugin from '@lexical/react/LexicalMarkdownShortcutPlugin';
-import TablePlugin from './plugins/TablePlugin';
+import TablePlugin from '@lexical/react/LexicalTablePlugin';
 import TableCellResizerPlugin from './plugins/TableCellResizerPlugin';
 // import TableActionMenuPlugin from './plugins/TableActionMenuPlugin';
 import './index.css';
-import PlaygroundNodes from './nodes/PlaygroundNodes';
-import CharacterStylesPopupPlugin from './plugins/CharacterStylesPopupPlugin';
+import NodeList from './nodes/PlaygroundNodes';
+
+// import CharacterStylesPopupPlugin from './plugins/CharacterStylesPopupPlugin';
 import HorizontalRulePlugin from './plugins/HorizontalRulePlugin';
 import ExcalidrawPlugin from './plugins/ExcalidrawPlugin';
 import { css } from '@emotion/react';
@@ -58,18 +59,17 @@ function Placeholder() {
 }
 
 const initialConfig = {
-  namespace: 'UltraEditor',
   theme: Theme,
-  nodes: PlaygroundNodes,
-  onError(error: Error) {
+  nodes: NodeList,
+  onError: (error: Error) => {
     console.error(error);
   },
 };
 
 export default function Editor() {
   return (
-    <ConfigProvider locale={zh_CN}>
-      <LexicalComposer initialConfig={initialConfig}>
+    <LexicalComposer initialConfig={initialConfig}>
+      <ConfigProvider locale={zh_CN}>
         <div className="editor-shell">
           <ToolbarPlugin />
 
@@ -89,7 +89,7 @@ export default function Editor() {
             <TablePlugin />
             <TableCellResizerPlugin />
             <TableActionMenuPlugin />
-            <CharacterStylesPopupPlugin />
+            {/* <CharacterStylesPopupPlugin /> */}
             <HorizontalRulePlugin />
             <ExcalidrawPlugin />
             <ListMaxIndentLevelPlugin maxDepth={7} />
@@ -104,7 +104,7 @@ export default function Editor() {
             <KeywordsPlugin />
           </div>
         </div>
-      </LexicalComposer>
-    </ConfigProvider>
+      </ConfigProvider>
+    </LexicalComposer>
   );
 }

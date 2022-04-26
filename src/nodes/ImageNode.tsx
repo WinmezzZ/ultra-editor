@@ -11,7 +11,6 @@ import type { EditorConfig, LexicalEditor, LexicalNode, NodeKey } from 'lexical'
 
 import './ImageNode.css';
 
-import { CollaborationPlugin, useCollaborationContext } from '@lexical/react/LexicalCollaborationPlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import HashtagsPlugin from '@lexical/react/LexicalHashtagPlugin';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
@@ -34,16 +33,12 @@ import {
 } from 'lexical';
 import * as React from 'react';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
-
-import { createWebsocketProvider } from '../collaboration';
-import { useSettings } from '../context/SettingsContext';
 import { useSharedHistoryContext } from '../context/SharedHistoryContext';
 import EmojisPlugin from '../plugins/EmojisPlugin';
 import ImagesPlugin from '../plugins/ImagesPlugin';
 import KeywordsPlugin from '../plugins/KeywordsPlugin';
 import MentionsPlugin from '../plugins/MentionsPlugin';
 import TableCellActionMenuPlugin from '../plugins/TableActionMenuPlugin';
-import TreeViewPlugin from '../plugins/TreeViewPlugin';
 import ContentEditable from '../ui/ContentEditable';
 import Placeholder from '../ui/Placeholder';
 
@@ -296,9 +291,7 @@ function ImageComponent({
   const ref = useRef(null);
   const [isSelected, setSelected, clearSelection] = useLexicalNodeSelection(nodeKey);
   const [isResizing, setIsResizing] = useState<boolean>(false);
-  const { yjsDocMap } = useCollaborationContext();
   const [editor] = useLexicalComposerContext();
-  const isCollab = yjsDocMap.get('main') !== undefined;
   const [selection, setSelection] = useState(null);
 
   const onDelete = useCallback(
@@ -397,9 +390,6 @@ function ImageComponent({
   }, [editor]);
 
   const { historyState } = useSharedHistoryContext();
-  const {
-    settings: { showNestedEditorTreeView },
-  } = useSettings();
 
   return (
     <Suspense fallback={null}>
@@ -425,21 +415,12 @@ function ImageComponent({
                 <EmojisPlugin />
                 <HashtagsPlugin />
                 <KeywordsPlugin />
-                {isCollab ? (
-                  <CollaborationPlugin
-                    id={(caption as any).getKey()}
-                    providerFactory={createWebsocketProvider}
-                    shouldBootstrap={true}
-                  />
-                ) : (
-                  <HistoryPlugin externalHistoryState={historyState} />
-                )}
+                <HistoryPlugin externalHistoryState={historyState} />
                 <RichTextPlugin
                   contentEditable={<ContentEditable className="ImageNode__contentEditable" />}
                   placeholder={<Placeholder className="ImageNode__placeholder">输入图片描述...</Placeholder>}
                   initialEditorState={null}
                 />
-                {showNestedEditorTreeView && <TreeViewPlugin />}
               </>
             </LexicalNestedComposer>
           </div>

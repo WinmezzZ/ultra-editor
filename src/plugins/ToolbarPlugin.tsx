@@ -17,7 +17,7 @@ import {
   OUTDENT_CONTENT_COMMAND,
   INDENT_CONTENT_COMMAND,
 } from 'lexical';
-import { INSERT_TABLE_COMMAND } from '../nodes/TableNode';
+import { INSERT_TABLE_COMMAND } from '@lexical/table';
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import {
   $getSelectionStyleValueForProperty,
@@ -530,6 +530,96 @@ export default function ToolbarPlugin() {
           }
         `}
       ></Global>
+
+      <Dropdown
+        trigger="click"
+        content={
+          <>
+            <Dropdown.Item onClick={inSertCodeBlock}>
+              <Code size="18" />
+              <span>代码块</span>
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => {
+                editor.dispatchCommand(INSERT_IMAGE_COMMAND, {});
+              }}
+            >
+              <ImageFiles size="18" />
+              <span>图片</span>
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => {
+                editor.dispatchCommand(INSERT_EXCALIDRAW_COMMAND, {});
+              }}
+            >
+              <Formula size="18" />
+              <span>画板</span>
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => {
+                Modal.confirm({
+                  title: '插入表格',
+                  content: (
+                    <>
+                      <Input key="1" label="行数" defaultValue="4" ref={rowsRef} />
+                      <br />
+                      <Input key="2" label="列数" defaultValue="4" ref={columnsRef} />
+                    </>
+                  ),
+                  onOk: () => {
+                    const rows = parseInt(rowsRef.current.value);
+                    const columns = parseInt(columnsRef.current.value);
+                    const r = typeof rows === 'number' && rows >= 2 ? rows : 4;
+                    const c = typeof columns === 'number' && columns >= 2 ? columns : 4;
+
+                    if (r > 10) {
+                      Toast.warning('最多添加 10 行');
+
+                      return false;
+                    }
+                    if (c > 10) {
+                      Toast.warning('最多添加 10 列');
+
+                      return false;
+                    }
+
+                    editor.dispatchCommand(INSERT_TABLE_COMMAND, { rows: r, columns: c });
+                  },
+                });
+              }}
+            >
+              <InsertTable size="18" />
+              <span>表格</span>
+            </Dropdown.Item>
+            <Dropdown.Item
+              onClick={() => {
+                Modal.confirm({
+                  title: '插入投票',
+                  content: <Input label="投票标题" defaultValue="" ref={questionRef} />,
+                  onOk: () => {
+                    if (!questionRef.current.value) {
+                      questionRef.current.focus();
+
+                      return false;
+                    }
+
+                    editor.dispatchCommand(INSERT_POLL_COMMAND, questionRef.current.value);
+                  },
+                });
+              }}
+            >
+              <Checklist size="18" />
+              <span>投票</span>
+            </Dropdown.Item>
+          </>
+        }
+      >
+        <Button type="pure">
+          <Add size="18" />
+          <span>插入</span>
+        </Button>
+      </Dropdown>
+      <Divider vertical />
       <Button
         type="pure"
         className="toolbar-item spaced"
@@ -716,95 +806,6 @@ export default function ToolbarPlugin() {
             <Button className="toolbar-item">
               <AlignTextLeft />
               <span>对齐方式</span>
-            </Button>
-          </Dropdown>
-          <Divider vertical />
-          <Dropdown
-            trigger="click"
-            content={
-              <>
-                <Dropdown.Item onClick={inSertCodeBlock}>
-                  <Code size="18" />
-                  <span>代码块</span>
-                </Dropdown.Item>
-                <Dropdown.Item
-                  onClick={() => {
-                    editor.dispatchCommand(INSERT_IMAGE_COMMAND, {});
-                  }}
-                >
-                  <ImageFiles size="18" />
-                  <span>图片</span>
-                </Dropdown.Item>
-                <Dropdown.Item
-                  onClick={() => {
-                    editor.dispatchCommand(INSERT_EXCALIDRAW_COMMAND, {});
-                  }}
-                >
-                  <Formula size="18" />
-                  <span>画板</span>
-                </Dropdown.Item>
-                <Dropdown.Item
-                  onClick={() => {
-                    Modal.confirm({
-                      title: '插入表格',
-                      content: (
-                        <>
-                          <Input key="1" label="行数" defaultValue="4" ref={rowsRef} />
-                          <br />
-                          <Input key="2" label="列数" defaultValue="4" ref={columnsRef} />
-                        </>
-                      ),
-                      onOk: () => {
-                        const rows = parseInt(rowsRef.current.value);
-                        const columns = parseInt(columnsRef.current.value);
-                        const r = typeof rows === 'number' && rows >= 2 ? rows : 4;
-                        const c = typeof columns === 'number' && columns >= 2 ? columns : 4;
-
-                        if (r > 10) {
-                          Toast.warning('最多添加 10 行');
-
-                          return false;
-                        }
-                        if (c > 10) {
-                          Toast.warning('最多添加 10 列');
-
-                          return false;
-                        }
-
-                        editor.dispatchCommand(INSERT_TABLE_COMMAND, { rows: r, columns: c });
-                      },
-                    });
-                  }}
-                >
-                  <InsertTable size="18" />
-                  <span>表格</span>
-                </Dropdown.Item>
-                <Dropdown.Item
-                  onClick={() => {
-                    Modal.confirm({
-                      title: '插入投票',
-                      content: <Input label="投票标题" defaultValue="" ref={questionRef} />,
-                      onOk: () => {
-                        if (!questionRef.current.value) {
-                          questionRef.current.focus();
-
-                          return false;
-                        }
-
-                        editor.dispatchCommand(INSERT_POLL_COMMAND, questionRef.current.value);
-                      },
-                    });
-                  }}
-                >
-                  <Checklist size="18" />
-                  <span>投票</span>
-                </Dropdown.Item>
-              </>
-            }
-          >
-            <Button type="pure">
-              <Add size="18" />
-              <span>插入</span>
             </Button>
           </Dropdown>
           <Divider vertical />
