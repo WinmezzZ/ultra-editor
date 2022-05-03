@@ -50,7 +50,7 @@
     "antd": "^4.19.5",
     "katex": "^0.15.3",
     "lexical": "^0.2.5",
-    "ultra-design": "^0.0.69-beta",
+    "ultra-design": "^0.0.76-beta",
     "y-websocket": "^1.4.0",
     "yjs": "^13.5.34"
   },

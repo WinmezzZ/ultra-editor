@@ -41,7 +41,7 @@ const theme: EditorThemeClasses = {
     h1: 'UltraEditor__h1',
     h2: 'UltraEditor__h2',
   },
-  image: 'editor-image',
+  image: 'UltraEditor__image',
   link: 'UltraEditor__link',
   list: {
     listitem: 'UltraEditor__listItem',

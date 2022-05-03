@@ -1,13 +1,17 @@
-import type { LexicalCommand, RangeSelection } from 'lexical';
+import type { LexicalCommand } from 'lexical';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { COMMAND_PRIORITY_EDITOR, $getSelection, $isRangeSelection, $isRootNode, createCommand } from 'lexical';
+import { $getSelection, $isRangeSelection, $isRootNode, COMMAND_PRIORITY_EDITOR, createCommand } from 'lexical';
 import { useEffect } from 'react';
 
-import yellowFlowerImage from '../images/yellow-flower.jpg';
 import { $createImageNode, ImageNode } from '../nodes/ImageNode';
 
-export const INSERT_IMAGE_COMMAND: LexicalCommand<void> = createCommand();
+export type InsertImagePayload = Readonly<{
+  altText: string;
+  src: string;
+}>;
+
+export const INSERT_IMAGE_COMMAND: LexicalCommand<InsertImagePayload> = createCommand();
 
 export default function ImagesPlugin() {
   const [editor] = useLexicalComposerContext();
@@ -17,16 +21,16 @@ export default function ImagesPlugin() {
       throw new Error('ImagesPlugin: ImageNode not registered on editor');
     }
 
-    return editor.registerCommand(
+    return editor.registerCommand<InsertImagePayload>(
       INSERT_IMAGE_COMMAND,
-      () => {
-        const selection = $getSelection() as RangeSelection;
+      payload => {
+        const selection = $getSelection();
 
         if ($isRangeSelection(selection)) {
           if ($isRootNode(selection.anchor.getNode())) {
             selection.insertParagraph();
           }
-          const imageNode = $createImageNode(yellowFlowerImage, 'Yellow flower in tilt shift lens', 500);
+          const imageNode = $createImageNode(payload.src, payload.altText, 500);
 
           selection.insertNodes([imageNode]);
         }

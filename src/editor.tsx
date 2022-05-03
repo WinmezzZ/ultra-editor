@@ -1,6 +1,5 @@
 import LexicalComposer from '@lexical/react/LexicalComposer';
 import RichTextPlugin from '@lexical/react/LexicalRichTextPlugin';
-import ContentEditable from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import AutoFocusPlugin from '@lexical/react/LexicalAutoFocusPlugin';
 import Theme from './themes';
@@ -34,29 +33,8 @@ import HashtagsPlugin from '@lexical/react/LexicalHashtagPlugin';
 import EmojisPlugin from './plugins/EmojisPlugin';
 import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import KeywordsPlugin from './plugins/KeywordsPlugin';
-
-function Placeholder() {
-  return (
-    <div
-      className="Placeholder__root"
-      css={css`
-        font-size: 15px;
-        color: #999;
-        overflow: hidden;
-        position: absolute;
-        text-overflow: ellipsis;
-        top: 10px;
-        left: 10px;
-        user-select: none;
-        white-space: nowrap;
-        display: inline-block;
-        pointer-events: none;
-      `}
-    >
-      请输入...
-    </div>
-  );
-}
+import ContentEditable from './components/content-editable';
+import Placeholder from './components/placeholder';
 
 const initialConfig = {
   theme: Theme,
@@ -70,14 +48,11 @@ export default function Editor() {
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <ConfigProvider locale={zh_CN}>
-        <div className="editor-shell">
+        <div className="UltraEditor-root" css={rootEditorStyle}>
           <ToolbarPlugin />
 
-          <div className="editor-container">
-            <RichTextPlugin
-              contentEditable={<ContentEditable className="ContentEditable__root" />}
-              placeholder={<Placeholder />}
-            />
+          <div className="UltraEditor-container">
+            <RichTextPlugin contentEditable={<ContentEditable />} placeholder={<Placeholder />} />
             <HistoryPlugin />
             <AutoFocusPlugin />
             <CodeHighlightPlugin />
@@ -108,3 +83,34 @@ export default function Editor() {
     </LexicalComposer>
   );
 }
+
+const rootEditorStyle = css`
+  margin: 20px auto;
+  border-radius: 2px;
+  max-width: 1000px;
+  color: #000;
+  position: relative;
+  line-height: 20px;
+  font-weight: 400;
+
+  .UltraEditor-container {
+    background: #fff;
+    position: relative;
+    cursor: text;
+    display: block;
+  }
+
+  span.UltraEditor__image {
+    cursor: default;
+    display: inline-block;
+    position: relative;
+    img {
+      max-width: 100%;
+    }
+
+    img.focused {
+      outline: 2px solid rgb(60, 132, 244);
+      user-select: none;
+    }
+  }
+`;

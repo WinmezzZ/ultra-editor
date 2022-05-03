@@ -9027,10 +9027,10 @@ ultra-design@^0.0.40-beta:
     prop-types "^15.8.1"
     react-transition-group "^4.4.2"
 
-ultra-design@^0.0.69-beta:
-  version "0.0.69-beta"
-  resolved "https://registry.yarnpkg.com/ultra-design/-/ultra-design-0.0.69-beta.tgz#5c3d0fbb853d2b15f482bdef49438dbb38d82df1"
-  integrity sha512-xt7POzkkx68t6kOS3DQUErF0bB5ssJaU8+bU78fN8k07w0chnHo4e8S6l7QKBVm2hly0DoUmArR9rPAac/TvBA==
+ultra-design@^0.0.76-beta:
+  version "0.0.76-beta"
+  resolved "https://registry.yarnpkg.com/ultra-design/-/ultra-design-0.0.76-beta.tgz#8c7e3aef078bac73fca9e5b228c470ab5328e8bc"
+  integrity sha512-bbJ4ApRj3C5h/1kZdm9Nh+TH1ZcX8dF8iZFecMw04AawcfOROqmLcmhcun9wj1TTDz8Z3a0NgPozpNy7B5nABg==
   dependencies:
     "@babel/runtime" "^7.16.3"
     "@emotion/babel-plugin" "^11.3.0"
@@ -9042,6 +9042,7 @@ ultra-design@^0.0.69-beta:
     mitt "^3.0.0"
     prop-types "^15.8.1"
     react-transition-group "^4.4.2"
+    winhooks "^0.0.2"
 
 unicode-canonical-property-names-ecmascript@^2.0.0:
   version "2.0.0"
@@ -9448,6 +9449,22 @@ wildcard@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/wildcard/-/wildcard-2.0.0.tgz"
   integrity sha512-JcKqAHLPxcdb9KM49dufGXn2x3ssnfjbcaQdLlfZsL9rH9wgDQjUtDxbo8NE0F6SFvydeu1VhZe7hZuHsB2/pw==
+
+winhooks@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/winhooks/-/winhooks-0.0.2.tgz#5dd74202dc4cac4494980ea5e24119ddf1cd78f8"
+  integrity sha512-4bfp/O2VyCNVV0TupRNdkQLLRmfygvD57JpAVMPbAqkMRK5oQZL3GpvNQmETsdY2iQKxVndOtOVcvRqyDCSeyg==
+  dependencies:
+    "@mdx-js/loader" "^2.1.1"
+    "@mdx-js/react" "^2.1.1"
+    react "17.0.2"
+    react-dom "17.0.2"
+    react-router-dom "^6.3.0"
+    react-syntax-highlighter "^15.5.0"
+    rehype-autolink-headings "^6.1.1"
+    rehype-slug "^5.0.1"
+    remark-gfm "^3.0.1"
+    ultra-design "^0.0.40-beta"
 
 word-wrap@^1.2.3:
   version "1.2.3"

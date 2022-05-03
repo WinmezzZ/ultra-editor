@@ -1,15 +1,4 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow strict
- */
-
 import type { EditorConfig, LexicalEditor, LexicalNode, NodeKey } from 'lexical';
-
-import './ImageNode.css';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import HashtagsPlugin from '@lexical/react/LexicalHashtagPlugin';
@@ -25,22 +14,25 @@ import {
   $getSelection,
   $isNodeSelection,
   CLICK_COMMAND,
+  COMMAND_PRIORITY_LOW,
   createEditor,
   DecoratorNode,
   KEY_BACKSPACE_COMMAND,
   KEY_DELETE_COMMAND,
-  COMMAND_PRIORITY_LOW,
 } from 'lexical';
 import * as React from 'react';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+
 import { useSharedHistoryContext } from '../context/SharedHistoryContext';
 import EmojisPlugin from '../plugins/EmojisPlugin';
 import ImagesPlugin from '../plugins/ImagesPlugin';
 import KeywordsPlugin from '../plugins/KeywordsPlugin';
 import MentionsPlugin from '../plugins/MentionsPlugin';
 import TableCellActionMenuPlugin from '../plugins/TableActionMenuPlugin';
-import ContentEditable from '../ui/ContentEditable';
-import Placeholder from '../ui/Placeholder';
+import ContentEditable from '../components/content-editable';
+import ImageResizer from '../components/ImageResizer';
+import Placeholder from '../components/placeholder';
+import { css } from '@emotion/react';
 
 const imageCache = new Set();
 
@@ -52,7 +44,7 @@ function useSuspenseImage(src: string) {
       img.src = src;
       img.onload = () => {
         imageCache.add(src);
-        resolve(undefined);
+        resolve(null);
       };
     });
   }
@@ -92,181 +84,6 @@ function LazyImage({
   );
 }
 
-function ImageResizer({
-  onResizeStart,
-  onResizeEnd,
-  imageRef,
-  editor,
-  showCaption,
-  setShowCaption,
-}: {
-  editor: LexicalEditor;
-  imageRef: { current: null | HTMLElement };
-  onResizeEnd: (width: string | number, height: string | number) => void;
-  onResizeStart: () => void;
-  setShowCaption: (boolean) => void;
-  showCaption: boolean;
-}) {
-  const buttonRef = useRef(null);
-  const positioningRef = useRef<{
-    currentHeight: 'inherit' | number;
-    currentWidth: 'inherit' | number;
-    direction: 0 | 1 | 2 | 3;
-    isResizing: boolean;
-    ratio: number;
-    startHeight: number;
-    startWidth: number;
-    startX: number;
-    startY: number;
-  }>({
-    currentHeight: 0,
-    currentWidth: 0,
-    direction: 0,
-    isResizing: false,
-    ratio: 0,
-    startHeight: 0,
-    startWidth: 0,
-    startX: 0,
-    startY: 0,
-  });
-  const editorRootElement = editor.getRootElement();
-  // Find max width, accounting for editor padding.
-  const maxWidthContainer = editorRootElement !== null ? editorRootElement.getBoundingClientRect().width - 20 : 100;
-
-  const handlePointerDown = (event: React.PointerEvent, direction: 0 | 1 | 2 | 3) => {
-    const image = imageRef.current;
-
-    if (image !== null) {
-      const { width, height } = image.getBoundingClientRect();
-      const positioning = positioningRef.current;
-
-      positioning.startWidth = width;
-      positioning.startHeight = height;
-      positioning.ratio = width / height;
-      positioning.currentWidth = 'inherit';
-      positioning.currentHeight = 'inherit';
-      positioning.startX = event.clientX;
-      positioning.startY = event.clientY;
-      positioning.isResizing = true;
-      positioning.direction = direction;
-      onResizeStart();
-      document.addEventListener('pointermove', handlePointerMove);
-      document.addEventListener('pointerup', handlePointerUp);
-    }
-  };
-  const handlePointerMove = (event: PointerEvent) => {
-    const image = imageRef.current;
-    const positioning = positioningRef.current;
-
-    if (image !== null && positioning.isResizing) {
-      if (positioning.direction === 3) {
-        const diff = Math.floor(positioning.startY - event.clientY) * 2;
-        const minHeight = 150 * positioning.ratio;
-        const maxHeight = maxWidthContainer / positioning.ratio;
-        let height = positioning.startHeight + diff;
-
-        if (height < minHeight) {
-          height = minHeight;
-        } else if (height > maxHeight) {
-          height = maxHeight;
-        }
-        image.style.width = `inherit`;
-        image.style.height = `${height}px`;
-        positioning.currentHeight = height;
-      } else if (positioning.direction === 2) {
-        const diff = Math.floor(event.clientY - positioning.startY);
-        const minHeight = 150 * positioning.ratio;
-        const maxHeight = maxWidthContainer / positioning.ratio;
-        let height = positioning.startHeight + diff;
-
-        if (height < minHeight) {
-          height = minHeight;
-        } else if (height > maxHeight) {
-          height = maxHeight;
-        }
-        image.style.width = `inherit`;
-        image.style.height = `${height}px`;
-        positioning.currentHeight = height;
-      } else {
-        const diff = Math.floor(event.clientX - positioning.startX);
-        const minWidth = 150 * positioning.ratio;
-        const maxWidth = maxWidthContainer;
-        let width = positioning.startWidth + diff;
-
-        if (width < minWidth) {
-          width = minWidth;
-        } else if (width > maxWidth) {
-          width = maxWidth;
-        }
-        image.style.width = `${width}px`;
-        image.style.height = `inherit`;
-        positioning.currentWidth = width;
-      }
-    }
-  };
-  const handlePointerUp = (_event: PointerEvent) => {
-    const image = imageRef.current;
-    const positioning = positioningRef.current;
-
-    if (image !== null && positioning.isResizing) {
-      const width = positioning.currentWidth;
-      const height = positioning.currentHeight;
-
-      positioning.startWidth = 0;
-      positioning.startHeight = 0;
-      positioning.ratio = 0;
-      positioning.startX = 0;
-      positioning.startY = 0;
-      positioning.currentWidth = 0;
-      positioning.currentHeight = 0;
-      positioning.isResizing = false;
-      onResizeEnd(width, height);
-      document.removeEventListener('pointermove', handlePointerMove);
-      document.removeEventListener('pointerup', handlePointerUp);
-    }
-  };
-
-  return (
-    <>
-      {!showCaption && (
-        <button
-          className="image-caption-button"
-          ref={buttonRef}
-          onClick={() => {
-            setShowCaption(!showCaption);
-          }}
-        >
-          添加图片描述
-        </button>
-      )}
-      <div
-        className="image-resizer-ne"
-        onPointerDown={event => {
-          handlePointerDown(event, 0);
-        }}
-      />
-      <div
-        className="image-resizer-se"
-        onPointerDown={event => {
-          handlePointerDown(event, 1);
-        }}
-      />
-      <div
-        className="image-resizer-sw"
-        onPointerDown={event => {
-          handlePointerDown(event, 2);
-        }}
-      />
-      <div
-        className="image-resizer-nw"
-        onPointerDown={event => {
-          handlePointerDown(event, 3);
-        }}
-      />
-    </>
-  );
-}
-
 function ImageComponent({
   src,
   altText,
@@ -279,7 +96,7 @@ function ImageComponent({
   caption,
 }: {
   altText: string;
-  caption: LexicalEditor;
+  caption: LexicalEditor | any;
   height: 'inherit' | number;
   maxWidth: number;
   nodeKey: NodeKey;
@@ -322,9 +139,7 @@ function ImageComponent({
       }),
       editor.registerCommand(
         CLICK_COMMAND,
-        payload => {
-          const event = payload as MouseEvent;
-
+        (event: MouseEvent) => {
           if (isResizing) {
             return true;
           }
@@ -346,48 +161,34 @@ function ImageComponent({
     );
   }, [clearSelection, editor, isResizing, isSelected, nodeKey, onDelete, setSelected]);
 
-  const setShowCaption = useCallback(() => {
+  const setShowCaption = () => {
     editor.update(() => {
-      const node: any = $getNodeByKey(nodeKey);
+      const node = $getNodeByKey(nodeKey) as any;
 
       if ($isImageNode(node)) {
         node.setShowCaption(true);
       }
     });
-  }, [editor, nodeKey]);
+  };
 
-  const onResizeEnd = useCallback(
-    (nextWidth, nextHeight) => {
-      const rootElement = editor.getRootElement();
+  const onResizeEnd = (nextWidth, nextHeight) => {
+    // Delay hiding the resize bars for click case
+    setTimeout(() => {
+      setIsResizing(false);
+    }, 200);
 
-      if (rootElement !== null) {
-        rootElement.style.setProperty('cursor', 'default');
+    editor.update(() => {
+      const node = $getNodeByKey(nodeKey) as any;
+
+      if ($isImageNode(node)) {
+        node.setWidthAndHeight(nextWidth, nextHeight);
       }
+    });
+  };
 
-      // Delay hiding the resize bars for click case
-      setTimeout(() => {
-        setIsResizing(false);
-      }, 200);
-
-      editor.update(() => {
-        const node: any = $getNodeByKey(nodeKey);
-
-        if ($isImageNode(node)) {
-          node.setWidthAndHeight(nextWidth, nextHeight);
-        }
-      });
-    },
-    [editor, nodeKey],
-  );
-
-  const onResizeStart = useCallback(() => {
-    const rootElement = editor.getRootElement();
-
-    if (rootElement !== null) {
-      rootElement.style.setProperty('cursor', 'nwse-resize', 'important');
-    }
+  const onResizeStart = () => {
     setIsResizing(true);
-  }, [editor]);
+  };
 
   const { historyState } = useSharedHistoryContext();
 
@@ -404,24 +205,23 @@ function ImageComponent({
           maxWidth={maxWidth}
         />
         {showCaption && (
-          <div className="image-caption-container">
+          <div css={captionContainerStyle}>
             <LexicalNestedComposer initialEditor={caption}>
-              <>
-                <MentionsPlugin />
-                <TablesPlugin />
-                <TableCellActionMenuPlugin />
-                <ImagesPlugin />
-                <LinkPlugin />
-                <EmojisPlugin />
-                <HashtagsPlugin />
-                <KeywordsPlugin />
-                <HistoryPlugin externalHistoryState={historyState} />
-                <RichTextPlugin
-                  contentEditable={<ContentEditable className="ImageNode__contentEditable" />}
-                  placeholder={<Placeholder className="ImageNode__placeholder">输入图片描述...</Placeholder>}
-                  initialEditorState={null}
-                />
-              </>
+              <MentionsPlugin />
+              <TablesPlugin />
+              <TableCellActionMenuPlugin />
+              <ImagesPlugin />
+              <LinkPlugin />
+              <EmojisPlugin />
+              <HashtagsPlugin />
+              <KeywordsPlugin />
+
+              <HistoryPlugin externalHistoryState={historyState} />
+              <RichTextPlugin
+                contentEditable={<ContentEditable className="ImageNode__contentEditable" />}
+                placeholder={<Placeholder className="ImageNode__placeholder">输入图片描述...</Placeholder>}
+                initialEditorState={null}
+              />
             </LexicalNestedComposer>
           </div>
         )}
@@ -431,6 +231,7 @@ function ImageComponent({
             setShowCaption={setShowCaption}
             editor={editor}
             imageRef={ref}
+            maxWidth={maxWidth}
             onResizeStart={onResizeStart}
             onResizeEnd={onResizeEnd}
           />
@@ -439,6 +240,53 @@ function ImageComponent({
     </Suspense>
   );
 }
+
+const captionContainerStyle = css`
+  display: block;
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid #fff;
+  background-color: rgba(255, 255, 255, 0.9);
+  min-width: 100px;
+  color: #000;
+  overflow: hidden;
+
+  .ImageNode__contentEditable {
+    min-height: 20px;
+    border: 0px;
+    resize: none;
+    cursor: text;
+    caret-color: rgb(5, 5, 5);
+    display: block;
+    position: relative;
+    tab-size: 1;
+    outline: 0px;
+    padding: 10px;
+    user-select: text;
+    font-size: 12px;
+    width: calc(100% - 20px);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .ImageNode__placeholder {
+    font-size: 12px;
+    color: #888;
+    overflow: hidden;
+    position: absolute;
+    text-overflow: ellipsis;
+    top: 10px;
+    left: 10px;
+    user-select: none;
+    white-space: nowrap;
+    display: inline-block;
+    pointer-events: none;
+  }
+`;
 
 export class ImageNode extends DecoratorNode<React.ReactNode> {
   __src: string;
@@ -501,7 +349,7 @@ export class ImageNode extends DecoratorNode<React.ReactNode> {
 
   // View
 
-  createDOM<EditorContext>(config: EditorConfig<EditorContext>): HTMLElement {
+  createDOM(config: EditorConfig): HTMLElement {
     const span = document.createElement('span');
     const theme = config.theme;
     const className = theme.image;
@@ -517,7 +365,15 @@ export class ImageNode extends DecoratorNode<React.ReactNode> {
     return false;
   }
 
-  decorate() {
+  getSrc(): string {
+    return this.__src;
+  }
+
+  getAltText(): string {
+    return this.__altText;
+  }
+
+  decorate(): React.ReactNode {
     return (
       <ImageComponent
         src={this.__src}
@@ -538,6 +394,6 @@ export function $createImageNode(src: string, altText: string, maxWidth: number)
   return new ImageNode(src, altText, maxWidth);
 }
 
-export function $isImageNode(node?: LexicalNode) {
+export function $isImageNode(node: LexicalNode) {
   return node instanceof ImageNode;
 }

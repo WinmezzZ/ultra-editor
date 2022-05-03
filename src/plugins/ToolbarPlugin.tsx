@@ -67,10 +67,10 @@ import {
   Undo,
 } from '@icon-park/react';
 import { css, Global } from '@emotion/react';
-import { INSERT_IMAGE_COMMAND } from '../plugins/ImagesPlugin';
 import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
 import { INSERT_EXCALIDRAW_COMMAND } from './ExcalidrawPlugin';
 import { INSERT_POLL_COMMAND } from './PollPlugin';
+import InsetImageDialog from './toolbar-plugin/insert-image';
 
 const LowPriority = 1;
 
@@ -348,6 +348,7 @@ export default function ToolbarPlugin() {
   const rowsRef = useRef<HTMLInputElement>();
   const columnsRef = useRef<HTMLInputElement>();
   const questionRef = useRef<HTMLInputElement>();
+  const [insertImageModalVisible, setInsertImageModalVisible] = useState(false);
 
   const updateToolbar = useCallback(() => {
     const selection = $getSelection() as RangeSelection;
@@ -531,6 +532,8 @@ export default function ToolbarPlugin() {
         `}
       ></Global>
 
+      <InsetImageDialog visible={insertImageModalVisible} onVisibleChange={setInsertImageModalVisible} />
+
       <Dropdown
         trigger="click"
         content={
@@ -539,11 +542,7 @@ export default function ToolbarPlugin() {
               <Code size="18" />
               <span>代码块</span>
             </Dropdown.Item>
-            <Dropdown.Item
-              onClick={() => {
-                editor.dispatchCommand(INSERT_IMAGE_COMMAND, {});
-              }}
-            >
+            <Dropdown.Item onClick={() => setInsertImageModalVisible(true)}>
               <ImageFiles size="18" />
               <span>图片</span>
             </Dropdown.Item>
