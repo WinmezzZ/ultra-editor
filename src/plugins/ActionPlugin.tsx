@@ -103,7 +103,7 @@ const actionsStyles = () => {
     justify-content: flex-end;
     padding: 10px;
     .action-button {
-      color: #666;
+      margin-left: 5px;
     }
     .action-button-mic.active {
       animation: mic-pulsate-color 3s infinite;

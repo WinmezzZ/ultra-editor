@@ -1,5 +1,4 @@
 import type { EditorThemeClasses } from 'lexical';
-import './index.css';
 
 const theme: EditorThemeClasses = {
   characterLimit: 'UltraEditor__characterLimit',

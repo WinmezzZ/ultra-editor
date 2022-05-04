@@ -1,5 +1,6 @@
 import ReactDOM from 'react-dom';
 import Editor from './editor';
+import './entry.css';
 
 const App = () => {
   return (

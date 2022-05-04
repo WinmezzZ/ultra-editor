@@ -667,7 +667,7 @@ const toolbarStyles = () => {
     align-items: center;
     margin-bottom: 1px;
     background: #fff;
-    padding: 4px 10px;
+    padding: 8px 10px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     vertical-align: middle;

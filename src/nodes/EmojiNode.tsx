@@ -13,12 +13,12 @@ export class EmojiNode extends TextNode {
     return new EmojiNode(node.__className, node.__text, node.__key);
   }
 
-  constructor(className: string, text: string, key: void | NodeKey) {
+  constructor(className: string, text: string, key?: NodeKey) {
     super(text, key);
     this.__className = className;
   }
 
-  createDOM<EditorContext>(config: EditorConfig<EditorContext>): HTMLElement {
+  createDOM(config: EditorConfig): HTMLElement {
     const dom = document.createElement('span');
     const inner = super.createDOM(config);
 
@@ -29,9 +29,8 @@ export class EmojiNode extends TextNode {
     return dom;
   }
 
-  updateDOM<EditorContext>(prevNode: TextNode, dom: HTMLElement, config: EditorConfig<EditorContext>): boolean {
-    // $FlowFixMe: this will always be an element or null
-    const inner: null | HTMLElement = dom.firstChild;
+  updateDOM(prevNode: TextNode, dom: HTMLElement, config: EditorConfig): boolean {
+    const inner: null | HTMLElement = dom.firstChild as HTMLElement;
 
     if (inner === null) {
       return true;
@@ -46,6 +45,6 @@ export function $isEmojiNode(node?: LexicalNode) {
   return node instanceof EmojiNode;
 }
 
-export function $createEmojiNode(className: string, emojiText: string): EmojiNode {
+export function $createEmojiNode(className: string, emojiText: string) {
   return new EmojiNode(className, emojiText).setMode('token');
 }

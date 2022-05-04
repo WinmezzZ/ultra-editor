@@ -14,7 +14,6 @@ import MarkdownShortcutPlugin from '@lexical/react/LexicalMarkdownShortcutPlugin
 import TablePlugin from '@lexical/react/LexicalTablePlugin';
 import TableCellResizerPlugin from './plugins/TableCellResizerPlugin';
 // import TableActionMenuPlugin from './plugins/TableActionMenuPlugin';
-import './index.css';
 import NodeList from './nodes/PlaygroundNodes';
 
 // import CharacterStylesPopupPlugin from './plugins/CharacterStylesPopupPlugin';
@@ -113,6 +112,29 @@ const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
       color: ${primaryColor};
     }
 
+    .emoji {
+      color: transparent;
+      background-size: 16px 16px;
+      background-position: center;
+      background-repeat: no-repeat;
+      vertical-align: middle;
+      margin: 0 -1px;
+
+      .emoji-inner {
+        padding: 0 0.15em;
+      }
+
+      .emoji-inner::selection {
+        color: transparent;
+        background-color: rgba(150, 150, 150, 0.4);
+      }
+
+      .emoji-inner::moz-selection {
+        color: transparent;
+        background-color: rgba(150, 150, 150, 0.4);
+      }
+    }
+
     span.UltraEditor__image {
       cursor: default;
       display: inline-block;
@@ -125,6 +147,206 @@ const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
         outline: 2px solid ${primaryColor};
         user-select: none;
       }
+    }
+
+    .UltraEditor__ltr {
+      text-align: left;
+    }
+    .UltraEditor__rtl {
+      text-align: right;
+    }
+    .UltraEditor__paragraph {
+      margin: 0;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .UltraEditor__paragraph:last-child {
+      margin-bottom: 0;
+    }
+    .UltraEditor__quote {
+      margin: 0;
+      margin-left: 20px;
+      font-size: 15px;
+      color: rgb(101, 103, 107);
+      border-left-color: rgb(206, 208, 212);
+      border-left-width: 4px;
+      border-left-style: solid;
+      padding-left: 16px;
+    }
+    .UltraEditor__h1 {
+      font-size: 24px;
+      color: rgb(5, 5, 5);
+      font-weight: 400;
+      margin: 0;
+      margin-bottom: 12px;
+      padding: 0;
+    }
+    .UltraEditor__h2 {
+      font-size: 15px;
+      color: rgb(101, 103, 107);
+      font-weight: 700;
+      margin: 0;
+      margin-top: 10px;
+      padding: 0;
+      text-transform: uppercase;
+    }
+    .UltraEditor__textBold {
+      font-weight: bold;
+    }
+    .UltraEditor__textItalic {
+      font-style: italic;
+    }
+    .UltraEditor__textUnderline {
+      text-decoration: underline;
+    }
+    .UltraEditor__textStrikethrough {
+      text-decoration: line-through;
+    }
+    .UltraEditor__textUnderlineStrikethrough {
+      text-decoration: underline line-through;
+    }
+    .UltraEditor__textCode {
+      background-color: rgb(240, 242, 245);
+      padding: 1px 0.25rem;
+      font-family: Menlo, Consolas, Monaco, monospace;
+      font-size: 94%;
+    }
+    .UltraEditor__hashtag {
+      background-color: rgba(88, 144, 255, 0.15);
+      border-bottom: 1px solid rgba(88, 144, 255, 0.3);
+    }
+    .UltraEditor__link {
+      color: rgb(33, 111, 219);
+      text-decoration: none;
+    }
+    .UltraEditor__link:hover {
+      text-decoration: underline;
+    }
+    .UltraEditor__code {
+      background-color: rgb(240, 242, 245);
+      font-family: Menlo, Consolas, Monaco, monospace;
+      display: block;
+      padding: 8px 8px 8px 52px;
+      line-height: 1.53;
+      font-size: 13px;
+      margin: 0;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      tab-size: 2;
+      /* white-space: pre; */
+      overflow-x: auto;
+      position: relative;
+    }
+    .UltraEditor__code:before {
+      content: attr(data-gutter);
+      position: absolute;
+      background-color: #eee;
+      left: 0;
+      top: 0;
+      border-right: 1px solid #ccc;
+      padding: 8px;
+      color: #777;
+      white-space: pre-wrap;
+      text-align: right;
+      min-width: 25px;
+    }
+    .UltraEditor__code:after {
+      content: attr(data-highlight-language);
+      top: 0;
+      right: 3px;
+      padding: 3px;
+      font-size: 10px;
+      text-transform: uppercase;
+      position: absolute;
+      color: rgba(0, 0, 0, 0.5);
+    }
+    .UltraEditor__table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      max-width: 100%;
+      overflow-y: scroll;
+      table-layout: fixed;
+      width: 100%;
+    }
+    .UltraEditor__tableCell {
+      border: 1px solid black;
+      padding: 8px;
+      height: 40px;
+      min-width: 75px;
+      vertical-align: top;
+      text-align: start;
+    }
+    .UltraEditor__tableCellHeader {
+      background-color: #f2f3f5;
+      text-align: start;
+    }
+    .UltraEditor__characterLimit {
+      display: inline;
+      background-color: #ffbbbb !important;
+    }
+    .UltraEditor__ol1 {
+      padding: 0;
+      margin: 0;
+      margin-left: 16px;
+    }
+    .UltraEditor__ol2 {
+      padding: 0;
+      margin: 0;
+      margin-left: 16px;
+      list-style-type: upper-alpha;
+    }
+    .UltraEditor__ol3 {
+      padding: 0;
+      margin: 0;
+      margin-left: 16px;
+      list-style-type: lower-alpha;
+    }
+    .UltraEditor__ol4 {
+      padding: 0;
+      margin: 0;
+      margin-left: 16px;
+      list-style-type: upper-roman;
+    }
+    .UltraEditor__ol5 {
+      padding: 0;
+      margin: 0;
+      margin-left: 16px;
+      list-style-type: lower-roman;
+    }
+    .UltraEditor__ul {
+      padding: 0;
+      margin: 0;
+      margin-left: 16px;
+    }
+    .UltraEditor__listItem {
+      margin: 8px 32px 8px 32px;
+    }
+    .UltraEditor__nestedListItem {
+      list-style-type: none;
+    }
+    .UltraEditor__tokenComment {
+      color: slategray;
+    }
+    .UltraEditor__tokenPunctuation {
+      color: #999;
+    }
+    .UltraEditor__tokenProperty {
+      color: #905;
+    }
+    .UltraEditor__tokenSelector {
+      color: #690;
+    }
+    .UltraEditor__tokenOperator {
+      color: #9a6e3a;
+    }
+    .UltraEditor__tokenAttr {
+      color: #07a;
+    }
+    .UltraEditor__tokenVariable {
+      color: #e90;
+    }
+    .UltraEditor__tokenFunction {
+      color: #dd4a68;
     }
   `;
 };
