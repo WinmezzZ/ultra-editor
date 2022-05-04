@@ -460,7 +460,7 @@ export default function ToolbarPlugin() {
           </>
         }
       >
-        <Button type="pure">
+        <Button className="toolbar-item" type="pure">
           <Add size="18" />
           <span>插入</span>
         </Button>
@@ -666,7 +666,6 @@ const toolbarStyles = () => {
     display: flex;
     align-items: center;
     margin-bottom: 1px;
-    background: #fff;
     padding: 8px 10px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;

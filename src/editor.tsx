@@ -35,7 +35,9 @@ import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import KeywordsPlugin from './plugins/KeywordsPlugin';
 import ContentEditable from './components/content-editable';
 import Placeholder from './components/placeholder';
-import useUltraContext from './utils/useUltraContext';
+import { EditorPropsContext } from './context/editor-props-context';
+import { FC } from 'react';
+import useUltraContext from './context/ultra-context';
 
 const initialConfig = {
   theme: Theme,
@@ -45,47 +47,56 @@ const initialConfig = {
   },
 };
 
-export default function Editor() {
+export interface EditorProps {
+  theme: 'dark' | 'light';
+}
+
+const Editor: FC<EditorProps> = props => {
+  const { theme } = props;
   const ultraContext = useUltraContext();
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <ConfigProvider locale={zh_CN}>
-        <div className="UltraEditor-root" css={rootEditorStyle(ultraContext)}>
-          <ToolbarPlugin />
+      <EditorPropsContext.Provider value={props}>
+        <ConfigProvider locale={zh_CN} theme={{ mode: theme }}>
+          <div className="UltraEditor-root" css={rootEditorStyle(ultraContext)}>
+            <ToolbarPlugin />
 
-          <div className="UltraEditor-container">
-            <RichTextPlugin contentEditable={<ContentEditable />} placeholder={<Placeholder />} />
-            <HistoryPlugin />
-            <AutoFocusPlugin />
-            <CodeHighlightPlugin />
-            <ListPlugin />
-            <LinkPlugin />
-            <AutoLinkPlugin />
-            <MarkdownShortcutPlugin />
-            <ImagesPlugin />
-            <TablePlugin />
-            <TableCellResizerPlugin />
-            <TableActionMenuPlugin />
-            {/* <CharacterStylesPopupPlugin /> */}
-            <HorizontalRulePlugin />
-            <ExcalidrawPlugin />
-            <ListMaxIndentLevelPlugin maxDepth={7} />
-            <PollPlugin />
-            {/* <TreeViewPlugin /> */}
-            <MentionsPlugin />
-            <ActionsPlugins />
-            <SpeechToTextPlugin />
-            <HashtagsPlugin />
-            <EmojisPlugin />
-            <ClickableLinkPlugin />
-            <KeywordsPlugin />
+            <div className="UltraEditor-container">
+              <RichTextPlugin contentEditable={<ContentEditable />} placeholder={<Placeholder />} />
+              <HistoryPlugin />
+              <AutoFocusPlugin />
+              <CodeHighlightPlugin />
+              <ListPlugin />
+              <LinkPlugin />
+              <AutoLinkPlugin />
+              <MarkdownShortcutPlugin />
+              <ImagesPlugin />
+              <TablePlugin />
+              <TableCellResizerPlugin />
+              <TableActionMenuPlugin />
+              {/* <CharacterStylesPopupPlugin /> */}
+              <HorizontalRulePlugin />
+              <ExcalidrawPlugin />
+              <ListMaxIndentLevelPlugin maxDepth={7} />
+              <PollPlugin />
+              {/* <TreeViewPlugin /> */}
+              <MentionsPlugin />
+              <ActionsPlugins />
+              <SpeechToTextPlugin />
+              <HashtagsPlugin />
+              <EmojisPlugin />
+              <ClickableLinkPlugin />
+              <KeywordsPlugin />
+            </div>
           </div>
-        </div>
-      </ConfigProvider>
+        </ConfigProvider>
+      </EditorPropsContext.Provider>
     </LexicalComposer>
   );
-}
+};
+
+export default Editor;
 
 const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
   const { theme } = ultraContext;
