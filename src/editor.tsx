@@ -24,6 +24,7 @@ import { css } from '@emotion/react';
 import ListMaxIndentLevelPlugin from './plugins/ListMaxIndentLevelPlugin';
 import PollPlugin from './plugins/PollPlugin';
 import { ConfigProvider } from 'ultra-design';
+import { ConfigProviderProps } from 'ultra-design/es/config-provider';
 import zh_CN from 'ultra-design/es/locale/zh_CN';
 import ActionsPlugins from './plugins/ActionPlugin';
 import SpeechToTextPlugin from './plugins/SpeechToTextPlugin';
@@ -35,6 +36,7 @@ import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
 import KeywordsPlugin from './plugins/KeywordsPlugin';
 import ContentEditable from './components/content-editable';
 import Placeholder from './components/placeholder';
+import useUltraContext from './utils/useUltraContext';
 
 const initialConfig = {
   theme: Theme,
@@ -45,10 +47,12 @@ const initialConfig = {
 };
 
 export default function Editor() {
+  const ultraContext = useUltraContext();
+
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <ConfigProvider locale={zh_CN}>
-        <div className="UltraEditor-root" css={rootEditorStyle}>
+        <div className="UltraEditor-root" css={rootEditorStyle(ultraContext)}>
           <ToolbarPlugin />
 
           <div className="UltraEditor-container">
@@ -84,33 +88,43 @@ export default function Editor() {
   );
 }
 
-const rootEditorStyle = css`
-  margin: 20px auto;
-  border-radius: 2px;
-  max-width: 1000px;
-  color: #000;
-  position: relative;
-  line-height: 20px;
-  font-weight: 400;
+const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
+  const { theme } = ultraContext;
+  const { primaryColor } = theme.style;
+  const { textColor, backgroundColor } = theme[theme.mode];
 
-  .UltraEditor-container {
-    background: #fff;
+  return css`
+    margin: 20px auto;
+    border-radius: 2px;
+    max-width: 1000px;
+    color: ${textColor};
     position: relative;
-    cursor: text;
-    display: block;
-  }
+    line-height: 20px;
+    font-weight: 400;
 
-  span.UltraEditor__image {
-    cursor: default;
-    display: inline-block;
-    position: relative;
-    img {
-      max-width: 100%;
+    .UltraEditor-container {
+      background: ${backgroundColor};
+      position: relative;
+      cursor: text;
+      display: block;
     }
 
-    img.focused {
-      outline: 2px solid rgb(60, 132, 244);
-      user-select: none;
+    a {
+      color: ${primaryColor};
     }
-  }
-`;
+
+    span.UltraEditor__image {
+      cursor: default;
+      display: inline-block;
+      position: relative;
+      img {
+        max-width: 100%;
+      }
+
+      img.focused {
+        outline: 2px solid ${primaryColor};
+        user-select: none;
+      }
+    }
+  `;
+};

@@ -19,7 +19,7 @@ const MATCHERS = [
       }
     );
   },
-  (text: string) => {
+  text => {
     const match = EMAIL_MATCHER.exec(text);
 
     return (
