@@ -12,7 +12,9 @@ import AutoLinkPlugin from './plugins/AutolinkPlugin';
 import ImagesPlugin from './plugins/ImagesPlugin';
 import MarkdownShortcutPlugin from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import TablePlugin from '@lexical/react/LexicalTablePlugin';
+import ClearPlugin from '@lexical/react/LexicalClearEditorPlugin';
 import TableCellResizerPlugin from './plugins/TableCellResizerPlugin';
+
 // import TableActionMenuPlugin from './plugins/TableActionMenuPlugin';
 import NodeList from './nodes/PlaygroundNodes';
 
@@ -38,6 +40,7 @@ import Placeholder from './components/placeholder';
 import { EditorPropsContext } from './context/editor-props-context';
 import { FC } from 'react';
 import useUltraContext from './context/ultra-context';
+import { fade } from 'ultra-design/es/utils/fade';
 
 const initialConfig = {
   theme: Theme,
@@ -88,6 +91,7 @@ const Editor: FC<EditorProps> = props => {
               <EmojisPlugin />
               <ClickableLinkPlugin />
               <KeywordsPlugin />
+              <ClearPlugin />
             </div>
           </div>
         </ConfigProvider>
@@ -101,7 +105,7 @@ export default Editor;
 const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
   const { theme } = ultraContext;
   const { primaryColor } = theme.style;
-  const { textColor, backgroundColor } = theme[theme.mode];
+  const { textColor, borderColor, backgroundColor, secondBackgroundColor } = theme[theme.mode];
 
   return css`
     margin: 20px auto;
@@ -234,7 +238,7 @@ const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
       text-decoration: underline;
     }
     .UltraEditor__code {
-      background-color: rgb(240, 242, 245);
+      background-color: ${fade(backgroundColor, 0.5)};
       font-family: Menlo, Consolas, Monaco, monospace;
       display: block;
       padding: 8px 8px 8px 52px;
@@ -251,10 +255,10 @@ const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
     .UltraEditor__code:before {
       content: attr(data-gutter);
       position: absolute;
-      background-color: #eee;
+      background-color: ${secondBackgroundColor};
       left: 0;
       top: 0;
-      border-right: 1px solid #ccc;
+      border-right: 1px solid ${borderColor};
       padding: 8px;
       color: #777;
       white-space: pre-wrap;
@@ -269,7 +273,7 @@ const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
       font-size: 10px;
       text-transform: uppercase;
       position: absolute;
-      color: rgba(0, 0, 0, 0.5);
+      color: ${fade(textColor, 0.5)};
     }
     .UltraEditor__table {
       border-collapse: collapse;

@@ -52,6 +52,7 @@
     "@lexical/hashtag": "^0.2.5",
     "@lexical/link": "^0.2.5",
     "@lexical/list": "^0.2.5",
+    "@lexical/markdown": "^0.2.5",
     "@lexical/overflow": "^0.2.5",
     "@lexical/plain-text": "^0.2.5",
     "@lexical/react": "^0.2.5",
@@ -61,7 +62,7 @@
     "@lexical/utils": "^0.2.5",
     "katex": "^0.15.3",
     "lexical": "^0.2.5",
-    "ultra-design": "^0.0.78-beta",
+    "ultra-design": "^0.0.79-beta",
     "winhooks": "^0.0.2",
     "y-websocket": "^1.4.0",
     "yjs": "^13.5.34"

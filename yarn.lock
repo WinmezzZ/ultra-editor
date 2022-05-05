@@ -1418,7 +1418,7 @@
   dependencies:
     "@lexical/utils" "0.2.5"
 
-"@lexical/markdown@0.2.5":
+"@lexical/markdown@0.2.5", "@lexical/markdown@^0.2.5":
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/@lexical/markdown/-/markdown-0.2.5.tgz#63c52cc870aaec2d9e72f93fb80434d1fa56791c"
   integrity sha512-YbzRJxF9yUivvH2YwGRxzi4XQ7qbVMpJb71cdcJrfnRDS06tFm2zmiVHqZ7rG4JdwRrbJox0loXbnX8fVtz+1g==
@@ -8491,10 +8491,10 @@ ultra-design@^0.0.40-beta:
     prop-types "^15.8.1"
     react-transition-group "^4.4.2"
 
-ultra-design@^0.0.78-beta:
-  version "0.0.78-beta"
-  resolved "https://registry.yarnpkg.com/ultra-design/-/ultra-design-0.0.78-beta.tgz#a602f2ecc2a72d9d0cf11dd3382ec62792289d7d"
-  integrity sha512-LHOkWx+d0e2555LP6tNfXvSjZTHgYcdTBjuzxFDp7XAnuiCZvyyFOkyJFEF41TK3cn7+FtyTgkusClNo96e9NA==
+ultra-design@^0.0.79-beta:
+  version "0.0.79-beta"
+  resolved "https://registry.yarnpkg.com/ultra-design/-/ultra-design-0.0.79-beta.tgz#16c9cfe0bb2a5eed04a64c1b5db30f51ab43f589"
+  integrity sha512-FIv3JSnAGKNU6tpSo3AY4jInQilpy6D36e5OH/aS9ja4hEtH2KnFfoGkUktTRx+YTlfdI0iayYECaZp8hkX/Sg==
   dependencies:
     "@babel/runtime" "^7.16.3"
     "@emotion/babel-plugin" "^11.3.0"

@@ -8,13 +8,14 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { SPEECT_TO_TEXT_COMMAND, SUPPORT_SPEECH_RECOGNITION } from './SpeechToTextPlugin';
 import { css } from '@emotion/react';
-import { Button, Tooltip } from 'ultra-design';
+import { Button, Modal, Tooltip } from 'ultra-design';
 import { Delete, Lock, Microphone, Unlock } from '@icon-park/react';
 
 export default function ActionsPlugins() {
   const [editor] = useLexicalComposerContext();
   const [isReadOnly, setIsReadyOnly] = useState(() => editor.isReadOnly());
   const [isSpeechToText, setIsSpeechToText] = useState(false);
+  const [isEditorEmpty, setIsEditorEmpty] = useState(true);
 
   useEffect(() => {
     return mergeRegister(
@@ -22,6 +23,27 @@ export default function ActionsPlugins() {
         setIsReadyOnly(readOnly);
       }),
     );
+  }, [editor]);
+
+  useEffect(() => {
+    return editor.registerUpdateListener(() => {
+      editor.getEditorState().read(() => {
+        const root = $getRoot();
+        const children = root.getChildren();
+
+        if (children.length > 1) {
+          setIsEditorEmpty(false);
+        } else {
+          if ($isParagraphNode(children[0])) {
+            const paragraphChildren = children[0].getChildren();
+
+            setIsEditorEmpty(paragraphChildren.length === 0);
+          } else {
+            setIsEditorEmpty(false);
+          }
+        }
+      });
+    });
   }, [editor]);
 
   const convertFromMarkdown = useCallback(() => {
@@ -46,7 +68,7 @@ export default function ActionsPlugins() {
         }
       }
 
-      ($convertFromMarkdownString as any)(markdownString, editor, $createHorizontalRuleNode);
+      $convertFromMarkdownString(markdownString, editor, $createHorizontalRuleNode);
       root.selectEnd();
     });
   }, [editor]);
@@ -69,9 +91,16 @@ export default function ActionsPlugins() {
       <Tooltip title="清空" placement="top">
         <Button
           className="action-button clear"
+          disabled={isEditorEmpty}
           onClick={() => {
-            editor.dispatchCommand(CLEAR_EDITOR_COMMAND, null);
-            editor.focus();
+            Modal.confirm({
+              title: '清空编辑器',
+              content: '你确定要清空当前全部的编辑内容吗？',
+              onOk: () => {
+                editor.dispatchCommand(CLEAR_EDITOR_COMMAND, null);
+                editor.focus();
+              },
+            });
           }}
         >
           <Delete size="18" />

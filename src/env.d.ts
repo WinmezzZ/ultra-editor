@@ -2,3 +2,4 @@
 
 declare module '@lexical/code';
 declare module '*.jpg';
+declare module '@lexical/markdown';

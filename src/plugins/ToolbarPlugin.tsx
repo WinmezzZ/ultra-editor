@@ -35,7 +35,7 @@ import {
 } from '@lexical/list';
 import { $createHeadingNode, $createQuoteNode, $isHeadingNode, HeadingTagType } from '@lexical/rich-text';
 import { $createCodeNode, $isCodeNode, getDefaultCodeLanguage, getCodeLanguages } from '@lexical/code';
-import { Button, Divider, Dropdown, Input, Modal, Select, Toast, Tooltip } from 'ultra-design';
+import { Button, ConfigProviderProps, Divider, Dropdown, Input, Modal, Select, Toast, Tooltip } from 'ultra-design';
 import {
   Add,
   AlignTextBoth,
@@ -71,6 +71,7 @@ import { INSERT_EXCALIDRAW_COMMAND } from './ExcalidrawPlugin';
 import { INSERT_POLL_COMMAND } from './PollPlugin';
 import InsetImageDialog from './toolbar-plugin/insert-image';
 import LinkEditor from '../components/link-editor';
+import useUltraContext from '../context/ultra-context';
 
 const LowPriority = 1;
 
@@ -178,6 +179,7 @@ const blockSelectStyle = css`
 `;
 
 export default function ToolbarPlugin() {
+  const ultraContext = useUltraContext();
   const [editor] = useLexicalComposerContext();
   const toolbarRef = useRef(null);
   const [canUndo, setCanUndo] = useState(false);
@@ -366,7 +368,7 @@ export default function ToolbarPlugin() {
   };
 
   return (
-    <div className="toolbar" css={toolbarStyles()} ref={toolbarRef}>
+    <div className="toolbar" css={toolbarStyles(ultraContext)} ref={toolbarRef}>
       <Global
         styles={css`
           .i-icon {
@@ -489,17 +491,7 @@ export default function ToolbarPlugin() {
       </Button>
 
       {blockType === 'code' ? (
-        <Select
-          css={css`
-            .ultra-select {
-              max-height: 300px;
-              overflow-y: auto;
-            }
-          `}
-          className="code-language"
-          onChange={onCodeLanguageSelect}
-          value={codeLanguage}
-        >
+        <Select className="code-language" onChange={onCodeLanguageSelect} value={codeLanguage}>
           {getCodeLanguages().map(l => (
             <Select.Option label={l} value={l} key={l} />
           ))}
@@ -661,7 +653,10 @@ export default function ToolbarPlugin() {
   );
 }
 
-const toolbarStyles = () => {
+const toolbarStyles = (ultraContext: ConfigProviderProps) => {
+  const { theme } = ultraContext;
+  const { backgroundColor } = theme[theme.mode];
+
   return css`
     display: flex;
     align-items: center;
@@ -669,6 +664,7 @@ const toolbarStyles = () => {
     padding: 8px 10px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    background-color: ${backgroundColor};
     vertical-align: middle;
     overflow: auto;
 
