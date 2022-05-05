@@ -20,7 +20,7 @@ import {
   KEY_BACKSPACE_COMMAND,
   KEY_DELETE_COMMAND,
 } from 'lexical';
-import * as React from 'react';
+import React from 'react';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useSharedHistoryContext } from '../context/SharedHistoryContext';
@@ -33,6 +33,9 @@ import ContentEditable from '../components/content-editable';
 import ImageResizer from '../components/ImageResizer';
 import Placeholder from '../components/placeholder';
 import { css } from '@emotion/react';
+import useUltraContext from '../context/ultra-context';
+import { ConfigProviderProps } from 'ultra-design';
+import { fade } from 'ultra-design/es/utils/fade';
 
 const imageCache = new Set();
 
@@ -105,6 +108,7 @@ function ImageComponent({
   src: string;
   width: 'inherit' | number;
 }) {
+  const ultradContext = useUltraContext();
   const ref = useRef(null);
   const [isSelected, setSelected, clearSelection] = useLexicalNodeSelection(nodeKey);
   const [isResizing, setIsResizing] = useState<boolean>(false);
@@ -172,7 +176,6 @@ function ImageComponent({
   };
 
   const onResizeEnd = (nextWidth, nextHeight) => {
-    // Delay hiding the resize bars for click case
     setTimeout(() => {
       setIsResizing(false);
     }, 200);
@@ -194,99 +197,101 @@ function ImageComponent({
 
   return (
     <Suspense fallback={null}>
-      <>
-        <LazyImage
-          className={isSelected || isResizing ? 'focused' : null}
-          src={src}
-          altText={altText}
-          imageRef={ref}
-          width={width}
-          height={height}
-          maxWidth={maxWidth}
-        />
-        {showCaption && (
-          <div css={captionContainerStyle}>
-            <LexicalNestedComposer initialEditor={caption}>
-              <MentionsPlugin />
-              <TablesPlugin />
-              <TableCellActionMenuPlugin />
-              <ImagesPlugin />
-              <LinkPlugin />
-              <EmojisPlugin />
-              <HashtagsPlugin />
-              <KeywordsPlugin />
+      <LazyImage
+        className={isSelected || isResizing ? 'focused' : null}
+        src={src}
+        altText={altText}
+        imageRef={ref}
+        width={width}
+        height={height}
+        maxWidth={maxWidth}
+      />
+      {showCaption && (
+        <div css={imageCaptionStyle(ultradContext)}>
+          <LexicalNestedComposer initialEditor={caption}>
+            <MentionsPlugin />
+            <TablesPlugin />
+            <TableCellActionMenuPlugin />
+            <ImagesPlugin />
+            <LinkPlugin />
+            <EmojisPlugin />
+            <HashtagsPlugin />
+            <KeywordsPlugin />
 
-              <HistoryPlugin externalHistoryState={historyState} />
-              <RichTextPlugin
-                contentEditable={<ContentEditable className="ImageNode__contentEditable" />}
-                placeholder={<Placeholder className="ImageNode__placeholder">输入图片描述...</Placeholder>}
-                initialEditorState={null}
-              />
-            </LexicalNestedComposer>
-          </div>
-        )}
-        {resizable && $isNodeSelection(selection) && (isSelected || isResizing) && (
-          <ImageResizer
-            showCaption={showCaption}
-            setShowCaption={setShowCaption}
-            editor={editor}
-            imageRef={ref}
-            maxWidth={maxWidth}
-            onResizeStart={onResizeStart}
-            onResizeEnd={onResizeEnd}
-          />
-        )}
-      </>
+            <HistoryPlugin externalHistoryState={historyState} />
+            <RichTextPlugin
+              contentEditable={<ContentEditable className="ImageNode__contentEditable" />}
+              placeholder={<Placeholder className="ImageNode__placeholder">输入图片描述...</Placeholder>}
+              initialEditorState={null}
+            />
+          </LexicalNestedComposer>
+        </div>
+      )}
+      {resizable && $isNodeSelection(selection) && (isSelected || isResizing) && (
+        <ImageResizer
+          showCaption={showCaption}
+          setShowCaption={setShowCaption}
+          editor={editor}
+          imageRef={ref}
+          maxWidth={maxWidth}
+          onResizeStart={onResizeStart}
+          onResizeEnd={onResizeEnd}
+        />
+      )}
     </Suspense>
   );
 }
 
-const captionContainerStyle = css`
-  display: block;
-  position: absolute;
-  bottom: 4px;
-  left: 0;
-  right: 0;
-  padding: 0;
-  margin: 0;
-  border-top: 1px solid #fff;
-  background-color: rgba(255, 255, 255, 0.9);
-  min-width: 100px;
-  color: #000;
-  overflow: hidden;
+const imageCaptionStyle = (ultradContext: ConfigProviderProps) => {
+  const { theme } = ultradContext;
+  const { backgroundColor } = theme[theme.mode];
 
-  .ImageNode__contentEditable {
-    min-height: 20px;
-    border: 0px;
-    resize: none;
-    cursor: text;
-    caret-color: rgb(5, 5, 5);
+  return css`
     display: block;
-    position: relative;
-    tab-size: 1;
-    outline: 0px;
-    padding: 10px;
-    user-select: text;
-    font-size: 12px;
-    width: calc(100% - 20px);
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-
-  .ImageNode__placeholder {
-    font-size: 12px;
-    color: #888;
-    overflow: hidden;
     position: absolute;
-    text-overflow: ellipsis;
-    top: 10px;
-    left: 10px;
-    user-select: none;
-    white-space: nowrap;
-    display: inline-block;
-    pointer-events: none;
-  }
-`;
+    bottom: 4px;
+    left: 0;
+    right: 0;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid ${backgroundColor};
+    background-color: ${fade(backgroundColor, 0.6)};
+    min-width: 100px;
+    overflow: hidden;
+
+    .ImageNode__contentEditable {
+      box-sizing: content-box;
+      min-height: 20px;
+      border: 0px;
+      resize: none;
+      cursor: text;
+      display: block;
+      position: relative;
+      tab-size: 1;
+      outline: 0px;
+      padding: 10px;
+      user-select: text;
+      font-size: 12px;
+      width: calc(100% - 20px);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .ImageNode__placeholder {
+      font-size: 12px;
+      color: #888;
+      overflow: hidden;
+      position: absolute;
+      text-overflow: ellipsis;
+      top: 10px;
+      left: 10px;
+      user-select: none;
+      white-space: nowrap;
+      display: inline-block;
+      pointer-events: none;
+    }
+  `;
+};
 
 export class ImageNode extends DecoratorNode<React.ReactNode> {
   __src: string;
