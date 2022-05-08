@@ -1,5 +1,5 @@
 import { css, Global } from '@emotion/react';
-import { DarkMode, Sun } from '@icon-park/react';
+import { DarkModeIcon, SunIcon } from 'ultra-icons';
 import { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { ConfigProvider, Layout } from 'ultra-design';
@@ -28,7 +28,7 @@ const App = () => {
         <Layout.Header color="primary">
           <span> Ultra Editor</span>
           <span className="theme-switch" onClick={onChangeColor}>
-            {color === 'dark' ? <Sun theme="outline" size="24" /> : <DarkMode theme="outline" size="24" />}
+            {color === 'dark' ? <SunIcon /> : <DarkModeIcon />}
           </span>
         </Layout.Header>
         <Layout.Content>

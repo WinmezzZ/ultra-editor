@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { Edit } from '@icon-park/react';
+import { EditIcon } from 'ultra-icons';
 import { $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
@@ -152,14 +152,16 @@ const LinkEditor: FC = () => {
                 {linkUrl}
               </a>
               <Tooltip title="编辑">
-                <Edit
-                  className="edit-icon"
-                  size={18}
-                  onMouseDown={event => event.preventDefault()}
-                  onClick={() => {
-                    setEditMode(true);
-                  }}
-                />
+                <span>
+                  <EditIcon
+                    className="edit-icon"
+                    size={18}
+                    onMouseDown={event => event.preventDefault()}
+                    onClick={() => {
+                      setEditMode(true);
+                    }}
+                  />
+                </span>
               </Tooltip>
             </div>
           </>

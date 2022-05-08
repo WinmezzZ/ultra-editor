@@ -1341,11 +1341,6 @@
   resolved "https://registry.npmjs.org/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@icon-park/react@^1.3.5":
-  version "1.3.5"
-  resolved "https://registry.npmjs.org/@icon-park/react/-/react-1.3.5.tgz"
-  integrity sha512-FL3+BcYfFbRRl6DA6V2yA/QEoRRrhaDvMXLbFz0uW9lIsstQB6au/8aQxthB1G+eiqLxcw6yVULbmbBySn4Paw==
-
 "@jridgewell/resolve-uri@^3.0.3":
   version "3.0.5"
   resolved "https://registry.npmjs.org/@jridgewell/resolve-uri/-/resolve-uri-3.0.5.tgz"
@@ -8508,10 +8503,10 @@ ultra-design@^0.0.79-beta:
     react-transition-group "^4.4.2"
     winhooks "^0.0.2"
 
-ultra-icons@^0.0.7:
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/ultra-icons/-/ultra-icons-0.0.7.tgz#a5c74c018b46349be593e857e0f203f3603baa62"
-  integrity sha512-UdexI3ZsBmKCDDQKd00J3xwUV5GbgatAZMi0NZOoH2CBsjJKo1WWY7KMGrUN+gJrZmdiAvXHZVs3+pln5nochg==
+ultra-icons@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/ultra-icons/-/ultra-icons-0.0.8.tgz#77397202d76ac5ce361202ed8893ea74b12c87fb"
+  integrity sha512-l/pBwBoqWsntTi4KwnNPhdpGRgnpegQyNbPzrqDMn0xxvkP4YTCyJ07pAEMpXteC1qmRoorBn4ElYoI9+kxiFg==
   dependencies:
     "@emotion/react" "^11.9.0"
     react "^17.0.2"

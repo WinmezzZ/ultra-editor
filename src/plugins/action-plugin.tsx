@@ -8,7 +8,8 @@ import { FC, useCallback, useEffect, useState } from 'react';
 import { SPEECH_TO_TEXT_COMMAND, SUPPORT_SPEECH_RECOGNITION } from './speech-to-text-plugin';
 import { css } from '@emotion/react';
 import { Button, Modal, Tooltip } from 'ultra-design';
-import { Delete, Lock, Microphone, Unlock } from '@icon-park/react';
+import { DeleteIcon, LockIcon, UnlockIcon } from 'ultra-icons';
+import { MicrophoneIcon } from 'ultra-icons';
 
 const ActionsPlugins: FC = () => {
   const [editor] = useLexicalComposerContext();
@@ -83,7 +84,7 @@ const ActionsPlugins: FC = () => {
             }}
             className={'action-button action-button-mic ' + (isSpeechToText ? 'active' : '')}
           >
-            <Microphone size="18" />
+            <MicrophoneIcon size="18" />
           </Button>
         </Tooltip>
       )}
@@ -102,7 +103,7 @@ const ActionsPlugins: FC = () => {
             });
           }}
         >
-          <Delete size="18" />
+          <DeleteIcon size="18" />
         </Button>
       </Tooltip>
       <Tooltip title="只读" placement="top">
@@ -112,7 +113,7 @@ const ActionsPlugins: FC = () => {
             editor.setReadOnly(!editor.isReadOnly());
           }}
         >
-          {isReadOnly ? <Unlock size="18" /> : <Lock size="18" />}
+          {isReadOnly ? <UnlockIcon size="18" /> : <LockIcon size="18" />}
         </Button>
       </Tooltip>
       <Tooltip title="markdown" placement="top">

@@ -7,6 +7,7 @@ import ToolbarPlugin from './plugins/toolbar-plugin';
 // import TreeViewPlugin from './plugins/TreeViewPlugin';
 import LinkPlugin from '@lexical/react/LexicalLinkPlugin';
 import ListPlugin from '@lexical/react/LexicalListPlugin';
+// import CheckListPlugin from '@lexical/react/LexicalCheckListPlugin';
 import CodeHighlightPlugin from './plugins/code-highlight-plugin';
 import AutoLinkPlugin from './plugins/autolink-plugin';
 import ImagesPlugin from './plugins/images-plugin';
@@ -74,6 +75,7 @@ const Editor: FC<EditorProps> = props => {
               <CodeHighlightPlugin />
               <ListPlugin />
               <LinkPlugin />
+              {/* <CheckListPlugin /> */}
               <AutoLinkPlugin />
               <MarkdownShortcutPlugin />
               <ImagesPlugin />

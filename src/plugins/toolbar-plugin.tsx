@@ -30,6 +30,7 @@ import {
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
   REMOVE_LIST_COMMAND,
+  // INSERT_CHECK_LIST_COMMAND,
   $isListNode,
   ListNode,
 } from '@lexical/list';
@@ -37,34 +38,37 @@ import { $createHeadingNode, $createQuoteNode, $isHeadingNode, HeadingTagType } 
 import { $createCodeNode, $isCodeNode, getDefaultCodeLanguage, getCodeLanguages } from '@lexical/code';
 import { Button, ConfigProviderProps, Divider, Dropdown, Input, Modal, Select, Toast, Tooltip } from 'ultra-design';
 import {
-  Add,
-  AlignTextBoth,
-  AlignTextCenter,
-  AlignTextLeft,
-  AlignTextRight,
-  Checklist,
-  Code,
-  DividingLine,
-  Formula,
-  H1,
-  H2,
-  H3,
-  ImageFiles,
-  IndentLeft,
-  IndentRight,
-  InsertTable,
-  LevelFourTitle,
-  LinkOne,
-  ListBottom,
-  OrderedList,
-  Quote,
-  Redo,
-  Strikethrough,
-  TextBold,
-  TextItalic,
-  TextUnderline,
-  Undo,
-} from '@icon-park/react';
+  AddIcon,
+  AlignTextBothIcon,
+  AlignTextCenterIcon,
+  AlignTextLeftIcon,
+  AlignTextRightIcon,
+  ChecklistIcon,
+  CodeIcon,
+  DividingLineIcon,
+  FontSizeTwoIcon,
+  FormulaIcon,
+  H1Icon,
+  H2Icon,
+  H3Icon,
+  ImageFilesIcon,
+  IndentLeftIcon,
+  IndentRightIcon,
+  InsertTableIcon,
+  LevelFourTitleIcon,
+  LinkOneIcon,
+  ListBottomIcon,
+  OrderedListIcon,
+  QuoteIcon,
+  RedoIcon,
+  StrikethroughIcon,
+  SubscriptIcon,
+  SuperscriptIcon,
+  TextBoldIcon,
+  TextItalicIcon,
+  TextUnderlineIcon,
+  UndoIcon,
+} from 'ultra-icons';
 import { css, Global } from '@emotion/react';
 import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
 import { INSERT_EXCALIDRAW_COMMAND } from './excalidraw-plugin';
@@ -142,23 +146,23 @@ function BlockOptionsDropdownList({ editor, blockType, setBlockType }) {
       onChange={onChangeBlockType}
     >
       <Select.Option value="paragraph">
-        <AlignTextBoth theme="outline" size="18" />
+        <AlignTextBothIcon />
         <span className="text">正文</span>
       </Select.Option>
       <Select.Option value="h1">
-        <H1 theme="outline" size="18" />
+        <H1Icon />
         <span className="h1">标题1</span>
       </Select.Option>
       <Select.Option value="h2">
-        <H2 theme="outline" size="18" />
+        <H2Icon />
         <span className="h2">标题2</span>
       </Select.Option>
       <Select.Option value="h3">
-        <H3 theme="outline" size="18" />
+        <H3Icon />
         <span className="h3">标题3</span>
       </Select.Option>
       <Select.Option value="h4">
-        <LevelFourTitle size="18" />
+        <LevelFourTitleIcon />
         <span className="h4">标题4</span>
       </Select.Option>
     </Select>
@@ -170,7 +174,7 @@ const blockSelectStyle = css`
   .ultra-select__selection {
     display: flex;
     align-items: center;
-    .i-icon {
+    .ultra-icon {
       margin-right: 10px;
       display: inline-flex;
       align-items: center;
@@ -371,9 +375,14 @@ export default function ToolbarPlugin() {
     <div className="toolbar" css={toolbarStyles(ultraContext)} ref={toolbarRef}>
       <Global
         styles={css`
-          .i-icon {
-            display: inline-flex;
-            align-items: center;
+          .ultra-icon {
+            rect,
+            path {
+              stroke: ${ultraContext.theme[ultraContext.theme.mode].textColor};
+            }
+            path[fill-opacity='0.01'] {
+              display: none;
+            }
             & + * {
               margin-left: 8px;
             }
@@ -388,11 +397,11 @@ export default function ToolbarPlugin() {
         content={
           <>
             <Dropdown.Item onClick={inSertCodeBlock}>
-              <Code size="18" />
+              <CodeIcon size="18" />
               <span>代码块</span>
             </Dropdown.Item>
             <Dropdown.Item onClick={() => setInsertImageModalVisible(true)}>
-              <ImageFiles size="18" />
+              <ImageFilesIcon size="18" />
               <span>图片</span>
             </Dropdown.Item>
             <Dropdown.Item
@@ -400,9 +409,17 @@ export default function ToolbarPlugin() {
                 editor.dispatchCommand(INSERT_EXCALIDRAW_COMMAND, {});
               }}
             >
-              <Formula size="18" />
+              <FormulaIcon size="18" />
               <span>画板</span>
             </Dropdown.Item>
+            {/* <Dropdown.Item
+              onClick={() => {
+                editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, {});
+              }}
+            >
+              <CheckCorrect />
+              <span>待办事项</span>
+            </Dropdown.Item> */}
             <Dropdown.Item
               onClick={() => {
                 Modal.confirm({
@@ -436,7 +453,7 @@ export default function ToolbarPlugin() {
                 });
               }}
             >
-              <InsertTable size="18" />
+              <InsertTableIcon size="18" />
               <span>表格</span>
             </Dropdown.Item>
             <Dropdown.Item
@@ -456,18 +473,17 @@ export default function ToolbarPlugin() {
                 });
               }}
             >
-              <Checklist size="18" />
+              <ChecklistIcon size="18" />
               <span>投票</span>
             </Dropdown.Item>
           </>
         }
       >
         <Button className="toolbar-item" type="pure">
-          <Add size="18" />
+          <AddIcon />
           <span>插入</span>
         </Button>
       </Dropdown>
-      <Divider vertical />
       <Button
         type="pure"
         className="toolbar-item spaced"
@@ -476,7 +492,7 @@ export default function ToolbarPlugin() {
           editor.dispatchCommand(UNDO_COMMAND, {});
         }}
       >
-        <Undo />
+        <UndoIcon />
       </Button>
 
       <Button
@@ -487,7 +503,7 @@ export default function ToolbarPlugin() {
         }}
         className="toolbar-item"
       >
-        <Redo />
+        <RedoIcon />
       </Button>
 
       {blockType === 'code' ? (
@@ -515,7 +531,7 @@ export default function ToolbarPlugin() {
           <Divider vertical />
           <Tooltip title="加粗">
             <Button type="pure" className={'toolbar-item ' + (isBold ? 'ultra-button--active' : '')}>
-              <TextBold
+              <TextBoldIcon
                 onClick={() => {
                   editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
                 }}
@@ -530,7 +546,7 @@ export default function ToolbarPlugin() {
                 editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
               }}
             >
-              <TextItalic />
+              <TextItalicIcon />
             </Button>
           </Tooltip>
           <Tooltip title="下划线">
@@ -541,7 +557,7 @@ export default function ToolbarPlugin() {
                 editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
               }}
             >
-              <TextUnderline />
+              <TextUnderlineIcon />
             </Button>
           </Tooltip>
           <Tooltip title="删除线">
@@ -552,23 +568,32 @@ export default function ToolbarPlugin() {
               }}
               className={'toolbar-item ' + (isStrikethrough ? 'active' : '')}
             >
-              <Strikethrough />
+              <StrikethroughIcon />
             </Button>
           </Tooltip>
-          <Tooltip title="代码">
-            <Button
-              type="pure"
-              onClick={() => {
-                editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
-              }}
-              className={'toolbar-item ' + (isCode ? 'active' : '')}
-            >
-              <Code />
+          <Dropdown
+            content={
+              <>
+                <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code')}>
+                  <CodeIcon />
+                  <span>行内代码</span>
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'subscript')}>
+                  <SubscriptIcon /> <span>下标</span>
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'superscript')}>
+                  <SuperscriptIcon /> <span>上标</span>
+                </Dropdown.Item>
+              </>
+            }
+          >
+            <Button type="pure" className="toolbar-item">
+              <FontSizeTwoIcon />
             </Button>
-          </Tooltip>
+          </Dropdown>
           <Tooltip title="链接">
             <Button type="pure" onClick={insertLink} className={'toolbar-item spaced ' + (isLink ? 'active' : '')}>
-              <LinkOne />
+              <LinkOneIcon />
             </Button>
           </Tooltip>
 
@@ -580,7 +605,7 @@ export default function ToolbarPlugin() {
               className={'toolbar-item ' + (blockType === 'ul' ? 'active' : '')}
               onClick={formatBulletList}
             >
-              <ListBottom theme="outline" size="18" />
+              <ListBottomIcon />
             </Button>
           </Tooltip>
           <Tooltip title="有序列表">
@@ -589,7 +614,7 @@ export default function ToolbarPlugin() {
               className={'toolbar-item ' + (blockType === 'ol' ? 'active' : '')}
               onClick={formatNumberedList}
             >
-              <OrderedList theme="outline" size="18" />
+              <OrderedListIcon />
             </Button>
           </Tooltip>
 
@@ -599,7 +624,7 @@ export default function ToolbarPlugin() {
               className={'toolbar-item ' + (blockType === 'quote' ? 'active' : '')}
               onClick={formatQuote}
             >
-              <Quote theme="outline" size="18" />
+              <QuoteIcon />
             </Button>
           </Tooltip>
 
@@ -612,7 +637,7 @@ export default function ToolbarPlugin() {
                 editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, {});
               }}
             >
-              <DividingLine size="18" />
+              <DividingLineIcon />
             </Button>
           </Tooltip>
           <Divider vertical />
@@ -620,29 +645,29 @@ export default function ToolbarPlugin() {
             content={
               <>
                 <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left')}>
-                  <AlignTextLeft /> <span>左对齐</span>
+                  <AlignTextLeftIcon size="18" /> <span>左对齐</span>
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center')}>
-                  <AlignTextCenter /> <span>居中对齐</span>
+                  <AlignTextCenterIcon size="18" /> <span>居中对齐</span>
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right')}>
-                  <AlignTextRight /> <span>右对齐</span>
+                  <AlignTextRightIcon size="18" /> <span>右对齐</span>
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify')}>
-                  <AlignTextBoth /> <span>两边对齐</span>
+                  <AlignTextBothIcon size="18" /> <span>两边对齐</span>
                 </Dropdown.Item>
                 <Dropdown.Divider />
                 <Dropdown.Item onClick={() => editor.dispatchCommand(OUTDENT_CONTENT_COMMAND, {})}>
-                  <IndentLeft /> <span>左缩进</span>
+                  <IndentLeftIcon size="18" /> <span>左缩进</span>
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => editor.dispatchCommand(INDENT_CONTENT_COMMAND, {})}>
-                  <IndentRight /> <span>右缩进</span>
+                  <IndentRightIcon size="18" /> <span>右缩进</span>
                 </Dropdown.Item>
               </>
             }
           >
             <Button className="toolbar-item">
-              <AlignTextLeft />
+              <AlignTextLeftIcon />
               <span>对齐方式</span>
             </Button>
           </Dropdown>
@@ -680,6 +705,13 @@ const toolbarStyles = (ultraContext: ConfigProviderProps) => {
 
     .toolbar-item:hover:not([disabled]) {
       background-color: rgba(204, 204, 204, 0.3);
+    }
+
+    .ultra-icon {
+      svg {
+        width: 18px;
+        height: 18px;
+      }
     }
   `;
 };

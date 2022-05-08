@@ -17,7 +17,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Divider, Popover, Tooltip } from 'ultra-design';
 import { TriggerRef } from 'ultra-design/es/trigger/trigger';
-import { TextBold, TextItalic, TextUnderline, Strikethrough, Code, LinkOne } from '@icon-park/react';
+import { TextBoldIcon, TextItalicIcon, TextUnderlineIcon, StrikethroughIcon, CodeIcon, LinkOneIcon } from 'ultra-icons';
 import { css } from '@emotion/react';
 
 function setPopupPosition(editor: HTMLElement, rect: DOMRect, rootElementRect: DOMRect): void {
@@ -159,7 +159,7 @@ function FloatingCharacterStylesEditor({
         >
           <Tooltip title="加粗">
             <Button type="pure" className={'inline-toolbar-item ' + (isBold ? 'ultra-button--active' : '')}>
-              <TextBold
+              <TextBoldIcon
                 onClick={() => {
                   editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
                 }}
@@ -175,7 +175,7 @@ function FloatingCharacterStylesEditor({
                 editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
               }}
             >
-              <TextItalic />
+              <TextItalicIcon />
             </Button>
           </Tooltip>
           <Divider vertical />
@@ -187,7 +187,7 @@ function FloatingCharacterStylesEditor({
                 editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
               }}
             >
-              <TextUnderline />
+              <TextUnderlineIcon />
             </Button>
           </Tooltip>
           <Divider vertical />
@@ -199,7 +199,7 @@ function FloatingCharacterStylesEditor({
               }}
               className={'inline-toolbar-item ' + (isStrikethrough ? 'active' : '')}
             >
-              <Strikethrough />
+              <StrikethroughIcon />
             </Button>
           </Tooltip>
           <Divider vertical />
@@ -211,7 +211,7 @@ function FloatingCharacterStylesEditor({
               }}
               className={'inline-toolbar-item ' + (isCode ? 'active' : '')}
             >
-              <Code />
+              <CodeIcon />
             </Button>
           </Tooltip>
           <Divider vertical />
@@ -221,7 +221,7 @@ function FloatingCharacterStylesEditor({
               onClick={insertLink}
               className={'inline-toolbar-item spaced ' + (isLink ? 'active' : '')}
             >
-              <LinkOne />
+              <LinkOneIcon />
             </Button>
           </Tooltip>
         </div>
