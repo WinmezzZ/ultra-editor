@@ -41,10 +41,10 @@ export class EmojiNode extends TextNode {
   }
 }
 
-export function $isEmojiNode(node?: LexicalNode) {
+export function $isEmojiNode(node: LexicalNode | null): node is EmojiNode {
   return node instanceof EmojiNode;
 }
 
 export function $createEmojiNode(className: string, emojiText: string) {
-  return new EmojiNode(className, emojiText).setMode('token');
+  return new EmojiNode(className, emojiText).setMode('token') as EmojiNode;
 }

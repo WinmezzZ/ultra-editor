@@ -1,4 +1,4 @@
-import type { ElementTransformer, TextMatchTransformer, Transformer } from '@lexical/markdown';
+import type { Transformer } from '@lexical/markdown';
 import type { ElementNode, LexicalNode } from 'lexical';
 
 import { CHECK_LIST, ELEMENT_TRANSFORMERS, TEXT_FORMAT_TRANSFORMERS, TEXT_MATCH_TRANSFORMERS } from '@lexical/markdown';
@@ -14,31 +14,31 @@ import {
 } from '@lexical/table';
 import { $createParagraphNode, $createTextNode, $isElementNode, $isParagraphNode, $isTextNode } from 'lexical';
 
-import { $createEquationNode, $isEquationNode } from '../nodes/EquationNode.js';
-import { $createImageNode, $isImageNode } from '../nodes/ImageNode.js';
-import { $createTweetNode, $isTweetNode } from '../nodes/TweetNode.js';
+import { $createEquationNode, $isEquationNode } from '../nodes/equation-node';
+import { $createImageNode, $isImageNode } from '../nodes/image-node';
 
-export const HR: ElementTransformer = {
+export const HR = {
   export: (node: LexicalNode) => {
     return $isHorizontalRuleNode(node) ? '***' : null;
   },
   regExp: /^(---|\*\*\*|___)\s?$/,
   replace: (parentNode, _1, _2, isImport) => {
     const line = $createHorizontalRuleNode();
-    // TODO: Get rid of isImport flag
 
+    // TODO: Get rid of isImport flag
     if (isImport || parentNode.getNextSibling() != null) {
       parentNode.replace(line);
     } else {
       parentNode.insertBefore(line);
     }
+
     line.selectNext();
   },
   type: 'element',
 };
 
-export const IMAGE: TextMatchTransformer = {
-  export: (node, exportChildren, exportFormat) => {
+export const IMAGE = {
+  export: (node, _exportChildren, _exportFormat) => {
     if (!$isImageNode(node)) {
       return null;
     }
@@ -57,8 +57,8 @@ export const IMAGE: TextMatchTransformer = {
   type: 'text-match',
 };
 
-export const EQUATION: TextMatchTransformer = {
-  export: (node, exportChildren, exportFormat) => {
+export const EQUATION = {
+  export: (node, _exportChildren, _eexportFormat) => {
     if (!$isEquationNode(node)) {
       return null;
     }
@@ -77,31 +77,10 @@ export const EQUATION: TextMatchTransformer = {
   type: 'text-match',
 };
 
-export const TWEET: TextMatchTransformer = {
-  export: (node, exportChildren, exportFormat) => {
-    if (!$isTweetNode(node)) {
-      return null;
-    }
-
-    return `<tweet id="${node.getId()}" />`;
-  },
-  importRegExp: /<tweet id="([^"]+?)"\s?\/>/,
-  regExp: /<tweet id="([^"]+?)"\s?\/>$/,
-  replace: (textNode, match) => {
-    const [, id] = match;
-    const tweetNode = $createTweetNode(id);
-
-    textNode.replace(tweetNode);
-  },
-  trigger: '>',
-  type: 'text-match',
-};
-
-// Very primitive table setup
 const TABLE_ROW_REG_EXP = /^(?:\|)(.+)(?:\|)\s?$/;
 
-export const TABLE: ElementTransformer = {
-  export: (node: LexicalNode, exportChildren: (node: ElementNode) => string) => {
+export const TABLE = {
+  export: (node: LexicalNode, exportChildren: (elementNode: ElementNode) => string) => {
     if (!$isTableNode(node)) {
       return null;
     }
@@ -174,7 +153,7 @@ export const TABLE: ElementTransformer = {
       table.append(tableRow);
 
       for (let i = 0; i < maxCells; i++) {
-        tableRow.append(i < cells.length ? cells[i] : createTableCell());
+        tableRow.append(i < cells.length ? cells[i] : createTableCell(''));
       }
     }
 
@@ -184,13 +163,14 @@ export const TABLE: ElementTransformer = {
   type: 'element',
 };
 
-const createTableCell = (textContent: ?string): TableCellNode => {
-  const cell = $createTableCellNode(TableCellHeaderStates.NO_STATUS);
+const createTableCell = (textContent: string | null | undefined): TableCellNode => {
+  const cell = ($createTableCellNode as any)(TableCellHeaderStates.NO_STATUS);
   const paragraph = $createParagraphNode();
 
   if (textContent != null) {
     paragraph.append($createTextNode(textContent.trim()));
   }
+
   cell.append(paragraph);
 
   return cell;
@@ -214,7 +194,6 @@ export const PLAYGROUND_TRANSFORMERS: Array<Transformer> = [
   HR,
   IMAGE,
   EQUATION,
-  TWEET,
   CHECK_LIST,
   ...ELEMENT_TRANSFORMERS,
   ...TEXT_FORMAT_TRANSFORMERS,

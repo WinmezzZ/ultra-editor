@@ -1,10 +1,10 @@
-import type { LexicalCommand, RangeSelection } from 'lexical';
+import type { LexicalCommand } from 'lexical';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { COMMAND_PRIORITY_EDITOR, $getSelection, $isRangeSelection, $isRootNode, createCommand } from 'lexical';
+import { $getSelection, $isRangeSelection, $isRootNode, COMMAND_PRIORITY_EDITOR, createCommand } from 'lexical';
 import { useEffect } from 'react';
 
-import { $createPollNode, PollNode } from '../nodes/PollNode';
+import { $createPollNode, PollNode } from '../nodes/poll-node';
 
 export const INSERT_POLL_COMMAND: LexicalCommand<string> = createCommand();
 
@@ -18,16 +18,16 @@ export default function PollPlugin() {
 
     return editor.registerCommand(
       INSERT_POLL_COMMAND,
-      payload => {
-        const selection = $getSelection() as RangeSelection;
+      (payload: string) => {
+        const selection = $getSelection();
 
         if ($isRangeSelection(selection)) {
-          const question = payload as string;
-          const pollNode = $createPollNode(question);
+          const pollNode = $createPollNode(payload);
 
           if ($isRootNode(selection.anchor.getNode())) {
             selection.insertParagraph();
           }
+
           selection.insertNodes([pollNode]);
         }
 

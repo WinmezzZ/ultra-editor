@@ -67,8 +67,8 @@ import {
 } from '@icon-park/react';
 import { css, Global } from '@emotion/react';
 import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
-import { INSERT_EXCALIDRAW_COMMAND } from './ExcalidrawPlugin';
-import { INSERT_POLL_COMMAND } from './PollPlugin';
+import { INSERT_EXCALIDRAW_COMMAND } from './excalidraw-plugin';
+import { INSERT_POLL_COMMAND } from './poll-plugin';
 import InsetImageDialog from './toolbar-plugin/insert-image';
 import LinkEditor from '../components/link-editor';
 import useUltraContext from '../context/ultra-context';

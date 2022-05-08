@@ -3,15 +3,14 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { $createHorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
 import { mergeRegister } from '@lexical/utils';
 import { $getRoot, $isParagraphNode, CLEAR_EDITOR_COMMAND } from 'lexical';
-import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 
-import { SPEECT_TO_TEXT_COMMAND, SUPPORT_SPEECH_RECOGNITION } from './SpeechToTextPlugin';
+import { SPEECH_TO_TEXT_COMMAND, SUPPORT_SPEECH_RECOGNITION } from './speech-to-text-plugin';
 import { css } from '@emotion/react';
 import { Button, Modal, Tooltip } from 'ultra-design';
 import { Delete, Lock, Microphone, Unlock } from '@icon-park/react';
 
-export default function ActionsPlugins() {
+const ActionsPlugins: FC = () => {
   const [editor] = useLexicalComposerContext();
   const [isReadOnly, setIsReadyOnly] = useState(() => editor.isReadOnly());
   const [isSpeechToText, setIsSpeechToText] = useState(false);
@@ -79,7 +78,7 @@ export default function ActionsPlugins() {
         <Tooltip title="录音" placement="top">
           <Button
             onClick={() => {
-              editor.dispatchCommand(SPEECT_TO_TEXT_COMMAND, !isSpeechToText);
+              editor.dispatchCommand(SPEECH_TO_TEXT_COMMAND, !isSpeechToText);
               setIsSpeechToText(!isSpeechToText);
             }}
             className={'action-button action-button-mic ' + (isSpeechToText ? 'active' : '')}
@@ -123,7 +122,9 @@ export default function ActionsPlugins() {
       </Tooltip>
     </div>
   );
-}
+};
+
+export default ActionsPlugins;
 
 const actionsStyles = () => {
   return css`

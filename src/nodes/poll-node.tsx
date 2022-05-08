@@ -4,7 +4,7 @@ import { useCollaborationContext } from '@lexical/react/LexicalCollaborationPlug
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $getNodeByKey, DecoratorNode } from 'lexical';
 import * as React from 'react';
-import { useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import joinClasses from '../utils/join-classes';
 import { css } from '@emotion/react';
@@ -365,6 +365,6 @@ export function $createPollNode(question: string): PollNode {
   return new PollNode(question);
 }
 
-export function $isPollNode(node?: LexicalNode) {
+export function $isPollNode(node: LexicalNode | null): node is PollNode {
   return node instanceof PollNode;
 }

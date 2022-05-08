@@ -1,32 +1,26 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow strict
- */
-
-import type { CommandListenerHighPriority, EditorConfig, LexicalNode, NodeKey } from 'lexical';
+import type { DOMExportOutput, EditorConfig, LexicalNode, NodeKey } from 'lexical';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
-import { $getNodeByKey, DecoratorNode, KEY_ESCAPE_COMMAND, SELECTION_CHANGE_COMMAND } from 'lexical';
-import * as React from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  $getNodeByKey,
+  COMMAND_PRIORITY_HIGH,
+  DecoratorNode,
+  KEY_ESCAPE_COMMAND,
+  SELECTION_CHANGE_COMMAND,
+} from 'lexical';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
 
 import EquationEditor from '../ui/EquationEditor';
 import KatexRenderer from '../ui/KatexRenderer';
 
-const HighPriority: CommandListenerHighPriority = 3;
-
-type EquationComponentProps = {
+export type EquationComponentProps = {
   equation: string;
   inline: boolean;
   nodeKey: NodeKey;
 };
 
-function EquationComponent({ equation, inline, nodeKey }: EquationComponentProps) {
+const EquationComponent: FC<EquationComponentProps> = ({ equation, inline, nodeKey }) => {
   const [editor] = useLexicalComposerContext();
   const [equationValue, setEquationValue] = useState(equation);
   const [showEquationEditor, setShowEquationEditor] = useState<boolean>(false);
@@ -54,7 +48,7 @@ function EquationComponent({ equation, inline, nodeKey }: EquationComponentProps
       return mergeRegister(
         editor.registerCommand(
           SELECTION_CHANGE_COMMAND,
-          payload => {
+          () => {
             const activeElement = document.activeElement;
             const inputElem = inputRef.current;
 
@@ -64,11 +58,11 @@ function EquationComponent({ equation, inline, nodeKey }: EquationComponentProps
 
             return false;
           },
-          HighPriority,
+          COMMAND_PRIORITY_HIGH,
         ),
         editor.registerCommand(
           KEY_ESCAPE_COMMAND,
-          payload => {
+          () => {
             const activeElement = document.activeElement;
             const inputElem = inputRef.current;
 
@@ -80,7 +74,7 @@ function EquationComponent({ equation, inline, nodeKey }: EquationComponentProps
 
             return false;
           },
-          HighPriority,
+          COMMAND_PRIORITY_HIGH,
         ),
       );
     }
@@ -101,9 +95,9 @@ function EquationComponent({ equation, inline, nodeKey }: EquationComponentProps
       )}
     </>
   );
-}
+};
 
-export class EquationNode extends DecoratorNode<React.ReactNode> {
+export class EquationNode extends DecoratorNode<JSX.Element> {
   __equation: string;
   __inline: boolean;
 
@@ -121,22 +115,33 @@ export class EquationNode extends DecoratorNode<React.ReactNode> {
     this.__inline = inline ?? false;
   }
 
-  createDOM<EditorContext>(config: EditorConfig<EditorContext>): HTMLElement {
+  exportDOM(): DOMExportOutput {
+    const element = document.createElement(this.__inline ? 'span' : 'div');
+
+    element.innerText = this.__equation;
+
+    return { element };
+  }
+
+  createDOM(_config: EditorConfig): HTMLElement {
     return document.createElement(this.__inline ? 'span' : 'div');
   }
 
   updateDOM(prevNode: EquationNode): boolean {
-    // If the inline property changes, replace the element
     return this.__inline !== prevNode.__inline;
   }
 
+  getEquation(): string {
+    return this.__equation;
+  }
+
   setEquation(equation: string): void {
-    const writable = this.getWritable();
+    const writable = this.getWritable() as EquationNode;
 
     writable.__equation = equation;
   }
 
-  decorate() {
+  decorate(): JSX.Element {
     return <EquationComponent equation={this.__equation} inline={this.__inline} nodeKey={this.__key} />;
   }
 }
@@ -147,6 +152,6 @@ export function $createEquationNode(equation = '', inline = false): EquationNode
   return equationNode;
 }
 
-export function $isEquationNode(node?: LexicalNode) {
+export function $isEquationNode(node: LexicalNode | null): node is EquationNode {
   return node instanceof EquationNode;
 }

@@ -14,6 +14,7 @@ const getElement = (): HTMLElement => {
     element.style.padding = '20px';
     element.style.background = 'rgba(240, 240, 240, 0.4)';
     element.style.borderRadius = '20px';
+
     if (document.body) {
       document.body.appendChild(element);
     }
@@ -22,10 +23,11 @@ const getElement = (): HTMLElement => {
   return element;
 };
 
-export default function useReport() {
+export default function useReport(): (arg0: string) => NodeJS.Timeout {
   const timer = useRef<NodeJS.Timeout | null>(null);
   const cleanup = useCallback(() => {
     clearTimeout(timer.current);
+
     if (document.body) {
       document.body.removeChild(getElement());
     }

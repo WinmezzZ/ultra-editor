@@ -12,6 +12,7 @@ import {
   FORMAT_TEXT_COMMAND,
   SELECTION_CHANGE_COMMAND,
   TextNode,
+  COMMAND_PRIORITY_LOW,
 } from 'lexical';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Divider, Popover, Tooltip } from 'ultra-design';
@@ -19,16 +20,20 @@ import { TriggerRef } from 'ultra-design/es/trigger/trigger';
 import { TextBold, TextItalic, TextUnderline, Strikethrough, Code, LinkOne } from '@icon-park/react';
 import { css } from '@emotion/react';
 
-function setPopupPosition(editor, rect) {
-  if (rect === null) {
-    editor.style.opacity = '0';
-    editor.style.top = '-1000px';
-    editor.style.left = '-1000px';
-  } else {
-    editor.style.opacity = '1';
-    editor.style.top = `${rect.top + 10 + window.pageYOffset}px`;
-    editor.style.left = `${rect.left + 20 + window.pageXOffset - editor.offsetWidth + rect.width}px`;
+function setPopupPosition(editor: HTMLElement, rect: DOMRect, rootElementRect: DOMRect): void {
+  let top = rect.top - 8 + window.pageYOffset;
+  let left = rect.left + 310 + window.pageXOffset - editor.offsetWidth + rect.width;
+
+  if (rect.width >= rootElementRect.width - 20 || left > rootElementRect.width - 150) {
+    left = rect.left;
+    top = rect.top - 50 + window.pageYOffset;
   }
+  if (top < rootElementRect.top) {
+    top = rect.bottom + 20;
+  }
+  editor.style.opacity = '1';
+  editor.style.top = `${top}px`;
+  editor.style.left = `${left}px`;
 }
 
 function FloatingCharacterStylesEditor({
@@ -79,6 +84,7 @@ function FloatingCharacterStylesEditor({
       rootElement.contains(nativeSelection.anchorNode)
     ) {
       const domRange = nativeSelection.getRangeAt(0);
+      const rootElementRect = rootElement.getBoundingClientRect();
       let rect;
 
       if (nativeSelection.anchorNode === rootElement) {
@@ -94,12 +100,16 @@ function FloatingCharacterStylesEditor({
       }
 
       if (!mouseDownRef.current) {
-        setPopupPosition(popupCharStylesEditorRef.current.layerElement, rect);
+        setPopupPosition(popupCharStylesEditorRef.current.layerElement, rect, rootElementRect);
       }
     }
   }, [editor]);
 
   useEffect(() => {
+    editor.getEditorState().read(() => {
+      updateCharacterStylesEditor();
+    });
+
     return mergeRegister(
       editor.registerUpdateListener(({ editorState }) => {
         editorState.read(() => {
@@ -114,9 +124,23 @@ function FloatingCharacterStylesEditor({
 
           return false;
         },
-        1,
+        COMMAND_PRIORITY_LOW,
       ),
     );
+  }, [editor, updateCharacterStylesEditor]);
+
+  useEffect(() => {
+    const onResize = () => {
+      editor.getEditorState().read(() => {
+        updateCharacterStylesEditor();
+      });
+    };
+
+    window.addEventListener('resize', onResize);
+
+    return () => {
+      window.removeEventListener('resize', onResize);
+    };
   }, [editor, updateCharacterStylesEditor]);
 
   return (
@@ -224,7 +248,7 @@ function getSelectedNode(selection: RangeSelection): TextNode | ElementNode {
   }
 }
 
-function useCharacterStylesPopup(editor: LexicalEditor) {
+function useCharacterStylesPopup(editor: LexicalEditor): JSX.Element {
   const [isText, setIsText] = useState(false);
   const [isLink, setIsLink] = useState(false);
   const [isBold, setIsBold] = useState(false);
@@ -233,43 +257,58 @@ function useCharacterStylesPopup(editor: LexicalEditor) {
   const [isStrikethrough, setIsStrikethrough] = useState(false);
   const [isCode, setIsCode] = useState(false);
 
-  useEffect(() => {
-    return editor.registerUpdateListener(({ editorState }) => {
-      editorState.read(() => {
-        const selection = $getSelection() as RangeSelection;
+  const updatePopup = useCallback(() => {
+    editor.getEditorState().read(() => {
+      const selection = $getSelection();
+      const nativeSelection = window.getSelection();
+      const rootElement = editor.getRootElement();
 
-        if (!$isRangeSelection(selection)) {
-          return;
-        }
+      if (!$isRangeSelection(selection) || rootElement === null || !rootElement.contains(nativeSelection.anchorNode)) {
+        setIsText(false);
 
-        const node = getSelectedNode(selection);
+        return;
+      }
 
-        // Update text format
-        setIsBold(selection.hasFormat('bold'));
-        setIsItalic(selection.hasFormat('italic'));
-        setIsUnderline(selection.hasFormat('underline'));
-        setIsStrikethrough(selection.hasFormat('strikethrough'));
-        setIsCode(selection.hasFormat('code'));
+      const node = getSelectedNode(selection);
 
-        // Update links
-        const parent = node.getParent();
+      setIsBold(selection.hasFormat('bold'));
+      setIsItalic(selection.hasFormat('italic'));
+      setIsUnderline(selection.hasFormat('underline'));
+      setIsStrikethrough(selection.hasFormat('strikethrough'));
+      setIsCode(selection.hasFormat('code'));
 
-        if ($isLinkNode(parent) || $isLinkNode(node)) {
-          setIsLink(true);
-        } else {
-          setIsLink(false);
-        }
+      // Update links
+      const parent = node.getParent();
 
-        if (!$isCodeHighlightNode(selection.anchor.getNode()) && selection.getTextContent() !== '') {
-          setIsText($isTextNode(node));
-        } else {
-          setIsText(false);
-        }
-      });
+      if ($isLinkNode(parent) || $isLinkNode(node)) {
+        setIsLink(true);
+      } else {
+        setIsLink(false);
+      }
+
+      if (!$isCodeHighlightNode(selection.anchor.getNode()) && selection.getTextContent() !== '') {
+        setIsText($isTextNode(node));
+      } else {
+        setIsText(false);
+      }
     });
   }, [editor]);
 
-  if (!isText) {
+  useEffect(() => {
+    document.addEventListener('selectionchange', updatePopup);
+
+    return () => {
+      document.removeEventListener('selectionchange', updatePopup);
+    };
+  }, [updatePopup]);
+
+  useEffect(() => {
+    return editor.registerUpdateListener(() => {
+      updatePopup();
+    });
+  }, [editor, updatePopup]);
+
+  if (!isText || isLink) {
     return null;
   }
 
@@ -286,7 +325,7 @@ function useCharacterStylesPopup(editor: LexicalEditor) {
   );
 }
 
-export default function CharacterStylesPopupPlugin() {
+export default function CharacterStylesPopupPlugin(): JSX.Element {
   const [editor] = useLexicalComposerContext();
 
   return useCharacterStylesPopup(editor);

@@ -20,7 +20,7 @@ export class MentionNode extends TextNode {
     this.__mention = mentionName;
   }
 
-  createDOM<EditorContext>(config: EditorConfig<EditorContext>): HTMLElement {
+  createDOM(config: EditorConfig): HTMLElement {
     const dom = super.createDOM(config);
 
     dom.style.cssText = mentionStyle;
@@ -42,6 +42,6 @@ export function $createMentionNode(mentionName: string): MentionNode {
   return mentionNode;
 }
 
-export function $isMentionNode(node?: LexicalNode) {
+export function $isMentionNode(node: LexicalNode | null): node is MentionNode {
   return node instanceof MentionNode;
 }

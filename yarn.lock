@@ -7469,7 +7469,7 @@ react-transition-group@^4.4.2:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react@17.0.2:
+react@17.0.2, react@^17.0.2:
   version "17.0.2"
   resolved "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   integrity sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==
@@ -8507,6 +8507,14 @@ ultra-design@^0.0.79-beta:
     prop-types "^15.8.1"
     react-transition-group "^4.4.2"
     winhooks "^0.0.2"
+
+ultra-icons@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/ultra-icons/-/ultra-icons-0.0.7.tgz#a5c74c018b46349be593e857e0f203f3603baa62"
+  integrity sha512-UdexI3ZsBmKCDDQKd00J3xwUV5GbgatAZMi0NZOoH2CBsjJKo1WWY7KMGrUN+gJrZmdiAvXHZVs3+pln5nochg==
+  dependencies:
+    "@emotion/react" "^11.9.0"
+    react "^17.0.2"
 
 unicode-canonical-property-names-ecmascript@^2.0.0:
   version "2.0.0"

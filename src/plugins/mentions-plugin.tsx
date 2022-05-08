@@ -13,10 +13,10 @@ import {
   KEY_TAB_COMMAND,
   COMMAND_PRIORITY_LOW,
 } from 'lexical';
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { $createMentionNode, MentionNode } from '../nodes/MentionNode';
+import { $createMentionNode, MentionNode } from '../nodes/mention-node';
 import { Dropdown } from 'ultra-design';
 import { css } from '@emotion/react';
 
@@ -539,15 +539,13 @@ function MentionsTypeaheadItem({
   );
 }
 
-function MentionsTypeahead({
-  close,
-  editor,
-  resolution,
-}: {
+interface M {
   close: () => void;
   editor: LexicalEditor;
   resolution: Resolution;
-}) {
+}
+
+const MentionsTypeahead: FC<M> = ({ close, editor, resolution }) => {
   const divRef = useRef(null);
   const match = resolution.match;
   const results = useMentionLookupService(match.matchingString);
@@ -733,7 +731,7 @@ function MentionsTypeahead({
       ref={divRef}
     ></Dropdown>
   );
-}
+};
 
 const mentionStyles = () => {
   return css`
@@ -852,14 +850,6 @@ function getMentionsTextToSearch(editor: LexicalEditor): string | null {
   return text;
 }
 
-/**
- * Walk backwards along user input and forward through entity title to try
- * and replace more of the user's text with entity.
- *
- * E.g. User types "Hello Sarah Smit" and we match "Smit" to "Sarah Smith".
- * Replacing just the match would give us "Hello Sarah Sarah Smith".
- * Instead we find the string "Sarah Smit" and replace all of it.
- */
 function getMentionOffset(documentText: string, entryText: string, offset: number): number {
   let triggerOffset = offset;
 
@@ -872,10 +862,6 @@ function getMentionOffset(documentText: string, entryText: string, offset: numbe
   return triggerOffset;
 }
 
-/**
- * From a Typeahead Search Result, replace plain text from search offset and
- * render a newly created MentionNode.
- */
 function createMentionNodeFromSearchResult(editor: LexicalEditor, entryText: string, match: MentionMatch): void {
   editor.update(() => {
     const selection = $getSelection() as RangeSelection;
@@ -929,9 +915,9 @@ function isSelectionOnEntityBoundary(editor: LexicalEditor, offset: number): boo
     if ($isRangeSelection(selection)) {
       const anchor = selection.anchor;
       const anchorNode = anchor.getNode();
-      const prevSibling = anchorNode.getPreviousSibling() as any;
+      const prevSibling = anchorNode.getPreviousSibling();
 
-      return $isTextNode(prevSibling) && prevSibling.isTextEntity();
+      return $isTextNode(prevSibling) && (prevSibling as any).isTextEntity();
     }
 
     return false;
@@ -1000,8 +986,10 @@ function useMentions(editor: LexicalEditor) {
     : createPortal(<MentionsTypeahead close={closeTypeahead} resolution={resolution} editor={editor} />, document.body);
 }
 
-export default function MentionsPlugin() {
+const MentionsPlugin: FC = () => {
   const [editor] = useLexicalComposerContext();
 
   return useMentions(editor);
-}
+};
+
+export default MentionsPlugin;

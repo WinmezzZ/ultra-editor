@@ -11,7 +11,7 @@ export class KeywordNode extends TextNode {
     return new KeywordNode(node.__text, node.__key);
   }
 
-  createDOM<EditorContext>(config: EditorConfig<EditorContext>): HTMLElement {
+  createDOM(config: EditorConfig): HTMLElement {
     const dom = super.createDOM(config);
 
     dom.style.cursor = 'default';
@@ -37,6 +37,6 @@ export function $createKeywordNode(keyword: string): KeywordNode {
   return new KeywordNode(keyword);
 }
 
-export function $isKeywordNode(node?: LexicalNode) {
+export function $isKeywordNode(node: LexicalNode | null | undefined): boolean {
   return node instanceof KeywordNode;
 }

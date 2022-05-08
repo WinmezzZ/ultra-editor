@@ -3,38 +3,40 @@ import RichTextPlugin from '@lexical/react/LexicalRichTextPlugin';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import AutoFocusPlugin from '@lexical/react/LexicalAutoFocusPlugin';
 import Theme from './themes';
-import ToolbarPlugin from './plugins/ToolbarPlugin';
+import ToolbarPlugin from './plugins/toolbar-plugin';
 // import TreeViewPlugin from './plugins/TreeViewPlugin';
 import LinkPlugin from '@lexical/react/LexicalLinkPlugin';
 import ListPlugin from '@lexical/react/LexicalListPlugin';
-import CodeHighlightPlugin from './plugins/CodeHighlightPlugin';
-import AutoLinkPlugin from './plugins/AutolinkPlugin';
-import ImagesPlugin from './plugins/ImagesPlugin';
+import CodeHighlightPlugin from './plugins/code-highlight-plugin';
+import AutoLinkPlugin from './plugins/autolink-plugin';
+import ImagesPlugin from './plugins/images-plugin';
 import MarkdownShortcutPlugin from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import TablePlugin from '@lexical/react/LexicalTablePlugin';
 import ClearPlugin from '@lexical/react/LexicalClearEditorPlugin';
-import TableCellResizerPlugin from './plugins/TableCellResizerPlugin';
+import TableCellResizerPlugin from './plugins/table-cell-resizer-plugin';
 
 // import TableActionMenuPlugin from './plugins/TableActionMenuPlugin';
-import NodeList from './nodes/PlaygroundNodes';
+import NodeList from './nodes';
 
 // import CharacterStylesPopupPlugin from './plugins/CharacterStylesPopupPlugin';
-import HorizontalRulePlugin from './plugins/HorizontalRulePlugin';
-import ExcalidrawPlugin from './plugins/ExcalidrawPlugin';
+import HorizontalRulePlugin from './plugins/horizontal-rule-plugin';
+import ExcalidrawPlugin from './plugins/excalidraw-plugin';
+import QquationsPlugin from './plugins/equations-plugin';
 import { css } from '@emotion/react';
-import ListMaxIndentLevelPlugin from './plugins/ListMaxIndentLevelPlugin';
-import PollPlugin from './plugins/PollPlugin';
+import ListMaxIndentLevelPlugin from './plugins/list-max-indent-level-plugin';
+import PollPlugin from './plugins/poll-plugin';
 import { ConfigProvider } from 'ultra-design';
 import { ConfigProviderProps } from 'ultra-design/es/config-provider';
 import zh_CN from 'ultra-design/es/locale/zh_CN';
-import ActionsPlugins from './plugins/ActionPlugin';
-import SpeechToTextPlugin from './plugins/SpeechToTextPlugin';
-import TableActionMenuPlugin from './plugins/TableActionMenuPlugin';
-import MentionsPlugin from './plugins/MentionsPlugin';
+import ActionsPlugins from './plugins/action-plugin';
+import SpeechToTextPlugin from './plugins/speech-to-text-plugin';
+import TableActionMenuPlugin from './plugins/table-action-menu-plugin';
+import MentionsPlugin from './plugins/mentions-plugin';
 import HashtagsPlugin from '@lexical/react/LexicalHashtagPlugin';
-import EmojisPlugin from './plugins/EmojisPlugin';
-import ClickableLinkPlugin from './plugins/ClickableLinkPlugin';
-import KeywordsPlugin from './plugins/KeywordsPlugin';
+import EmojisPlugin from './plugins/emojis-plugin';
+import ClickableLinkPlugin from './plugins/clickable-link-plugin';
+import TabFocusPlugin from './plugins/tab-focus-plugin';
+import KeywordsPlugin from './plugins/keywords-plugin';
 import ContentEditable from './components/content-editable';
 import Placeholder from './components/placeholder';
 import { EditorPropsContext } from './context/editor-props-context';
@@ -81,6 +83,7 @@ const Editor: FC<EditorProps> = props => {
               {/* <CharacterStylesPopupPlugin /> */}
               <HorizontalRulePlugin />
               <ExcalidrawPlugin />
+              <QquationsPlugin />
               <ListMaxIndentLevelPlugin maxDepth={7} />
               <PollPlugin />
               {/* <TreeViewPlugin /> */}
@@ -92,6 +95,7 @@ const Editor: FC<EditorProps> = props => {
               <ClickableLinkPlugin />
               <KeywordsPlugin />
               <ClearPlugin />
+              <TabFocusPlugin />
             </div>
           </div>
         </ConfigProvider>

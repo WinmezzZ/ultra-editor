@@ -24,11 +24,11 @@ import React from 'react';
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
 
 import { useSharedHistoryContext } from '../context/SharedHistoryContext';
-import EmojisPlugin from '../plugins/EmojisPlugin';
-import ImagesPlugin from '../plugins/ImagesPlugin';
-import KeywordsPlugin from '../plugins/KeywordsPlugin';
-import MentionsPlugin from '../plugins/MentionsPlugin';
-import TableCellActionMenuPlugin from '../plugins/TableActionMenuPlugin';
+import EmojisPlugin from '../plugins/emojis-plugin';
+import ImagesPlugin from '../plugins/images-plugin';
+import KeywordsPlugin from '../plugins/keywords-plugin';
+import MentionsPlugin from '../plugins/mentions-plugin';
+import TableCellActionMenuPlugin from '../plugins/table-cell-resizer-plugin';
 import ContentEditable from '../components/content-editable';
 import ImageResizer from '../components/ImageResizer';
 import Placeholder from '../components/placeholder';
@@ -399,6 +399,6 @@ export function $createImageNode(src: string, altText: string, maxWidth: number)
   return new ImageNode(src, altText, maxWidth);
 }
 
-export function $isImageNode(node: LexicalNode) {
+export function $isImageNode(node: LexicalNode | null): node is ImageNode {
   return node instanceof ImageNode;
 }

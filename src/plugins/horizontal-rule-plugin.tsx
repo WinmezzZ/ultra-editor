@@ -1,18 +1,16 @@
-import type { RangeSelection } from 'lexical';
-
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $createHorizontalRuleNode, INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
-import { COMMAND_PRIORITY_EDITOR, $getSelection, $isRangeSelection } from 'lexical';
-import { useEffect } from 'react';
+import { $getSelection, $isRangeSelection, COMMAND_PRIORITY_EDITOR } from 'lexical';
+import { FC, useEffect } from 'react';
 
-export default function HorizontalRulePlugin(): null {
+const HorizontalRulePlugin: FC = () => {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
     return editor.registerCommand(
       INSERT_HORIZONTAL_RULE_COMMAND,
       () => {
-        const selection = $getSelection() as RangeSelection;
+        const selection = $getSelection();
 
         if (!$isRangeSelection(selection)) {
           return false;
@@ -34,4 +32,6 @@ export default function HorizontalRulePlugin(): null {
   }, [editor]);
 
   return null;
-}
+};
+
+export default HorizontalRulePlugin;

@@ -19,7 +19,7 @@ const MATCHERS = [
       }
     );
   },
-  text => {
+  (text: string) => {
     const match = EMAIL_MATCHER.exec(text);
 
     return (
@@ -33,6 +33,6 @@ const MATCHERS = [
   },
 ];
 
-export default function AutoLinkPlugin() {
+export default function AutoLinkPlugin(): JSX.Element {
   return <LexicalAutoLinkPlugin matchers={MATCHERS} />;
 }

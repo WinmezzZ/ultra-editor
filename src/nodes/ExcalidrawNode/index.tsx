@@ -1,4 +1,5 @@
-import type { CommandListenerLowPriority, EditorConfig, LexicalEditor, LexicalNode, NodeKey } from 'lexical';
+import type { ExcalidrawElementFragment } from './excalidraw-modal';
+import type { EditorConfig, LexicalEditor, LexicalNode, NodeKey } from 'lexical';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import useLexicalNodeSelection from '@lexical/react/useLexicalNodeSelection';
@@ -8,23 +9,24 @@ import {
   $getSelection,
   $isNodeSelection,
   CLICK_COMMAND,
+  COMMAND_PRIORITY_LOW,
   DecoratorNode,
   KEY_BACKSPACE_COMMAND,
   KEY_DELETE_COMMAND,
 } from 'lexical';
-import * as React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import ExcalidrawImage from './ExcalidrawImage';
-import ExcalidrawModal from './ExcalidrawModal';
-
-const LowPriority: CommandListenerLowPriority = 1;
+import ImageResizer from '../../components/ImageResizer';
+import ExcalidrawImage from './excalidraw-image';
+import ExcalidrawModal from './excalidraw-modal';
 
 function ExcalidrawComponent({ nodeKey, data }: { data: string; nodeKey: NodeKey }) {
-  const [isModalOpen, setModalOpen] = useState<boolean>(data === '[]');
   const [editor] = useLexicalComposerContext();
+  const [isModalOpen, setModalOpen] = useState<boolean>(data === '[]' && !editor.isReadOnly());
+  const imageContainerRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [isSelected, setSelected, clearSelection] = useLexicalNodeSelection(nodeKey);
+  const [isResizing, setIsResizing] = useState<boolean>(false);
 
   const onDelete = useCallback(
     payload => {
@@ -48,13 +50,24 @@ function ExcalidrawComponent({ nodeKey, data }: { data: string; nodeKey: NodeKey
   );
 
   useEffect(() => {
+    if (isModalOpen) {
+      editor.setReadOnly(true);
+    } else {
+      editor.setReadOnly(false);
+    }
+  }, [isModalOpen, editor]);
+
+  useEffect(() => {
     return mergeRegister(
       editor.registerCommand(
         CLICK_COMMAND,
         (event: MouseEvent) => {
           const buttonElem = buttonRef.current;
-          // $FlowFixMe: this will work
           const eventTarget = event.target as Element;
+
+          if (isResizing) {
+            return true;
+          }
 
           if (buttonElem !== null && buttonElem.contains(eventTarget)) {
             if (!event.shiftKey) {
@@ -70,14 +83,16 @@ function ExcalidrawComponent({ nodeKey, data }: { data: string; nodeKey: NodeKey
 
           return false;
         },
-        LowPriority,
+        COMMAND_PRIORITY_LOW,
       ),
-      editor.registerCommand(KEY_DELETE_COMMAND, onDelete, LowPriority),
-      editor.registerCommand(KEY_BACKSPACE_COMMAND, onDelete, LowPriority),
+      editor.registerCommand(KEY_DELETE_COMMAND, onDelete, COMMAND_PRIORITY_LOW),
+      editor.registerCommand(KEY_BACKSPACE_COMMAND, onDelete, COMMAND_PRIORITY_LOW),
     );
-  }, [clearSelection, editor, isSelected, onDelete, setSelected]);
+  }, [clearSelection, editor, isSelected, isResizing, onDelete, setSelected]);
 
   const deleteNode = useCallback(() => {
+    setModalOpen(false);
+
     return editor.update(() => {
       const node = $getNodeByKey(nodeKey);
 
@@ -87,18 +102,33 @@ function ExcalidrawComponent({ nodeKey, data }: { data: string; nodeKey: NodeKey
     });
   }, [editor, nodeKey]);
 
-  const setData = useCallback(
-    (newData: string) => {
-      return editor.update(() => {
-        const node: any = $getNodeByKey(nodeKey);
+  const setData = (newData: ReadonlyArray<ExcalidrawElementFragment>) => {
+    if (editor.isReadOnly()) {
+      return;
+    }
 
-        if ($isExcalidrawNode(node)) {
-          node.setData(newData);
+    return editor.update(() => {
+      const node = $getNodeByKey(nodeKey);
+
+      if ($isExcalidrawNode(node)) {
+        if (newData.length > 0) {
+          node.setData(JSON.stringify(newData));
+        } else {
+          node.remove();
         }
-      });
-    },
-    [editor, nodeKey],
-  );
+      }
+    });
+  };
+
+  const onResizeStart = () => {
+    setIsResizing(true);
+  };
+
+  const onResizeEnd = (_nextWidth: number, _nextHeight: number) => {
+    setTimeout(() => {
+      setIsResizing(false);
+    }, 200);
+  };
 
   const elements = useMemo(() => JSON.parse(data), [data]);
 
@@ -108,20 +138,37 @@ function ExcalidrawComponent({ nodeKey, data }: { data: string; nodeKey: NodeKey
         initialElements={elements}
         isShown={isModalOpen}
         onDelete={deleteNode}
-        onHide={() => setModalOpen(false)}
-        onSave={newData => {
-          setData(JSON.stringify(newData));
+        onHide={() => {
+          editor.setReadOnly(false);
           setModalOpen(false);
         }}
+        onSave={newData => {
+          editor.setReadOnly(false);
+          setData(newData);
+          setModalOpen(false);
+        }}
+        closeOnClickOutside={true}
       />
-      <button ref={buttonRef} className={`excalidraw-button ${isSelected ? 'selected' : ''}`}>
-        <ExcalidrawImage className="image" elements={elements} />
-      </button>
+      {elements.length > 0 && (
+        <button ref={buttonRef} className={`excalidraw-button ${isSelected ? 'selected' : ''}`}>
+          <ExcalidrawImage imageContainerRef={imageContainerRef} className="image" elements={elements} />
+          {(isSelected || isResizing) && (
+            <ImageResizer
+              showCaption={true}
+              setShowCaption={() => null}
+              imageRef={imageContainerRef}
+              editor={editor}
+              onResizeStart={onResizeStart}
+              onResizeEnd={onResizeEnd}
+            />
+          )}
+        </button>
+      )}
     </>
   );
 }
 
-export class ExcalidrawNode extends DecoratorNode<React.ReactNode> {
+export class ExcalidrawNode extends DecoratorNode<JSX.Element> {
   __data: string;
 
   static getType(): string {
@@ -138,7 +185,7 @@ export class ExcalidrawNode extends DecoratorNode<React.ReactNode> {
   }
 
   // View
-  createDOM<EditorContext>(config: EditorConfig<EditorContext>): HTMLElement {
+  createDOM(config: EditorConfig): HTMLElement {
     const span = document.createElement('span');
     const theme = config.theme;
     const className = theme.image;
@@ -155,12 +202,12 @@ export class ExcalidrawNode extends DecoratorNode<React.ReactNode> {
   }
 
   setData(data: string): void {
-    const self: any = this.getWritable();
+    const self = this.getWritable() as ExcalidrawNode;
 
     self.__data = data;
   }
 
-  decorate(_editor: LexicalEditor) {
+  decorate(_editor: LexicalEditor): JSX.Element {
     return <ExcalidrawComponent nodeKey={this.getKey()} data={this.__data} />;
   }
 }
@@ -169,6 +216,6 @@ export function $createExcalidrawNode(): ExcalidrawNode {
   return new ExcalidrawNode();
 }
 
-export function $isExcalidrawNode(node?: LexicalNode) {
+export function $isExcalidrawNode(node: LexicalNode | null): node is ExcalidrawNode {
   return node instanceof ExcalidrawNode;
 }

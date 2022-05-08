@@ -15,18 +15,11 @@ import {
   TableCellHeaderStates,
   TableCellNode,
 } from '@lexical/table';
-import {
-  $getSelection,
-  $isGridSelection,
-  $isRangeSelection,
-  $setSelection,
-  GridSelection,
-  RangeSelection,
-} from 'lexical';
+import { $getSelection, $isGridSelection, $isRangeSelection, $setSelection } from 'lexical';
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+// $FlowFixMe
 import { createPortal } from 'react-dom';
-import { Dropdown } from 'ultra-design';
 
 type TableCellActionMenuProps = Readonly<{
   contextRef: { current: null | HTMLElement };
@@ -43,7 +36,7 @@ function TableActionMenu({
 }: TableCellActionMenuProps) {
   const [editor] = useLexicalComposerContext();
   const dropDownRef = useRef<HTMLDivElement>();
-  const [tableCellNode, updateTableCellNode] = useState(_tableCellNode);
+  const [tableCellNode, updateTableCellNode] = useState<any>(_tableCellNode);
   const [selectionCounts, updateSelectionCounts] = useState({
     columns: 1,
     rows: 1,
@@ -63,7 +56,7 @@ function TableActionMenu({
 
   useEffect(() => {
     editor.getEditorState().read(() => {
-      const selection = $getSelection() as GridSelection;
+      const selection = $getSelection();
 
       if ($isGridSelection(selection)) {
         const selectionShape = selection.getShape();
@@ -78,7 +71,9 @@ function TableActionMenu({
 
   useEffect(() => {
     const menuButtonElement = contextRef.current;
-    const dropDownElement: any = dropDownRef.current;
+    const dropDownElement = dropDownRef.current;
+
+    if (!dropDownElement) return;
 
     if (menuButtonElement != null && dropDownElement != null) {
       const menuButtonRect = menuButtonElement.getBoundingClientRect();
@@ -133,7 +128,7 @@ function TableActionMenu({
   const insertTableRowAtSelection = useCallback(
     shouldInsertAfter => {
       editor.update(() => {
-        const selection = $getSelection() as GridSelection;
+        const selection = $getSelection();
 
         const tableNode = $getTableNodeFromLexicalNodeOrThrow(tableCellNode);
 
@@ -162,7 +157,7 @@ function TableActionMenu({
   const insertTableColumnAtSelection = useCallback(
     shouldInsertAfter => {
       editor.update(() => {
-        const selection = $getSelection() as GridSelection;
+        const selection = $getSelection();
 
         const tableNode = $getTableNodeFromLexicalNodeOrThrow(tableCellNode);
 
@@ -245,7 +240,7 @@ function TableActionMenu({
           throw new Error('Expected table cell');
         }
 
-        tableCell.toggleHeaderStyle(TableCellHeaderStates.ROW);
+        (tableCell as any).toggleHeaderStyle(TableCellHeaderStates.ROW);
       });
 
       clearTableSelection();
@@ -280,7 +275,7 @@ function TableActionMenu({
           throw new Error('Expected table cell');
         }
 
-        tableCell.toggleHeaderStyle(TableCellHeaderStates.COLUMN);
+        (tableCell as any).toggleHeaderStyle(TableCellHeaderStates.COLUMN);
       }
 
       clearTableSelection();
@@ -288,8 +283,14 @@ function TableActionMenu({
     });
   }, [editor, tableCellNode, clearTableSelection, onClose]);
 
-  return (
-    <Dropdown ref={dropDownRef}>
+  return createPortal(
+    <div
+      className="dropdown"
+      ref={dropDownRef}
+      onClick={e => {
+        e.stopPropagation();
+      }}
+    >
       <button className="item" onClick={() => insertTableRowAtSelection(false)}>
         <span className="text">Insert {selectionCounts.rows === 1 ? 'row' : `${selectionCounts.rows} rows`} above</span>
       </button>
@@ -332,7 +333,8 @@ function TableActionMenu({
           column header
         </span>
       </button>
-    </Dropdown>
+    </div>,
+    document.body,
   );
 }
 
@@ -347,7 +349,7 @@ function TableCellActionMenuContainer() {
 
   const moveMenu = useCallback(() => {
     const menu = menuButtonRef.current;
-    const selection = $getSelection() as RangeSelection;
+    const selection = $getSelection();
     const nativeSelection = window.getSelection();
     const activeElement = document.activeElement;
 
@@ -451,7 +453,7 @@ function TableCellActionMenuContainer() {
   );
 }
 
-export default function TableActionMenuPlugin(): React.ReactPortal {
+export default function TableActionMenuPlugin() {
   const [editor] = useLexicalComposerContext();
 
   return useMemo(() => createPortal(<TableCellActionMenuContainer />, document.body), [editor]);

@@ -4,11 +4,16 @@ import type { LexicalEditor } from 'lexical';
 import { $isLinkNode } from '@lexical/link';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $getNearestNodeFromDOMNode } from 'lexical';
-import { useEffect, useRef } from 'react';
+import { FC, useEffect, useRef } from 'react';
 
 type LinkFilter = (event: MouseEvent, linkNode: LinkNode) => boolean;
 
-export default function ClickableLinkPlugin({ filter, newTab = true }: { filter?: LinkFilter; newTab?: boolean }) {
+interface ClickableLinkPluginProps {
+  filter?: LinkFilter;
+  newTab?: boolean;
+}
+
+const ClickableLinkPlugin: FC<ClickableLinkPluginProps> = ({ filter, newTab = true }) => {
   const [editor] = useLexicalComposerContext();
   const hasMoved = useRef(false);
 
@@ -29,7 +34,6 @@ export default function ClickableLinkPlugin({ filter, newTab = true }: { filter?
       const hasMovedDuringClick = hasMoved.current;
 
       hasMoved.current = false;
-
       const event = e as MouseEvent;
       const linkDomNode = getLinkDomNode(event, editor);
 
@@ -61,7 +65,11 @@ export default function ClickableLinkPlugin({ filter, newTab = true }: { filter?
         return;
       }
 
-      window.open(href, newTab || event.metaKey || event.ctrlKey ? '_blank' : '_self');
+      try {
+        window.open(href, newTab || event.metaKey || event.ctrlKey ? '_blank' : '_self');
+      } catch {
+        // It didn't work, which is better than throwing an exception!
+      }
     }
 
     return editor.registerRootListener((rootElement: null | HTMLElement, prevRootElement: null | HTMLElement) => {
@@ -70,6 +78,7 @@ export default function ClickableLinkPlugin({ filter, newTab = true }: { filter?
         prevRootElement.removeEventListener('pointerup', onPointerUp);
         prevRootElement.removeEventListener('click', onClick);
       }
+
       if (rootElement !== null) {
         rootElement.addEventListener('click', onClick);
         rootElement.addEventListener('pointerdown', onPointerDown);
@@ -79,7 +88,9 @@ export default function ClickableLinkPlugin({ filter, newTab = true }: { filter?
   }, [editor, filter, newTab]);
 
   return null;
-}
+};
+
+export default ClickableLinkPlugin;
 
 function isLinkDomNode(domNode: Node): boolean {
   return domNode.nodeName.toLowerCase() === 'a';
@@ -94,7 +105,6 @@ function getLinkDomNode(event: MouseEvent, editor: LexicalEditor): HTMLAnchorEle
     }
 
     if (domNode.parentNode && isLinkDomNode(domNode.parentNode)) {
-      // $FlowExpectedError[incompatible-cast]
       return domNode.parentNode as HTMLAnchorElement;
     }
 

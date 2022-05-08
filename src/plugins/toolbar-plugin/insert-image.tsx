@@ -3,7 +3,7 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { FC, useState, useRef } from 'react';
 import { Toast, Modal, Tabs, Upload, Button, Input } from 'ultra-design';
 import { UploadRef } from 'ultra-design/es/upload/upload';
-import { InsertImagePayload, INSERT_IMAGE_COMMAND } from '../ImagesPlugin';
+import { InsertImagePayload, INSERT_IMAGE_COMMAND } from '../images-plugin';
 
 interface InsertImageDialogProps {
   visible: boolean;

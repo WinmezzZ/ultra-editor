@@ -1,28 +1,39 @@
+import type { RangeSelection } from 'lexical';
+
 import { $getListDepth, $isListItemNode, $isListNode } from '@lexical/list';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $getSelection, $isElementNode, $isRangeSelection, INDENT_CONTENT_COMMAND } from 'lexical';
-import { useEffect } from 'react';
+import {
+  $getSelection,
+  $isElementNode,
+  $isRangeSelection,
+  COMMAND_PRIORITY_CRITICAL,
+  ElementNode,
+  INDENT_CONTENT_COMMAND,
+} from 'lexical';
+import { FC, useEffect } from 'react';
 
-function getElementNodesInSelection(selection: any) {
+type Props = Readonly<{
+  maxDepth: number | null | undefined;
+}>;
+
+function getElementNodesInSelection(selection: RangeSelection): Set<ElementNode> {
   const nodesInSelection = selection.getNodes();
 
   if (nodesInSelection.length === 0) {
     return new Set([selection.anchor.getNode().getParentOrThrow(), selection.focus.getNode().getParentOrThrow()]);
   }
 
-  return new Set(nodesInSelection.map((n: any) => ($isElementNode(n) ? n : n.getParentOrThrow())));
+  return new Set(nodesInSelection.map(n => ($isElementNode(n) ? n : n.getParentOrThrow())));
 }
 
-const highPriority = 3;
-
-function isIndentPermitted(maxDepth: number) {
+function isIndentPermitted(maxDepth: number): boolean {
   const selection = $getSelection();
 
   if (!$isRangeSelection(selection)) {
     return false;
   }
 
-  const elementNodesInSelection = getElementNodesInSelection(selection);
+  const elementNodesInSelection: Set<ElementNode> = getElementNodesInSelection(selection);
 
   let totalDepth = 0;
 
@@ -43,12 +54,18 @@ function isIndentPermitted(maxDepth: number) {
   return totalDepth <= maxDepth;
 }
 
-export default function ListMaxIndentLevelPlugin({ maxDepth }: any) {
+const ListMaxIndentLevelPlugin: FC<Props> = ({ maxDepth }) => {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
-    return editor.registerCommand(INDENT_CONTENT_COMMAND, () => !isIndentPermitted(maxDepth ?? 7), highPriority);
+    return editor.registerCommand(
+      INDENT_CONTENT_COMMAND,
+      () => !isIndentPermitted(maxDepth ?? 7),
+      COMMAND_PRIORITY_CRITICAL,
+    );
   }, [editor, maxDepth]);
 
   return null;
-}
+};
+
+export default ListMaxIndentLevelPlugin;

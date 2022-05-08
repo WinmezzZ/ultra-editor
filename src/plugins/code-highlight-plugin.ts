@@ -1,8 +1,8 @@
 import { registerCodeHighlighting } from '@lexical/code';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 
-export default function CodeHighlightPlugin() {
+const CodeHighlightPlugin: FC = () => {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
@@ -10,4 +10,6 @@ export default function CodeHighlightPlugin() {
   }, [editor]);
 
   return null;
-}
+};
+
+export default CodeHighlightPlugin;
