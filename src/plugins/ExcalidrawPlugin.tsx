@@ -1,14 +1,13 @@
-import type { LexicalCommand, RangeSelection } from 'lexical';
+import type { LexicalCommand } from 'lexical';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { COMMAND_PRIORITY_EDITOR, $getSelection, $isRangeSelection, createCommand } from 'lexical';
+import { $getSelection, $isRangeSelection, COMMAND_PRIORITY_EDITOR, createCommand } from 'lexical';
 import { useEffect } from 'react';
 
 import { $createExcalidrawNode, ExcalidrawNode } from '../nodes/ExcalidrawNode';
 
 export const INSERT_EXCALIDRAW_COMMAND: LexicalCommand<void> = createCommand();
-
-export default function ExcalidrawPlugin() {
+export default function ExcalidrawPlugin(): JSX.Element {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
@@ -19,7 +18,7 @@ export default function ExcalidrawPlugin() {
     return editor.registerCommand(
       INSERT_EXCALIDRAW_COMMAND,
       () => {
-        const selection = $getSelection() as RangeSelection;
+        const selection = $getSelection();
 
         if ($isRangeSelection(selection)) {
           const excalidrawNode = $createExcalidrawNode();

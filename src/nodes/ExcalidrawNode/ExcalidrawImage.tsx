@@ -1,4 +1,5 @@
 import { exportToSvg } from '@excalidraw/excalidraw';
+import { ExcalidrawElement, NonDeleted } from '@excalidraw/excalidraw/types/element/types';
 import { useEffect, useState } from 'react';
 
 type ImageType = 'svg' | 'canvas';
@@ -15,11 +16,15 @@ type Props = {
   /**
    * The Excalidraw elements to be rendered as an image
    */
-  elements: ReadonlyArray<any>;
+  elements: NonDeleted<ExcalidrawElement>[];
   /**
    * The height of the image to be rendered
    */
   height?: number | null;
+  /**
+   * The ref object to be used to render the image
+   */
+  imageContainerRef: { current: null | HTMLDivElement };
   /**
    * The type of image to be rendered
    */
@@ -34,28 +39,31 @@ type Props = {
   width?: number | null;
 };
 
-// exportToSvg has fonts from excalidraw.com
-// We don't want them to be used in open source
 const removeStyleFromSvg_HACK = svg => {
   const styleTag = svg?.firstElementChild?.firstElementChild;
+
+  // Generated SVG is getting double-sized by height and width attributes
+  // We want to match the real size of the SVG element
+  const viewBox = svg.getAttribute('viewBox');
+
+  if (viewBox != null) {
+    const viewBoxDimentions = viewBox.split(' ');
+
+    svg.setAttribute('width', viewBoxDimentions[2]);
+    svg.setAttribute('height', viewBoxDimentions[3]);
+  }
 
   if (styleTag && styleTag.tagName === 'style') {
     styleTag.remove();
   }
 };
 
-/**
- * @explorer-desc
- * A component for rendering Excalidraw elements as a static image
- */
 export default function ExcalidrawImage({
   elements,
-  className: _className = '',
-  height: _height = null,
-  width: _width = null,
+  imageContainerRef,
   appState = null,
   rootClassName = null,
-}: Props) {
+}: Props): JSX.Element {
   const [Svg, setSvg] = useState<Element | null>(null);
 
   useEffect(() => {
@@ -67,11 +75,16 @@ export default function ExcalidrawImage({
       });
 
       removeStyleFromSvg_HACK(svg);
+
+      svg.setAttribute('width', '100%');
+      svg.setAttribute('height', '100%');
+      svg.setAttribute('display', 'block');
+
       setSvg(svg);
     };
 
     setContent();
   }, [elements, appState]);
 
-  return <div className={rootClassName} dangerouslySetInnerHTML={{ __html: Svg?.outerHTML }} />;
+  return <div ref={imageContainerRef} className={rootClassName} dangerouslySetInnerHTML={{ __html: Svg?.outerHTML }} />;
 }
