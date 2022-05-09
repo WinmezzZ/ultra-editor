@@ -36,7 +36,18 @@ import {
 } from '@lexical/list';
 import { $createHeadingNode, $createQuoteNode, $isHeadingNode, HeadingTagType } from '@lexical/rich-text';
 import { $createCodeNode, $isCodeNode, getDefaultCodeLanguage, getCodeLanguages } from '@lexical/code';
-import { Button, ConfigProviderProps, Divider, Dropdown, Input, Modal, Select, Toast, Tooltip } from 'ultra-design';
+import {
+  Button,
+  ConfigProviderProps,
+  Divider,
+  Dropdown,
+  Input,
+  Menu,
+  Modal,
+  Select,
+  Toast,
+  Tooltip,
+} from 'ultra-design';
 import {
   AddBoxLineIcon,
   ArrowGoBackLineIcon,
@@ -195,6 +206,8 @@ export default function ToolbarPlugin() {
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
   const [isStrikethrough, setIsStrikethrough] = useState(false);
+  const [isSubscript, setIsSubscript] = useState(false);
+  const [isSuperscript, setIsSuperscript] = useState(false);
   const [isCode, setIsCode] = useState(false);
   const rowsRef = useRef<HTMLInputElement>();
   const columnsRef = useRef<HTMLInputElement>();
@@ -226,15 +239,16 @@ export default function ToolbarPlugin() {
           }
         }
       }
-      // Update text format
+
       setIsBold(selection.hasFormat('bold'));
       setFontSize($getSelectionStyleValueForProperty(selection, 'font-size', '14px'));
       setIsItalic(selection.hasFormat('italic'));
       setIsUnderline(selection.hasFormat('underline'));
       setIsStrikethrough(selection.hasFormat('strikethrough'));
+      setIsSubscript(selection.hasFormat('subscript'));
+      setIsSuperscript(selection.hasFormat('superscript'));
       setIsCode(selection.hasFormat('code'));
 
-      // Update links
       const node = getSelectedNode(selection);
       const parent = node.getParent();
 
@@ -567,18 +581,33 @@ export default function ToolbarPlugin() {
           </Tooltip>
           <Dropdown
             content={
-              <>
-                <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code')}>
+              <Menu
+                style={{ padding: 0 }}
+                defaultSelectedKey={
+                  isCode ? 'code' : isSubscript ? 'subscript' : isSubscript ? 'superscript' : undefined
+                }
+              >
+                <Menu.SubMenu
+                  key="code"
+                  onClick={() => {
+                    editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code');
+                  }}
+                >
                   <CodeSSlashLineIcon />
                   <span>行内代码</span>
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'subscript')}>
+                </Menu.SubMenu>
+                <Menu.SubMenu key="subscript" onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'subscript')}>
                   <SubscriptIcon /> <span>下标</span>
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'superscript')}>
+                </Menu.SubMenu>
+                <Menu.SubMenu
+                  key="superscript"
+                  onClick={() => {
+                    console.log(1);
+                  }}
+                >
                   <SuperscriptIcon /> <span>上标</span>
-                </Dropdown.Item>
-              </>
+                </Menu.SubMenu>
+              </Menu>
             }
           >
             <Button type="pure" className="toolbar-item">

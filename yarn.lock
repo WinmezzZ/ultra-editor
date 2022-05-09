@@ -8491,10 +8491,10 @@ ultra-design@^0.0.40-beta:
     prop-types "^15.8.1"
     react-transition-group "^4.4.2"
 
-ultra-design@^0.0.79-beta:
-  version "0.0.79-beta"
-  resolved "https://registry.yarnpkg.com/ultra-design/-/ultra-design-0.0.79-beta.tgz#16c9cfe0bb2a5eed04a64c1b5db30f51ab43f589"
-  integrity sha512-FIv3JSnAGKNU6tpSo3AY4jInQilpy6D36e5OH/aS9ja4hEtH2KnFfoGkUktTRx+YTlfdI0iayYECaZp8hkX/Sg==
+ultra-design@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/ultra-design/-/ultra-design-0.1.5.tgz#7b2d7fff21ef1f1064591847283c4680ba9b5934"
+  integrity sha512-stOEoFI7r2kx6vSYocS2yslOEMY+HtGcACu4IX5UTKQpnQuJf8FOmHvcTE5tHVF9zL1zNuJs0uIWAcMVTJDKjg==
   dependencies:
     "@babel/runtime" "^7.16.3"
     "@emotion/babel-plugin" "^11.3.0"
@@ -8506,7 +8506,7 @@ ultra-design@^0.0.79-beta:
     mitt "^3.0.0"
     prop-types "^15.8.1"
     react-transition-group "^4.4.2"
-    winhooks "^0.0.2"
+    winhooks "^0.0.3"
 
 ultra-icon@^0.0.7:
   version "0.0.7"
@@ -8515,7 +8515,6 @@ ultra-icon@^0.0.7:
   dependencies:
     "@emotion/react" "^11.9.0"
     react "^17.0.2"
-
 
 unicode-canonical-property-names-ecmascript@^2.0.0:
   version "2.0.0"
@@ -8927,6 +8926,22 @@ winhooks@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/winhooks/-/winhooks-0.0.2.tgz#5dd74202dc4cac4494980ea5e24119ddf1cd78f8"
   integrity sha512-4bfp/O2VyCNVV0TupRNdkQLLRmfygvD57JpAVMPbAqkMRK5oQZL3GpvNQmETsdY2iQKxVndOtOVcvRqyDCSeyg==
+  dependencies:
+    "@mdx-js/loader" "^2.1.1"
+    "@mdx-js/react" "^2.1.1"
+    react "17.0.2"
+    react-dom "17.0.2"
+    react-router-dom "^6.3.0"
+    react-syntax-highlighter "^15.5.0"
+    rehype-autolink-headings "^6.1.1"
+    rehype-slug "^5.0.1"
+    remark-gfm "^3.0.1"
+    ultra-design "^0.0.40-beta"
+
+winhooks@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/winhooks/-/winhooks-0.0.3.tgz#a7d767092e876a8e5a728205f08e7a656bee2dfb"
+  integrity sha512-5+7JTUAxzCkJEwcXh3yG40XjuOv28doapYMccwyvd0ByTOkz8roOLiD4ksR1p8Im+OWUCPjvfCWt3+ElljvNOg==
   dependencies:
     "@mdx-js/loader" "^2.1.1"
     "@mdx-js/react" "^2.1.1"
