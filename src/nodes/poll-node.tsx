@@ -9,7 +9,7 @@ import { useCallback, useMemo } from 'react';
 import joinClasses from '../utils/join-classes';
 import { css } from '@emotion/react';
 import { Button, Checkbox, Input } from 'ultra-design';
-import { CloseIcon } from 'ultra-icons';
+import { CloseLineIcon } from 'ultra-icon';
 
 type Options = ReadonlyArray<Option>;
 
@@ -110,7 +110,7 @@ function PollOptionComponent({
           });
         }}
       >
-        <CloseIcon size="18" />
+        <CloseLineIcon />
       </Button>
     </div>
   );

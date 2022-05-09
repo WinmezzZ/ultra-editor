@@ -38,37 +38,37 @@ import { $createHeadingNode, $createQuoteNode, $isHeadingNode, HeadingTagType } 
 import { $createCodeNode, $isCodeNode, getDefaultCodeLanguage, getCodeLanguages } from '@lexical/code';
 import { Button, ConfigProviderProps, Divider, Dropdown, Input, Modal, Select, Toast, Tooltip } from 'ultra-design';
 import {
-  AddIcon,
-  AlignTextBothIcon,
-  AlignTextCenterIcon,
-  AlignTextLeftIcon,
-  AlignTextRightIcon,
-  ChecklistIcon,
-  CodeIcon,
-  DividingLineIcon,
-  FontSizeTwoIcon,
-  FormulaIcon,
+  AddBoxLineIcon,
+  ArrowGoBackLineIcon,
+  ArrowGoForwardLineIcon,
+  AlignJustifyIcon,
+  AlignLeftIcon,
+  AlignCenterIcon,
+  AlignRightIcon,
   H1Icon,
   H2Icon,
   H3Icon,
-  ImageFilesIcon,
-  IndentLeftIcon,
-  IndentRightIcon,
-  InsertTableIcon,
-  LevelFourTitleIcon,
-  LinkOneIcon,
-  ListBottomIcon,
-  OrderedListIcon,
-  QuoteIcon,
-  RedoIcon,
+  H4Icon,
+  BoldIcon,
+  ItalicIcon,
+  UnderlineIcon,
   StrikethroughIcon,
+  FontSize2Icon,
+  CodeSSlashLineIcon,
+  IndentDecreaseIcon,
+  IndentIncreaseIcon,
+  LinksLineIcon,
+  ListOrderedIcon,
+  ListUnorderedIcon,
+  DoubleQuotesLIcon,
   SubscriptIcon,
   SuperscriptIcon,
-  TextBoldIcon,
-  TextItalicIcon,
-  TextUnderlineIcon,
-  UndoIcon,
-} from 'ultra-icons';
+  SeparatorIcon,
+  ImageLineIcon,
+  Table2Icon,
+  DrawImageIcon,
+  PollIcon,
+} from 'ultra-icon';
 import { css, Global } from '@emotion/react';
 import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
 import { INSERT_EXCALIDRAW_COMMAND } from './excalidraw-plugin';
@@ -146,7 +146,7 @@ function BlockOptionsDropdownList({ editor, blockType, setBlockType }) {
       onChange={onChangeBlockType}
     >
       <Select.Option value="paragraph">
-        <AlignTextBothIcon />
+        <AlignJustifyIcon />
         <span className="text">正文</span>
       </Select.Option>
       <Select.Option value="h1">
@@ -162,7 +162,7 @@ function BlockOptionsDropdownList({ editor, blockType, setBlockType }) {
         <span className="h3">标题3</span>
       </Select.Option>
       <Select.Option value="h4">
-        <LevelFourTitleIcon />
+        <H4Icon />
         <span className="h4">标题4</span>
       </Select.Option>
     </Select>
@@ -176,8 +176,6 @@ const blockSelectStyle = css`
     align-items: center;
     .ultra-icon {
       margin-right: 10px;
-      display: inline-flex;
-      align-items: center;
     }
   }
 `;
@@ -376,12 +374,8 @@ export default function ToolbarPlugin() {
       <Global
         styles={css`
           .ultra-icon {
-            rect,
-            path {
-              stroke: ${ultraContext.theme[ultraContext.theme.mode].textColor};
-            }
-            path[fill-opacity='0.01'] {
-              display: none;
+            svg {
+              fill: currentColor;
             }
             & + * {
               margin-left: 8px;
@@ -397,11 +391,11 @@ export default function ToolbarPlugin() {
         content={
           <>
             <Dropdown.Item onClick={inSertCodeBlock}>
-              <CodeIcon size="18" />
+              <CodeSSlashLineIcon />
               <span>代码块</span>
             </Dropdown.Item>
             <Dropdown.Item onClick={() => setInsertImageModalVisible(true)}>
-              <ImageFilesIcon size="18" />
+              <ImageLineIcon />
               <span>图片</span>
             </Dropdown.Item>
             <Dropdown.Item
@@ -409,7 +403,7 @@ export default function ToolbarPlugin() {
                 editor.dispatchCommand(INSERT_EXCALIDRAW_COMMAND, {});
               }}
             >
-              <FormulaIcon size="18" />
+              <DrawImageIcon />
               <span>画板</span>
             </Dropdown.Item>
             {/* <Dropdown.Item
@@ -453,7 +447,7 @@ export default function ToolbarPlugin() {
                 });
               }}
             >
-              <InsertTableIcon size="18" />
+              <Table2Icon />
               <span>表格</span>
             </Dropdown.Item>
             <Dropdown.Item
@@ -473,14 +467,14 @@ export default function ToolbarPlugin() {
                 });
               }}
             >
-              <ChecklistIcon size="18" />
+              <PollIcon />
               <span>投票</span>
             </Dropdown.Item>
           </>
         }
       >
         <Button className="toolbar-item" type="pure">
-          <AddIcon />
+          <AddBoxLineIcon />
           <span>插入</span>
         </Button>
       </Dropdown>
@@ -492,7 +486,7 @@ export default function ToolbarPlugin() {
           editor.dispatchCommand(UNDO_COMMAND, {});
         }}
       >
-        <UndoIcon />
+        <ArrowGoBackLineIcon />
       </Button>
 
       <Button
@@ -503,7 +497,7 @@ export default function ToolbarPlugin() {
         }}
         className="toolbar-item"
       >
-        <RedoIcon />
+        <ArrowGoForwardLineIcon />
       </Button>
 
       {blockType === 'code' ? (
@@ -531,7 +525,7 @@ export default function ToolbarPlugin() {
           <Divider vertical />
           <Tooltip title="加粗">
             <Button type="pure" className={'toolbar-item ' + (isBold ? 'ultra-button--active' : '')}>
-              <TextBoldIcon
+              <BoldIcon
                 onClick={() => {
                   editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
                 }}
@@ -546,7 +540,7 @@ export default function ToolbarPlugin() {
                 editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
               }}
             >
-              <TextItalicIcon />
+              <ItalicIcon />
             </Button>
           </Tooltip>
           <Tooltip title="下划线">
@@ -557,7 +551,7 @@ export default function ToolbarPlugin() {
                 editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
               }}
             >
-              <TextUnderlineIcon />
+              <UnderlineIcon />
             </Button>
           </Tooltip>
           <Tooltip title="删除线">
@@ -575,7 +569,7 @@ export default function ToolbarPlugin() {
             content={
               <>
                 <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'code')}>
-                  <CodeIcon />
+                  <CodeSSlashLineIcon />
                   <span>行内代码</span>
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'subscript')}>
@@ -588,12 +582,12 @@ export default function ToolbarPlugin() {
             }
           >
             <Button type="pure" className="toolbar-item">
-              <FontSizeTwoIcon />
+              <FontSize2Icon />
             </Button>
           </Dropdown>
           <Tooltip title="链接">
             <Button type="pure" onClick={insertLink} className={'toolbar-item spaced ' + (isLink ? 'active' : '')}>
-              <LinkOneIcon />
+              <LinksLineIcon />
             </Button>
           </Tooltip>
 
@@ -605,7 +599,7 @@ export default function ToolbarPlugin() {
               className={'toolbar-item ' + (blockType === 'ul' ? 'active' : '')}
               onClick={formatBulletList}
             >
-              <ListBottomIcon />
+              <ListUnorderedIcon />
             </Button>
           </Tooltip>
           <Tooltip title="有序列表">
@@ -614,7 +608,7 @@ export default function ToolbarPlugin() {
               className={'toolbar-item ' + (blockType === 'ol' ? 'active' : '')}
               onClick={formatNumberedList}
             >
-              <OrderedListIcon />
+              <ListOrderedIcon />
             </Button>
           </Tooltip>
 
@@ -624,7 +618,7 @@ export default function ToolbarPlugin() {
               className={'toolbar-item ' + (blockType === 'quote' ? 'active' : '')}
               onClick={formatQuote}
             >
-              <QuoteIcon />
+              <DoubleQuotesLIcon />
             </Button>
           </Tooltip>
 
@@ -637,7 +631,7 @@ export default function ToolbarPlugin() {
                 editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, {});
               }}
             >
-              <DividingLineIcon />
+              <SeparatorIcon />
             </Button>
           </Tooltip>
           <Divider vertical />
@@ -645,29 +639,29 @@ export default function ToolbarPlugin() {
             content={
               <>
                 <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left')}>
-                  <AlignTextLeftIcon size="18" /> <span>左对齐</span>
+                  <AlignLeftIcon /> <span>左对齐</span>
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center')}>
-                  <AlignTextCenterIcon size="18" /> <span>居中对齐</span>
+                  <AlignCenterIcon /> <span>居中对齐</span>
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right')}>
-                  <AlignTextRightIcon size="18" /> <span>右对齐</span>
+                  <AlignRightIcon /> <span>右对齐</span>
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify')}>
-                  <AlignTextBothIcon size="18" /> <span>两边对齐</span>
+                  <AlignJustifyIcon /> <span>两边对齐</span>
                 </Dropdown.Item>
                 <Dropdown.Divider />
                 <Dropdown.Item onClick={() => editor.dispatchCommand(OUTDENT_CONTENT_COMMAND, {})}>
-                  <IndentLeftIcon size="18" /> <span>左缩进</span>
+                  <IndentDecreaseIcon /> <span>左缩进</span>
                 </Dropdown.Item>
                 <Dropdown.Item onClick={() => editor.dispatchCommand(INDENT_CONTENT_COMMAND, {})}>
-                  <IndentRightIcon size="18" /> <span>右缩进</span>
+                  <IndentIncreaseIcon /> <span>右缩进</span>
                 </Dropdown.Item>
               </>
             }
           >
             <Button className="toolbar-item">
-              <AlignTextLeftIcon />
+              <AlignLeftIcon />
               <span>对齐方式</span>
             </Button>
           </Dropdown>
@@ -705,13 +699,6 @@ const toolbarStyles = (ultraContext: ConfigProviderProps) => {
 
     .toolbar-item:hover:not([disabled]) {
       background-color: rgba(204, 204, 204, 0.3);
-    }
-
-    .ultra-icon {
-      svg {
-        width: 18px;
-        height: 18px;
-      }
     }
   `;
 };

@@ -8,8 +8,7 @@ import { FC, useCallback, useEffect, useState } from 'react';
 import { SPEECH_TO_TEXT_COMMAND, SUPPORT_SPEECH_RECOGNITION } from './speech-to-text-plugin';
 import { css } from '@emotion/react';
 import { Button, Modal, Tooltip } from 'ultra-design';
-import { DeleteIcon, LockIcon, UnlockIcon } from 'ultra-icons';
-import { MicrophoneIcon } from 'ultra-icons';
+import { DeleteBinLineIcon, LockLineIcon, LockUnlockLineIcon, MicrophoneFillIcon, MarkdownLineIcon } from 'ultra-icon';
 
 const ActionsPlugins: FC = () => {
   const [editor] = useLexicalComposerContext();
@@ -84,7 +83,7 @@ const ActionsPlugins: FC = () => {
             }}
             className={'action-button action-button-mic ' + (isSpeechToText ? 'active' : '')}
           >
-            <MicrophoneIcon size="18" />
+            <MicrophoneFillIcon />
           </Button>
         </Tooltip>
       )}
@@ -103,7 +102,7 @@ const ActionsPlugins: FC = () => {
             });
           }}
         >
-          <DeleteIcon size="18" />
+          <DeleteBinLineIcon />
         </Button>
       </Tooltip>
       <Tooltip title="只读" placement="top">
@@ -113,12 +112,12 @@ const ActionsPlugins: FC = () => {
             editor.setReadOnly(!editor.isReadOnly());
           }}
         >
-          {isReadOnly ? <UnlockIcon size="18" /> : <LockIcon size="18" />}
+          {isReadOnly ? <LockUnlockLineIcon /> : <LockLineIcon />}
         </Button>
       </Tooltip>
       <Tooltip title="markdown" placement="top">
         <Button className="action-button" onClick={convertFromMarkdown}>
-          <span style={{ fontSize: 18 }}> M</span>
+          <MarkdownLineIcon />
         </Button>
       </Tooltip>
     </div>
