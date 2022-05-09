@@ -44,6 +44,7 @@ import { EditorPropsContext } from './context/editor-props-context';
 import { FC } from 'react';
 import useUltraContext from './context/ultra-context';
 import { fade } from 'ultra-design/es/utils/fade';
+import { UploadRef } from 'ultra-design/es/upload/upload';
 
 const initialConfig = {
   theme: Theme,
@@ -55,6 +56,7 @@ const initialConfig = {
 
 export interface EditorProps {
   theme: 'dark' | 'light';
+  handleUploadImages?: (imageList: UploadRef['imageList']) => Promise<{ src: string }[]>;
 }
 
 const Editor: FC<EditorProps> = props => {
