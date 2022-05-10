@@ -586,7 +586,7 @@ export default function ToolbarPlugin() {
               <Menu
                 style={{ padding: 0 }}
                 defaultSelectedKey={
-                  isCode ? 'code' : isSubscript ? 'subscript' : isSubscript ? 'superscript' : undefined
+                  isCode ? 'code' : isSubscript ? 'subscript' : isSuperscript ? 'superscript' : undefined
                 }
               >
                 <Menu.SubMenu

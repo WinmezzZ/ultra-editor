@@ -115,7 +115,7 @@ export default Editor;
 const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
   const { theme } = ultraContext;
   const { primaryColor } = theme.style;
-  const { textColor, borderColor, backgroundColor, secondBackgroundColor } = theme[theme.mode];
+  const { textColor, borderColor, backgroundColor } = theme[theme.mode];
 
   return css`
     margin: 20px auto;
