@@ -11,9 +11,9 @@ import CheckListPlugin from '@lexical/react/LexicalCheckListPlugin';
 import CodeHighlightPlugin from './plugins/code-highlight-plugin';
 import AutoLinkPlugin from './plugins/autolink-plugin';
 import ImagesPlugin from './plugins/images-plugin';
-import MarkdownShortcutPlugin from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import TablePlugin from '@lexical/react/LexicalTablePlugin';
 import ClearPlugin from '@lexical/react/LexicalClearEditorPlugin';
+import MarkdownShortcutPlugin from './plugins/markdown-shotcurt-plugin';
 import TableCellResizerPlugin from './plugins/table-cell-resizer-plugin';
 
 // import TableActionMenuPlugin from './plugins/TableActionMenuPlugin';

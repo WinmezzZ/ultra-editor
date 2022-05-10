@@ -1,4 +1,3 @@
-import type { Transformer } from '@lexical/markdown';
 import type { ElementNode, LexicalNode } from 'lexical';
 
 import { CHECK_LIST, ELEMENT_TRANSFORMERS, TEXT_FORMAT_TRANSFORMERS, TEXT_MATCH_TRANSFORMERS } from '@lexical/markdown';
@@ -25,7 +24,6 @@ export const HR = {
   replace: (parentNode, _1, _2, isImport) => {
     const line = $createHorizontalRuleNode();
 
-    // TODO: Get rid of isImport flag
     if (isImport || parentNode.getNextSibling() != null) {
       parentNode.replace(line);
     } else {
@@ -58,7 +56,7 @@ export const IMAGE = {
 };
 
 export const EQUATION = {
-  export: (node, _exportChildren, _eexportFormat) => {
+  export: (node, _exportChildren, _exportFormat) => {
     if (!$isEquationNode(node)) {
       return null;
     }
@@ -92,7 +90,6 @@ export const TABLE = {
 
       if ($isTableRowNode(row)) {
         for (const cell of row.getChildren()) {
-          // It's TableCellNode (hence ElementNode) so it's just to make flow happy
           if ($isElementNode(cell)) {
             rowOutput.push(exportChildren(cell));
           }
@@ -153,7 +150,7 @@ export const TABLE = {
       table.append(tableRow);
 
       for (let i = 0; i < maxCells; i++) {
-        tableRow.append(i < cells.length ? cells[i] : createTableCell(''));
+        tableRow.append(i < cells.length ? cells[i] : createTableCell());
       }
     }
 
@@ -163,7 +160,7 @@ export const TABLE = {
   type: 'element',
 };
 
-const createTableCell = (textContent: string | null | undefined): TableCellNode => {
+const createTableCell = (textContent?: string | null | undefined): TableCellNode => {
   const cell = ($createTableCellNode as any)(TableCellHeaderStates.NO_STATUS);
   const paragraph = $createParagraphNode();
 
@@ -177,9 +174,6 @@ const createTableCell = (textContent: string | null | undefined): TableCellNode 
 };
 
 const mapToTableCells = (textContent: string): Array<TableCellNode> | null => {
-  // TODO:
-  // For now plain text, single node. Can be expanded to more complex content
-  // including formatted text
   const match = textContent.match(TABLE_ROW_REG_EXP);
 
   if (!match || !match[1]) {
