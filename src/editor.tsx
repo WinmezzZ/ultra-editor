@@ -7,7 +7,7 @@ import ToolbarPlugin from './plugins/toolbar-plugin';
 // import TreeViewPlugin from './plugins/TreeViewPlugin';
 import LinkPlugin from '@lexical/react/LexicalLinkPlugin';
 import ListPlugin from '@lexical/react/LexicalListPlugin';
-// import CheckListPlugin from '@lexical/react/LexicalCheckListPlugin';
+import CheckListPlugin from '@lexical/react/LexicalCheckListPlugin';
 import CodeHighlightPlugin from './plugins/code-highlight-plugin';
 import AutoLinkPlugin from './plugins/autolink-plugin';
 import ImagesPlugin from './plugins/images-plugin';
@@ -45,6 +45,8 @@ import { FC } from 'react';
 import useUltraContext from './context/ultra-context';
 import { fade } from 'ultra-design/es/utils/fade';
 import { UploadRef } from 'ultra-design/es/upload/upload';
+import Square from './images/icons/square.svg';
+import SquareCheck from './images/icons/square-check.svg';
 
 const initialConfig = {
   theme: Theme,
@@ -77,7 +79,7 @@ const Editor: FC<EditorProps> = props => {
               <CodeHighlightPlugin />
               <ListPlugin />
               <LinkPlugin />
-              {/* <CheckListPlugin /> */}
+              <CheckListPlugin />
               <AutoLinkPlugin />
               <MarkdownShortcutPlugin />
               <ImagesPlugin />
@@ -346,6 +348,47 @@ const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
     }
     .UltraEditor__nestedListItem {
       list-style-type: none;
+    }
+    .UltraEditor__listItemChecked,
+    .UltraEditor__listItemUnchecked {
+      position: relative;
+      margin-left: 8px;
+      margin-right: 8px;
+      padding-left: 24px;
+      padding-right: 24px;
+      list-style-type: none;
+      outline: none;
+    }
+    .UltraEditor__listItemChecked {
+      text-decoration: line-through;
+    }
+    .UltraEditor__listItemUnchecked:before,
+    .UltraEditor__listItemChecked:before {
+      content: '';
+      width: 16px;
+      height: 16px;
+      top: 2px;
+      left: 0;
+      cursor: pointer;
+      display: block;
+      background-size: cover;
+      position: absolute;
+    }
+    .UltraEditor__listItemUnchecked[dir='rtl']:before,
+    .UltraEditor__listItemChecked[dir='rtl']:before {
+      left: auto;
+      right: 0;
+    }
+    .UltraEditor__listItemUnchecked:focus:before,
+    .UltraEditor__listItemChecked:focus:before {
+      box-shadow: 0 0 0 2px ${primaryColor};
+      border-radius: 2px;
+    }
+    .UltraEditor__listItemUnchecked:before {
+      background-image: url(${Square});
+    }
+    .UltraEditor__listItemChecked:before {
+      background-image: url(${SquareCheck});
     }
     .UltraEditor__tokenComment {
       color: slategray;

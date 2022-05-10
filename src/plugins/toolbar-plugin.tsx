@@ -33,6 +33,7 @@ import {
   // INSERT_CHECK_LIST_COMMAND,
   $isListNode,
   ListNode,
+  INSERT_CHECK_LIST_COMMAND,
 } from '@lexical/list';
 import { $createHeadingNode, $createQuoteNode, $isHeadingNode, HeadingTagType } from '@lexical/rich-text';
 import { $createCodeNode, $isCodeNode, getDefaultCodeLanguage, getCodeLanguages } from '@lexical/code';
@@ -79,6 +80,7 @@ import {
   Table2Icon,
   DrawImageIcon,
   PollIcon,
+  CheckboxLineIcon,
 } from 'ultra-icon';
 import { css, Global } from '@emotion/react';
 import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
@@ -226,8 +228,8 @@ export default function ToolbarPlugin() {
       if (elementDOM !== null) {
         setSelectedElementKey(elementKey);
         if ($isListNode(element)) {
-          const parentList: any = $getNearestNodeOfType(anchorNode, ListNode);
-          const type = parentList ? parentList.getTag() : element.getTag();
+          const parentList = $getNearestNodeOfType(anchorNode, ListNode as any) as ListNode;
+          const type = parentList ? parentList.getListType() : element.getListType();
 
           setBlockType(type);
         } else {
@@ -420,14 +422,14 @@ export default function ToolbarPlugin() {
               <DrawImageIcon />
               <span>画板</span>
             </Dropdown.Item>
-            {/* <Dropdown.Item
+            <Dropdown.Item
               onClick={() => {
                 editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, {});
               }}
             >
-              <CheckCorrect />
+              <CheckboxLineIcon />
               <span>待办事项</span>
-            </Dropdown.Item> */}
+            </Dropdown.Item>
             <Dropdown.Item
               onClick={() => {
                 Modal.confirm({
