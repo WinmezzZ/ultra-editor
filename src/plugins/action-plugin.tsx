@@ -1,14 +1,18 @@
 import { $convertFromMarkdownString } from '@lexical/markdown';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $createHorizontalRuleNode } from '@lexical/react/LexicalHorizontalRuleNode';
 import { mergeRegister } from '@lexical/utils';
-import { $getRoot, $isParagraphNode, CLEAR_EDITOR_COMMAND } from 'lexical';
+import { $createTextNode, $getRoot, $isParagraphNode, CLEAR_EDITOR_COMMAND } from 'lexical';
 import { FC, useCallback, useEffect, useState } from 'react';
 
 import { SPEECH_TO_TEXT_COMMAND, SUPPORT_SPEECH_RECOGNITION } from './speech-to-text-plugin';
 import { css } from '@emotion/react';
 import { Button, Modal, Tooltip } from 'ultra-design';
 import { DeleteBinLineIcon, LockLineIcon, LockUnlockLineIcon, MicrophoneFillIcon, MarkdownLineIcon } from 'ultra-icon';
+import { $isCodeNode } from '@lexical/code';
+import { UlTRA_TRANSFORMERS } from './markdown-transformers';
+import { $convertToMarkdownString } from '@lexical/markdown';
+import { $createCodeNode } from '@lexical/code';
+import { CodeNode } from '@lexical/code';
 
 const ActionsPlugins: FC = () => {
   const [editor] = useLexicalComposerContext();
@@ -45,29 +49,18 @@ const ActionsPlugins: FC = () => {
     });
   }, [editor]);
 
-  const convertFromMarkdown = useCallback(() => {
+  const handleMarkdownToggle = useCallback(() => {
     editor.update(() => {
       const root = $getRoot();
-      const children = root.getChildren();
-      const count = children.length;
-      let markdownString = '';
+      const firstChild = root.getFirstChild() as typeof CodeNode;
 
-      for (let i = 0; i < count; i++) {
-        const child = children[i];
+      if ($isCodeNode(firstChild) && firstChild.getLanguage() === 'markdown') {
+        $convertFromMarkdownString(firstChild.getTextContent(), UlTRA_TRANSFORMERS);
+      } else {
+        const markdown = $convertToMarkdownString(UlTRA_TRANSFORMERS);
 
-        if ($isParagraphNode(child)) {
-          if (markdownString.length) {
-            markdownString += '\n';
-          }
-          const text = child.getTextContent();
-
-          if (text.length) {
-            markdownString += text;
-          }
-        }
+        root.clear().append($createCodeNode('markdown').append($createTextNode(markdown)));
       }
-
-      $convertFromMarkdownString(markdownString, editor, $createHorizontalRuleNode);
       root.selectEnd();
     });
   }, [editor]);
@@ -116,7 +109,7 @@ const ActionsPlugins: FC = () => {
         </Button>
       </Tooltip>
       <Tooltip title="markdown" placement="top">
-        <Button className="action-button" onClick={convertFromMarkdown}>
+        <Button className="action-button" onClick={handleMarkdownToggle}>
           <MarkdownLineIcon />
         </Button>
       </Tooltip>

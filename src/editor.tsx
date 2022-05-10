@@ -230,6 +230,14 @@ const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
     .UltraEditor__textUnderlineStrikethrough {
       text-decoration: underline line-through;
     }
+    .UltraEditor__textSubscript {
+      font-size: 0.8em;
+      vertical-align: sub !important;
+    }
+    .UltraEditor__textSuperscript {
+      font-size: 0.8em;
+      vertical-align: super;
+    }
     .UltraEditor__textCode {
       background-color: rgb(240, 242, 245);
       padding: 1px 0.25rem;
@@ -248,7 +256,7 @@ const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
       text-decoration: underline;
     }
     .UltraEditor__code {
-      background-color: ${fade(backgroundColor, 0.5)};
+      background-color: ${fade(borderColor, 0.8)};
       font-family: Menlo, Consolas, Monaco, monospace;
       display: block;
       padding: 8px 8px 8px 52px;
@@ -265,7 +273,7 @@ const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
     .UltraEditor__code:before {
       content: attr(data-gutter);
       position: absolute;
-      background-color: ${secondBackgroundColor};
+      background-color: ${fade(borderColor, 0.8)};
       left: 0;
       top: 0;
       border-right: 1px solid ${borderColor};

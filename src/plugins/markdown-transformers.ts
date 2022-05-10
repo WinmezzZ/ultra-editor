@@ -183,7 +183,7 @@ const mapToTableCells = (textContent: string): Array<TableCellNode> | null => {
   return match[1].split('|').map(text => createTableCell(text));
 };
 
-export const PLAYGROUND_TRANSFORMERS: Array<Transformer> = [
+export const UlTRA_TRANSFORMERS: Array<Transformer> = [
   TABLE,
   HR,
   IMAGE,

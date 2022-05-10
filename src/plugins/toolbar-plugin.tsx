@@ -696,7 +696,6 @@ export default function ToolbarPlugin() {
               <span>对齐方式</span>
             </Button>
           </Dropdown>
-          <Divider vertical />
         </>
       )}
     </div>
