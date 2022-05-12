@@ -17,24 +17,26 @@ const App = () => {
 
   return (
     <ConfigProvider theme={{ mode: color }}>
-      <Global
-        styles={css`
-          body {
-            background-color: ${color == 'dark' ? '#000' : '#eee'};
-          }
-        `}
-      ></Global>
-      <Layout>
-        <Layout.Header color="primary">
-          <span> Ultra Editor</span>
-          <span className="theme-switch" onClick={onChangeColor}>
-            {color === 'dark' ? <SunLineIcon /> : <MoonLineIcon />}
-          </span>
-        </Layout.Header>
-        <Layout.Content>
-          <Editor theme={color} />
-        </Layout.Content>
-      </Layout>
+      <>
+        <Global
+          styles={css`
+            body {
+              background-color: ${color == 'dark' ? '#000' : '#eee'};
+            }
+          `}
+        ></Global>
+        <Layout>
+          <Layout.Header color="primary">
+            <span> Ultra Editor</span>
+            <span className="theme-switch" onClick={onChangeColor}>
+              {color === 'dark' ? <SunLineIcon /> : <MoonLineIcon />}
+            </span>
+          </Layout.Header>
+          <Layout.Content>
+            <Editor theme={color} />
+          </Layout.Content>
+        </Layout>
+      </>
     </ConfigProvider>
   );
 };
