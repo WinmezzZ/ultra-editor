@@ -38,6 +38,7 @@ import EmojisPlugin from './plugins/emojis-plugin';
 import ClickableLinkPlugin from './plugins/clickable-link-plugin';
 import TabFocusPlugin from './plugins/tab-focus-plugin';
 import KeywordsPlugin from './plugins/keywords-plugin';
+import NeteastMusicPlugin from './plugins/neteast-music-plugin';
 import ContentEditable from './components/content-editable';
 import Placeholder from './components/placeholder';
 import { EditorPropsContext } from './context/editor-props-context';
@@ -102,6 +103,7 @@ const Editor: FC<EditorProps> = props => {
               <KeywordsPlugin />
               <ClearPlugin />
               <TabFocusPlugin />
+              <NeteastMusicPlugin />
             </div>
           </div>
         </ConfigProvider>
@@ -421,6 +423,12 @@ const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
     }
     .UltraEditor__tokenFunction {
       color: #dd4a68;
+    }
+
+    .excalidraw-button.selected,
+    .embed-block.focused {
+      outline: 2px solid ${primaryColor};
+      user-select: none;
     }
   `;
 };

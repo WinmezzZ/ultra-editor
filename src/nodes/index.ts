@@ -18,6 +18,7 @@ import { MentionNode } from './mention-node';
 import { PollNode } from './poll-node';
 // import { StickyNode } from './StickyNode';
 import { TypeaheadNode } from './typeahead-node';
+import { NeteastMusicNode } from './neteast-music-node';
 
 const PlaygroundNodes: Array<new (...args: any[]) => LexicalNode> = [
   HeadingNode,
@@ -43,6 +44,7 @@ const PlaygroundNodes: Array<new (...args: any[]) => LexicalNode> = [
   TypeaheadNode,
   KeywordNode,
   HorizontalRuleNode,
+  NeteastMusicNode,
 ];
 
 export default PlaygroundNodes;

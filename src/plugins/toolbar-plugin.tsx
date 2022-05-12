@@ -84,6 +84,7 @@ import {
   CheckboxLineIcon,
   FontColorIcon,
   ArrowDropDownFillIcon,
+  NeteaseCloudMusicFillIcon,
 } from 'ultra-icon';
 import { css, Global } from '@emotion/react';
 import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
@@ -92,6 +93,8 @@ import { INSERT_POLL_COMMAND } from './poll-plugin';
 import InsetImageDialog from './toolbar-plugin/insert-image';
 import LinkEditor from '../components/link-editor';
 import useUltraContext from '../context/ultra-context';
+import { INSERT_NETEAST_MUSIC_COMMAND } from './neteast-music-plugin';
+import getUrlParam from '../utils/get-url-param';
 
 const LowPriority = 1;
 
@@ -220,6 +223,7 @@ export default function ToolbarPlugin() {
   const rowsRef = useRef<HTMLInputElement>();
   const columnsRef = useRef<HTMLInputElement>();
   const questionRef = useRef<HTMLInputElement>();
+  const neteastMusicRef = useRef<HTMLInputElement>();
   const [insertImageModalVisible, setInsertImageModalVisible] = useState(false);
 
   const updateToolbar = useCallback(() => {
@@ -499,6 +503,44 @@ export default function ToolbarPlugin() {
             >
               <PollIcon />
               <span>投票</span>
+            </Dropdown.Item>
+            <Dropdown.Title>插入第三方服务</Dropdown.Title>
+            <Dropdown.Item
+              onClick={() => {
+                Modal.confirm({
+                  title: '网易云音乐',
+                  content: (
+                    <Input
+                      style={{ width: 300 }}
+                      label="网易云音乐链接"
+                      defaultValue="https://music.163.com/#/song?id=1945895585"
+                      ref={neteastMusicRef}
+                      placeholder="https://music.163.com/#/song?id=1945895585"
+                    />
+                  ),
+                  onOk: () => {
+                    const url = neteastMusicRef.current.value;
+
+                    if (!url) {
+                      neteastMusicRef.current.focus();
+
+                      return false;
+                    }
+
+                    const id = getUrlParam('id', url);
+
+                    if (!id) {
+                      return false;
+                    }
+                    console.log(id);
+
+                    editor.dispatchCommand(INSERT_NETEAST_MUSIC_COMMAND, id);
+                  },
+                });
+              }}
+            >
+              <NeteaseCloudMusicFillIcon />
+              <span>网易云音乐</span>
             </Dropdown.Item>
           </>
         }
