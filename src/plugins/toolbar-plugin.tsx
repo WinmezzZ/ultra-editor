@@ -39,6 +39,7 @@ import { $createHeadingNode, $createQuoteNode, $isHeadingNode, HeadingTagType } 
 import { $createCodeNode, $isCodeNode, getDefaultCodeLanguage, getCodeLanguages } from '@lexical/code';
 import {
   Button,
+  ColorPicker,
   ConfigProviderProps,
   Divider,
   Dropdown,
@@ -81,6 +82,8 @@ import {
   DrawImageIcon,
   PollIcon,
   CheckboxLineIcon,
+  FontColorIcon,
+  ArrowDropDownFillIcon,
 } from 'ultra-icon';
 import { css, Global } from '@emotion/react';
 import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
@@ -194,13 +197,16 @@ const blockSelectStyle = css`
 `;
 
 export default function ToolbarPlugin() {
-  const ultraContext = useUltraContext();
+  const { theme } = useUltraContext();
+  // const { primaryColor } = theme.style;
+  const { textColor } = theme[theme.mode];
   const [editor] = useLexicalComposerContext();
   const toolbarRef = useRef(null);
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
   const [blockType, setBlockType] = useState('paragraph');
   const [fontSize, setFontSize] = useState('14px');
+  const [fontColor, setFontColor] = useState(textColor);
   const [selectedElementKey, setSelectedElementKey] = useState(null);
   const [codeLanguage, setCodeLanguage] = useState('');
   const [isLink, setIsLink] = useState(false);
@@ -244,6 +250,7 @@ export default function ToolbarPlugin() {
 
       setIsBold(selection.hasFormat('bold'));
       setFontSize($getSelectionStyleValueForProperty(selection, 'font-size', '14px'));
+      setFontColor($getSelectionStyleValueForProperty(selection, 'color', fontColor));
       setIsItalic(selection.hasFormat('italic'));
       setIsUnderline(selection.hasFormat('underline'));
       setIsStrikethrough(selection.hasFormat('strikethrough'));
@@ -345,6 +352,13 @@ export default function ToolbarPlugin() {
     [applyStyleText],
   );
 
+  const onFontColorSelect = useCallback(
+    value => {
+      applyStyleText({ color: value });
+    },
+    [applyStyleText],
+  );
+
   const inSertCodeBlock = () => {
     if (blockType !== 'code') {
       editor.update(() => {
@@ -386,7 +400,7 @@ export default function ToolbarPlugin() {
   };
 
   return (
-    <div className="toolbar" css={toolbarStyles(ultraContext)} ref={toolbarRef}>
+    <div className="toolbar" css={toolbarStyles(theme)} ref={toolbarRef}>
       <Global
         styles={css`
           .ultra-icon {
@@ -540,12 +554,14 @@ export default function ToolbarPlugin() {
           </Select>
           <Divider vertical />
           <Tooltip title="加粗">
-            <Button type="pure" className={'toolbar-item ' + (isBold ? 'ultra-button--active' : '')}>
-              <BoldIcon
-                onClick={() => {
-                  editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
-                }}
-              />
+            <Button
+              type="pure"
+              className={'toolbar-item ' + (isBold ? 'ultra-button--active' : '')}
+              onClick={() => {
+                editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
+              }}
+            >
+              <BoldIcon />
             </Button>
           </Tooltip>
           <Tooltip title="斜体">
@@ -616,6 +632,12 @@ export default function ToolbarPlugin() {
               <FontSize2Icon />
             </Button>
           </Dropdown>
+          <ColorPicker value={fontColor} onChange={onFontColorSelect}>
+            <Button type="pure" className="font-color-button">
+              <FontColorIcon />
+              <ArrowDropDownFillIcon />
+            </Button>
+          </ColorPicker>
           <Tooltip title="链接">
             <Button type="pure" onClick={insertLink} className={'toolbar-item spaced ' + (isLink ? 'active' : '')}>
               <LinksLineIcon />
@@ -702,8 +724,7 @@ export default function ToolbarPlugin() {
   );
 }
 
-const toolbarStyles = (ultraContext: ConfigProviderProps) => {
-  const { theme } = ultraContext;
+const toolbarStyles = (theme: ConfigProviderProps['theme']) => {
   const { backgroundColor } = theme[theme.mode];
 
   return css`
@@ -719,7 +740,7 @@ const toolbarStyles = (ultraContext: ConfigProviderProps) => {
 
     .ultra-divider--vertical {
       height: 20px;
-      margin: 0 10px;
+      margin: 0 8px;
     }
 
     .toolbar-item {
@@ -729,6 +750,12 @@ const toolbarStyles = (ultraContext: ConfigProviderProps) => {
 
     .toolbar-item:hover:not([disabled]) {
       background-color: rgba(204, 204, 204, 0.3);
+    }
+
+    .font-color-button {
+      .ultra-icon:last-of-type {
+        margin-left: 0;
+      }
     }
   `;
 };
