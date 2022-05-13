@@ -38,6 +38,7 @@ import EmojisPlugin from './plugins/emojis-plugin';
 import ClickableLinkPlugin from './plugins/clickable-link-plugin';
 import TabFocusPlugin from './plugins/tab-focus-plugin';
 import KeywordsPlugin from './plugins/keywords-plugin';
+import EquationsPlugin from './plugins/equations-plugin';
 import NeteastMusicPlugin from './plugins/neteast-music-plugin';
 import ContentEditable from './components/content-editable';
 import Placeholder from './components/placeholder';
@@ -103,6 +104,7 @@ const Editor: FC<EditorProps> = props => {
               <KeywordsPlugin />
               <ClearPlugin />
               <TabFocusPlugin />
+              <EquationsPlugin />
               <NeteastMusicPlugin />
             </div>
           </div>

@@ -11,8 +11,8 @@ import {
 } from 'lexical';
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 
-import EquationEditor from '../ui/EquationEditor';
-import KatexRenderer from '../ui/KatexRenderer';
+import KatexRenderer from '../components/katex-renderer';
+import EquationModal from '../components/equation-modal';
 
 export type EquationComponentProps = {
   equation: string;
@@ -22,7 +22,8 @@ export type EquationComponentProps = {
 
 const EquationComponent: FC<EquationComponentProps> = ({ equation, inline, nodeKey }) => {
   const [editor] = useLexicalComposerContext();
-  const [equationValue, setEquationValue] = useState(equation);
+
+  const [equationValue, setEquationValue] = useState(equation || '');
   const [showEquationEditor, setShowEquationEditor] = useState<boolean>(false);
   const inputRef = useRef(null);
 
@@ -83,7 +84,14 @@ const EquationComponent: FC<EquationComponentProps> = ({ equation, inline, nodeK
   return (
     <>
       {showEquationEditor ? (
-        <EquationEditor equation={equationValue} setEquation={setEquationValue} inline={inline} inputRef={inputRef} />
+        // <EquationEditor equation={equationValue} setEquation={setEquationValue} inline={inline} inputRef={inputRef} />
+        <EquationModal
+          visible={showEquationEditor}
+          onVisibleChange={setShowEquationEditor}
+          equation={equation}
+          inline={inline}
+          onSubmit={setEquationValue}
+        />
       ) : (
         <KatexRenderer
           equation={equationValue}

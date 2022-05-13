@@ -30,7 +30,6 @@ import {
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
   REMOVE_LIST_COMMAND,
-  // INSERT_CHECK_LIST_COMMAND,
   $isListNode,
   ListNode,
   INSERT_CHECK_LIST_COMMAND,
@@ -85,6 +84,7 @@ import {
   FontColorIcon,
   ArrowDropDownFillIcon,
   NeteaseCloudMusicFillIcon,
+  FormulaIcon,
 } from 'ultra-icon';
 import { css, Global } from '@emotion/react';
 import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
@@ -95,6 +95,7 @@ import LinkEditor from '../components/link-editor';
 import useUltraContext from '../context/ultra-context';
 import { INSERT_NETEAST_MUSIC_COMMAND } from './neteast-music-plugin';
 import getUrlParam from '../utils/get-url-param';
+import EquationModal from '../components/equation-modal';
 
 const LowPriority = 1;
 
@@ -223,6 +224,7 @@ export default function ToolbarPlugin() {
   const rowsRef = useRef<HTMLInputElement>();
   const columnsRef = useRef<HTMLInputElement>();
   const questionRef = useRef<HTMLInputElement>();
+  const [equationVisible, setEquationVisible] = useState(false);
   const neteastMusicRef = useRef<HTMLInputElement>();
   const [insertImageModalVisible, setInsertImageModalVisible] = useState(false);
 
@@ -439,6 +441,10 @@ export default function ToolbarPlugin() {
             >
               <DrawImageIcon />
               <span>画板</span>
+            </Dropdown.Item>
+            <Dropdown.Item onClick={() => setEquationVisible(true)}>
+              <FormulaIcon />
+              <span>公式</span>
             </Dropdown.Item>
             <Dropdown.Item
               onClick={() => {
@@ -762,6 +768,7 @@ export default function ToolbarPlugin() {
           </Dropdown>
         </>
       )}
+      <EquationModal visible={equationVisible} onVisibleChange={v => setEquationVisible(v)} />
     </div>
   );
 }

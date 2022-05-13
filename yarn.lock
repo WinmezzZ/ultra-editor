@@ -8504,10 +8504,10 @@ ultra-design@^0.0.40-beta:
     prop-types "^15.8.1"
     react-transition-group "^4.4.2"
 
-ultra-design@^0.1.9:
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/ultra-design/-/ultra-design-0.1.9.tgz#222a24644b83dd80bc556e57cf84e980f172fc96"
-  integrity sha512-rnkomAnj/W9NpmsAq5ivgLEU1MvkRwadtk402RuMP9ub+FavL+F01K3DuYOVnvUNMGPVVuYWD1zn+8mYvCrGwA==
+ultra-design@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/ultra-design/-/ultra-design-0.2.1.tgz#9659a1f19ae1be83a36e814c60ccf1fcfe203eb0"
+  integrity sha512-Q0+l7h+IJZQ9JSWz8U8BvUDmw74A93aKdAS038ldBRp5Uc98ad6Vl9hJvNmW0gnqTK6tdnU8UEeWWG2WOdFcJw==
   dependencies:
     "@babel/runtime" "^7.16.3"
     "@emotion/babel-plugin" "^11.3.0"
