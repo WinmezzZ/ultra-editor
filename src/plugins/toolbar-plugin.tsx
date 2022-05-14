@@ -94,6 +94,7 @@ import useUltraContext from '../context/ultra-context';
 import { INSERT_NETEAST_MUSIC_COMMAND } from './neteast-music-plugin';
 import getUrlParam from '../utils/get-url-param';
 import EquationModal from '../components/equation-modal';
+import codeBlockThemes from '../themes/code-block-themes';
 
 const LowPriority = 1;
 
@@ -198,6 +199,8 @@ const blockSelectStyle = css`
   }
 `;
 
+const codeBlockThemeList = Object.keys(codeBlockThemes);
+
 export default function ToolbarPlugin() {
   const { theme } = useUltraContext();
   // const { primaryColor } = theme.style;
@@ -211,6 +214,7 @@ export default function ToolbarPlugin() {
   const [fontColor, setFontColor] = useState(textColor);
   const [selectedElementKey, setSelectedElementKey] = useState(null);
   const [codeLanguage, setCodeLanguage] = useState('');
+  const [codeTheme, setCodeTheme] = useState<keyof typeof codeBlockThemes>('atom-one-dark');
   const [isLink, setIsLink] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
@@ -407,6 +411,7 @@ export default function ToolbarPlugin() {
     <div className="toolbar" css={toolbarStyles(theme)} ref={toolbarRef}>
       <Global
         styles={css`
+          ${codeTheme && codeBlockThemes[codeTheme]};
           .ultra-icon {
             svg {
               fill: currentColor;
@@ -577,11 +582,19 @@ export default function ToolbarPlugin() {
       </Button>
 
       {blockType === 'code' ? (
-        <Select className="code-language" onChange={onCodeLanguageSelect} value={codeLanguage}>
-          {getCodeLanguages().map(l => (
-            <Select.Option label={l} value={l} key={l} />
-          ))}
-        </Select>
+        <>
+          <Select className="code-language" onChange={onCodeLanguageSelect} value={codeLanguage}>
+            {getCodeLanguages().map(l => (
+              <Select.Option label={l} value={l} key={l} />
+            ))}
+          </Select>
+          <Divider vertical />
+          <Select className="code-theme" onChange={setCodeTheme} value={codeTheme}>
+            {codeBlockThemeList.map(theme => (
+              <Select.Option label={theme} value={theme} key={theme} />
+            ))}
+          </Select>
+        </>
       ) : (
         <>
           <Divider vertical />

@@ -260,8 +260,7 @@ const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
       text-decoration: underline;
     }
     .UltraEditor__code {
-      background-color: ${fade(borderColor, 0.8)};
-      font-family: Menlo, Consolas, Monaco, monospace;
+      /* font-family: Menlo, Consolas, Monaco, monospace; */
       display: block;
       padding: 8px 8px 8px 52px;
       line-height: 1.53;
@@ -277,7 +276,6 @@ const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
     .UltraEditor__code:before {
       content: attr(data-gutter);
       position: absolute;
-      background-color: ${fade(borderColor, 0.8)};
       left: 0;
       top: 0;
       border-right: 1px solid ${borderColor};
@@ -289,13 +287,15 @@ const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
     }
     .UltraEditor__code:after {
       content: attr(data-highlight-language);
-      top: 0;
+      top: 3px;
       right: 3px;
       padding: 3px;
       font-size: 10px;
       text-transform: uppercase;
       position: absolute;
       color: ${fade(textColor, 0.5)};
+      background-color: #f2f3f5;
+      border: 1px solid #f2f3f5;
     }
     .UltraEditor__table {
       border-collapse: collapse;
@@ -401,30 +401,6 @@ const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
     }
     .UltraEditor__listItemChecked:before {
       background-image: url(${SquareCheck});
-    }
-    .UltraEditor__tokenComment {
-      color: slategray;
-    }
-    .UltraEditor__tokenPunctuation {
-      color: #999;
-    }
-    .UltraEditor__tokenProperty {
-      color: #905;
-    }
-    .UltraEditor__tokenSelector {
-      color: #690;
-    }
-    .UltraEditor__tokenOperator {
-      color: #9a6e3a;
-    }
-    .UltraEditor__tokenAttr {
-      color: #07a;
-    }
-    .UltraEditor__tokenVariable {
-      color: #e90;
-    }
-    .UltraEditor__tokenFunction {
-      color: #dd4a68;
     }
 
     .excalidraw-button.selected,
