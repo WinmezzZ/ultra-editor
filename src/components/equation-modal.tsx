@@ -8,7 +8,7 @@ import KatexRenderer from './katex-renderer';
 type Props = {
   visible: boolean;
   onVisibleChange: (visible: boolean) => void;
-  onSubmit: (equation: string) => void;
+  onSubmit?: (equation: string) => void;
   inline?: boolean;
   equation?: string;
 };
