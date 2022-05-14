@@ -167,7 +167,7 @@ function ImageComponent({
 
   const setShowCaption = () => {
     editor.update(() => {
-      const node = $getNodeByKey(nodeKey) as any;
+      const node = $getNodeByKey(nodeKey);
 
       if ($isImageNode(node)) {
         node.setShowCaption(true);
@@ -181,7 +181,7 @@ function ImageComponent({
     }, 200);
 
     editor.update(() => {
-      const node = $getNodeByKey(nodeKey) as any;
+      const node = $getNodeByKey(nodeKey);
 
       if ($isImageNode(node)) {
         node.setWidthAndHeight(nextWidth, nextHeight);
@@ -340,14 +340,14 @@ export class ImageNode extends DecoratorNode<React.ReactNode> {
   }
 
   setWidthAndHeight(width: 'inherit' | number, height: 'inherit' | number): void {
-    const writable = this.getWritable() as ImageNode;
+    const writable = this.getWritable<ImageNode>();
 
     writable.__width = width;
     writable.__height = height;
   }
 
   setShowCaption(showCaption: boolean): void {
-    const writable = this.getWritable() as ImageNode;
+    const writable = this.getWritable<ImageNode>();
 
     writable.__showCaption = showCaption;
   }

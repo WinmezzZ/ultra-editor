@@ -144,7 +144,7 @@ export class EquationNode extends DecoratorNode<JSX.Element> {
   }
 
   setEquation(equation: string): void {
-    const writable = this.getWritable() as EquationNode;
+    const writable = this.getWritable<EquationNode>();
 
     writable.__equation = equation;
   }

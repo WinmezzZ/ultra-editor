@@ -32,8 +32,8 @@ export const SUPPORT_SPEECH_RECOGNITION: boolean = 'SpeechRecognition' in window
 function SpeechToTextPlugin(): null {
   const [editor] = useLexicalComposerContext();
   const [isEnabled, setIsEnabled] = useState<boolean>(false);
-  const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-  const recognition = useRef<typeof SpeechRecognition | null>(null);
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = useRef<SpeechRecognitionInstance>(null);
   const report = useReport();
 
   useEffect(() => {
@@ -42,7 +42,7 @@ function SpeechToTextPlugin(): null {
       recognition.current.continuous = true;
       recognition.current.interimResults = true;
       recognition.current.lang = 'zh-CN';
-      recognition.current.addEventListener('result', (event: typeof SpeechRecognition) => {
+      recognition.current.addEventListener('result', (event: SpeechRecognitionInstance) => {
         const resultItem = event.results.item(event.resultIndex);
         const { transcript } = resultItem.item(0);
 
@@ -102,4 +102,4 @@ function SpeechToTextPlugin(): null {
   return null;
 }
 
-export default (SUPPORT_SPEECH_RECOGNITION ? SpeechToTextPlugin : () => null) as () => null;
+export default SUPPORT_SPEECH_RECOGNITION ? SpeechToTextPlugin : () => null;

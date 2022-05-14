@@ -123,7 +123,7 @@ function PollComponent({ question, options, nodeKey }: { nodeKey: NodeKey; optio
   const withPollNode = useCallback(
     (cb: (node: PollNode) => void): void => {
       editor.update(() => {
-        const node = $getNodeByKey(nodeKey) as PollNode;
+        const node = $getNodeByKey(nodeKey);
 
         if ($isPollNode(node)) {
           cb(node);
@@ -299,7 +299,7 @@ export class PollNode extends DecoratorNode<React.ReactNode> {
   }
 
   addOption(option: Option): void {
-    const self = this.getWritable() as PollNode;
+    const self = this.getWritable<PollNode>();
     const options = Array.from(self.__options);
 
     options.push(option);
@@ -307,7 +307,7 @@ export class PollNode extends DecoratorNode<React.ReactNode> {
   }
 
   deleteOption(option: Option): void {
-    const self = this.getWritable() as PollNode;
+    const self = this.getWritable<PollNode>();
     const options = Array.from(self.__options);
     const index = options.indexOf(option);
 
@@ -316,7 +316,7 @@ export class PollNode extends DecoratorNode<React.ReactNode> {
   }
 
   setOptionText(option: Option, text: string): void {
-    const self = this.getWritable() as PollNode;
+    const self = this.getWritable<PollNode>();
     const clonedOption = cloneOption(option, text);
     const options = Array.from(self.__options);
     const index = options.indexOf(option);
@@ -326,7 +326,7 @@ export class PollNode extends DecoratorNode<React.ReactNode> {
   }
 
   toggleVote(option: Option, clientID: number): void {
-    const self = this.getWritable() as PollNode;
+    const self = this.getWritable<PollNode>();
     const votes = option.votes;
     const votesClone = Array.from(votes);
     const voteIndex = votes.indexOf(clientID);

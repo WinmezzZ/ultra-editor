@@ -202,7 +202,7 @@ export class ExcalidrawNode extends DecoratorNode<JSX.Element> {
   }
 
   setData(data: string): void {
-    const self = this.getWritable() as ExcalidrawNode;
+    const self = this.getWritable<ExcalidrawNode>();
 
     self.__data = data;
   }

@@ -74,6 +74,6 @@ const theme: EditorThemeClasses = {
     underline: 'UltraEditor__textUnderline',
     underlineStrikethrough: 'UltraEditor__textUnderlineStrikethrough',
   },
-} as any;
+};
 
 export default theme;

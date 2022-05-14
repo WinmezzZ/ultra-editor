@@ -1,4 +1,5 @@
 import Excalidraw from '@excalidraw/excalidraw';
+import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
 import { useEffect, useRef, useState } from 'react';
 import { Modal } from 'ultra-design';
 
@@ -93,7 +94,7 @@ export default function ExcalidrawModal({
           onChange={onChange}
           initialData={{
             appState: { isLoading: false },
-            elements: initialElements as any,
+            elements: initialElements as ExcalidrawElement[],
           }}
         />
       </div>

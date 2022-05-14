@@ -12,8 +12,6 @@ import {
   $isRangeSelection,
   $createParagraphNode,
   $getNodeByKey,
-  RangeSelection,
-  ElementNode,
   OUTDENT_CONTENT_COMMAND,
   INDENT_CONTENT_COMMAND,
 } from 'lexical';
@@ -125,7 +123,7 @@ function BlockOptionsDropdownList({ editor, blockType, setBlockType }) {
   const formatParagraph = () => {
     if (blockType !== 'paragraph') {
       editor.update(() => {
-        const selection = $getSelection() as RangeSelection;
+        const selection = $getSelection();
 
         if ($isRangeSelection(selection)) {
           $wrapLeafNodesInElements(selection, () => $createParagraphNode());
@@ -137,10 +135,10 @@ function BlockOptionsDropdownList({ editor, blockType, setBlockType }) {
   const formatHeading = (headingType: HeadingTagType) => {
     if (blockType !== headingType) {
       editor.update(() => {
-        const selection = $getSelection() as RangeSelection;
+        const selection = $getSelection();
 
         if ($isRangeSelection(selection)) {
-          $wrapLeafNodesInElements(selection, () => $createHeadingNode(headingType) as unknown as ElementNode);
+          $wrapLeafNodesInElements(selection, () => $createHeadingNode(headingType));
         }
       });
     }
@@ -229,10 +227,10 @@ export default function ToolbarPlugin() {
   const [insertImageModalVisible, setInsertImageModalVisible] = useState(false);
 
   const updateToolbar = useCallback(() => {
-    const selection = $getSelection() as RangeSelection;
+    const selection = $getSelection();
 
     if ($isRangeSelection(selection)) {
-      const anchorNode: any = selection.anchor.getNode();
+      const anchorNode = selection.anchor.getNode();
       const element = anchorNode.getKey() === 'root' ? anchorNode : anchorNode.getTopLevelElementOrThrow();
       const elementKey = element.getKey();
       const elementDOM = editor.getElementByKey(elementKey);
@@ -240,7 +238,7 @@ export default function ToolbarPlugin() {
       if (elementDOM !== null) {
         setSelectedElementKey(elementKey);
         if ($isListNode(element)) {
-          const parentList = $getNearestNodeOfType(anchorNode, ListNode as any) as ListNode;
+          const parentList = $getNearestNodeOfType<ListNode>(anchorNode, ListNode);
           const type = parentList ? parentList.getListType() : element.getListType();
 
           setBlockType(type);
@@ -319,7 +317,7 @@ export default function ToolbarPlugin() {
     value => {
       editor.update(() => {
         if (selectedElementKey !== null) {
-          const node: any = $getNodeByKey(selectedElementKey);
+          const node = $getNodeByKey(selectedElementKey);
 
           if ($isCodeNode(node)) {
             node.setLanguage(value);
@@ -341,7 +339,7 @@ export default function ToolbarPlugin() {
   const applyStyleText = useCallback(
     styles => {
       editor.update(() => {
-        const selection = $getSelection() as RangeSelection;
+        const selection = $getSelection();
 
         if ($isRangeSelection(selection)) {
           $patchStyleText(selection, styles);
@@ -368,7 +366,7 @@ export default function ToolbarPlugin() {
   const inSertCodeBlock = () => {
     if (blockType !== 'code') {
       editor.update(() => {
-        const selection = $getSelection() as RangeSelection;
+        const selection = $getSelection();
 
         if ($isRangeSelection(selection)) {
           $wrapLeafNodesInElements(selection, () => $createCodeNode());
@@ -396,10 +394,10 @@ export default function ToolbarPlugin() {
   const formatQuote = () => {
     if (blockType !== 'quote') {
       editor.update(() => {
-        const selection = $getSelection() as RangeSelection;
+        const selection = $getSelection();
 
         if ($isRangeSelection(selection)) {
-          $wrapLeafNodesInElements(selection, () => $createQuoteNode() as unknown as ElementNode);
+          $wrapLeafNodesInElements(selection, () => $createQuoteNode());
         }
       });
     }

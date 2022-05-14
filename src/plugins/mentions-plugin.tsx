@@ -615,10 +615,10 @@ const MentionsTypeahead: FC<M> = ({ close, editor, resolution }) => {
 
   useEffect(() => {
     return mergeRegister(
-      editor.registerCommand(
+      editor.registerCommand<KeyboardEvent>(
         KEY_ARROW_DOWN_COMMAND,
         payload => {
-          const event = payload as KeyboardEvent;
+          const event = payload;
 
           if (results !== null && selectedIndex !== null) {
             if (selectedIndex < SUGGESTION_LIST_LENGTH_LIMIT - 1 && selectedIndex !== results.length - 1) {
@@ -632,10 +632,10 @@ const MentionsTypeahead: FC<M> = ({ close, editor, resolution }) => {
         },
         COMMAND_PRIORITY_LOW,
       ),
-      editor.registerCommand(
+      editor.registerCommand<KeyboardEvent>(
         KEY_ARROW_UP_COMMAND,
         payload => {
-          const event = payload as KeyboardEvent;
+          const event = payload;
 
           if (results !== null && selectedIndex !== null) {
             if (selectedIndex !== 0) {
@@ -649,10 +649,10 @@ const MentionsTypeahead: FC<M> = ({ close, editor, resolution }) => {
         },
         COMMAND_PRIORITY_LOW,
       ),
-      editor.registerCommand(
+      editor.registerCommand<KeyboardEvent>(
         KEY_ESCAPE_COMMAND,
         payload => {
-          const event = payload as KeyboardEvent;
+          const event = payload;
 
           if (results === null || selectedIndex === null) {
             return false;
@@ -665,10 +665,10 @@ const MentionsTypeahead: FC<M> = ({ close, editor, resolution }) => {
         },
         COMMAND_PRIORITY_LOW,
       ),
-      editor.registerCommand(
+      editor.registerCommand<KeyboardEvent>(
         KEY_TAB_COMMAND,
         payload => {
-          const event = payload as KeyboardEvent;
+          const event = payload;
 
           if (results === null || selectedIndex === null) {
             return false;
@@ -681,10 +681,10 @@ const MentionsTypeahead: FC<M> = ({ close, editor, resolution }) => {
         },
         COMMAND_PRIORITY_LOW,
       ),
-      editor.registerCommand(
+      editor.registerCommand<KeyboardEvent>(
         KEY_ENTER_COMMAND,
         payload => {
-          const event = payload as KeyboardEvent;
+          const event = payload;
 
           if (results === null || selectedIndex === null) {
             return false;
@@ -839,7 +839,7 @@ function getMentionsTextToSearch(editor: LexicalEditor): string | null {
   let text = null;
 
   editor.getEditorState().read(() => {
-    const selection = $getSelection() as RangeSelection;
+    const selection = $getSelection();
 
     if (!$isRangeSelection(selection)) {
       return;
@@ -864,7 +864,7 @@ function getMentionOffset(documentText: string, entryText: string, offset: numbe
 
 function createMentionNodeFromSearchResult(editor: LexicalEditor, entryText: string, match: MentionMatch): void {
   editor.update(() => {
-    const selection = $getSelection() as RangeSelection;
+    const selection = $getSelection();
 
     if (!$isRangeSelection(selection) || !selection.isCollapsed()) {
       return;
@@ -910,14 +910,14 @@ function isSelectionOnEntityBoundary(editor: LexicalEditor, offset: number): boo
   }
 
   return editor.getEditorState().read(() => {
-    const selection = $getSelection() as RangeSelection;
+    const selection = $getSelection();
 
     if ($isRangeSelection(selection)) {
       const anchor = selection.anchor;
       const anchorNode = anchor.getNode();
       const prevSibling = anchorNode.getPreviousSibling();
 
-      return $isTextNode(prevSibling) && (prevSibling as any).isTextEntity();
+      return $isTextNode(prevSibling) && prevSibling.isTextEntity();
     }
 
     return false;

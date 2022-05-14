@@ -240,7 +240,7 @@ function TableActionMenu({
           throw new Error('Expected table cell');
         }
 
-        (tableCell as any).toggleHeaderStyle(TableCellHeaderStates.ROW);
+        tableCell.toggleHeaderStyle(TableCellHeaderStates.ROW);
       });
 
       clearTableSelection();
@@ -275,7 +275,7 @@ function TableActionMenu({
           throw new Error('Expected table cell');
         }
 
-        (tableCell as any).toggleHeaderStyle(TableCellHeaderStates.COLUMN);
+        tableCell.toggleHeaderStyle(TableCellHeaderStates.COLUMN);
       }
 
       clearTableSelection();

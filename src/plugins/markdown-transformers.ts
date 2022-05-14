@@ -1,3 +1,4 @@
+import type { ElementTransformer, TextMatchTransformer, Transformer } from '@lexical/markdown';
 import type { ElementNode, LexicalNode } from 'lexical';
 
 import { CHECK_LIST, ELEMENT_TRANSFORMERS, TEXT_FORMAT_TRANSFORMERS, TEXT_MATCH_TRANSFORMERS } from '@lexical/markdown';
@@ -16,7 +17,7 @@ import { $createParagraphNode, $createTextNode, $isElementNode, $isParagraphNode
 import { $createEquationNode, $isEquationNode } from '../nodes/equation-node';
 import { $createImageNode, $isImageNode } from '../nodes/image-node';
 
-export const HR = {
+export const HR: ElementTransformer = {
   export: (node: LexicalNode) => {
     return $isHorizontalRuleNode(node) ? '***' : null;
   },
@@ -35,8 +36,8 @@ export const HR = {
   type: 'element',
 };
 
-export const IMAGE = {
-  export: (node, _exportChildren, _exportFormat) => {
+export const IMAGE: TextMatchTransformer = {
+  export: node => {
     if (!$isImageNode(node)) {
       return null;
     }
@@ -55,8 +56,8 @@ export const IMAGE = {
   type: 'text-match',
 };
 
-export const EQUATION = {
-  export: (node, _exportChildren, _exportFormat) => {
+export const EQUATION: TextMatchTransformer = {
+  export: node => {
     if (!$isEquationNode(node)) {
       return null;
     }
@@ -77,7 +78,7 @@ export const EQUATION = {
 
 const TABLE_ROW_REG_EXP = /^(?:\|)(.+)(?:\|)\s?$/;
 
-export const TABLE = {
+export const TABLE: ElementTransformer = {
   export: (node: LexicalNode, exportChildren: (elementNode: ElementNode) => string) => {
     if (!$isTableNode(node)) {
       return null;
@@ -150,7 +151,7 @@ export const TABLE = {
       table.append(tableRow);
 
       for (let i = 0; i < maxCells; i++) {
-        tableRow.append(i < cells.length ? cells[i] : createTableCell());
+        tableRow.append(i < cells.length ? cells[i] : createTableCell(null));
       }
     }
 
@@ -160,8 +161,8 @@ export const TABLE = {
   type: 'element',
 };
 
-const createTableCell = (textContent?: string | null | undefined): TableCellNode => {
-  const cell = ($createTableCellNode as any)(TableCellHeaderStates.NO_STATUS);
+const createTableCell = (textContent: string | null | undefined): TableCellNode => {
+  const cell = $createTableCellNode(TableCellHeaderStates.NO_STATUS);
   const paragraph = $createParagraphNode();
 
   if (textContent != null) {

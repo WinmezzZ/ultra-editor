@@ -12,7 +12,6 @@ import { $isCodeNode } from '@lexical/code';
 import { UlTRA_TRANSFORMERS } from './markdown-transformers';
 import { $convertToMarkdownString } from '@lexical/markdown';
 import { $createCodeNode } from '@lexical/code';
-import { CodeNode } from '@lexical/code';
 
 const ActionsPlugins: FC = () => {
   const [editor] = useLexicalComposerContext();
@@ -52,7 +51,7 @@ const ActionsPlugins: FC = () => {
   const handleMarkdownToggle = useCallback(() => {
     editor.update(() => {
       const root = $getRoot();
-      const firstChild = root.getFirstChild() as typeof CodeNode;
+      const firstChild = root.getFirstChild();
 
       if ($isCodeNode(firstChild) && firstChild.getLanguage() === 'markdown') {
         $convertFromMarkdownString(firstChild.getTextContent(), UlTRA_TRANSFORMERS);

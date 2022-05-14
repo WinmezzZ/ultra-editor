@@ -126,7 +126,7 @@ function TableCellResizer({ editor }: { editor: LexicalEditor }) {
       }
 
       editor.update(() => {
-        const tableCellNode = $getNearestNodeFromDOMNode(activeCell.elem) as any;
+        const tableCellNode = $getNearestNodeFromDOMNode(activeCell.elem);
 
         if (!$isTableCellNode(tableCellNode)) {
           throw new Error('TableCellResizer: Table cell node not found.');
@@ -142,7 +142,7 @@ function TableCellResizer({ editor }: { editor: LexicalEditor }) {
           throw new Error('Expected table cell to be inside of table row.');
         }
 
-        const tableRow = tableRows[tableRowIndex] as any;
+        const tableRow = tableRows[tableRowIndex];
 
         if (!$isTableRowNode(tableRow)) {
           throw new Error('Expected table row');
@@ -160,7 +160,7 @@ function TableCellResizer({ editor }: { editor: LexicalEditor }) {
         throw new Error('TableCellResizer: Expected active cell.');
       }
       editor.update(() => {
-        const tableCellNode = $getNearestNodeFromDOMNode(activeCell.elem) as any;
+        const tableCellNode = $getNearestNodeFromDOMNode(activeCell.elem);
 
         if (!$isTableCellNode(tableCellNode)) {
           throw new Error('TableCellResizer: Table cell node not found.');
@@ -173,7 +173,7 @@ function TableCellResizer({ editor }: { editor: LexicalEditor }) {
         const tableRows = tableNode.getChildren();
 
         for (let r = 0; r < tableRows.length; r++) {
-          const tableRow = tableRows[r] as any;
+          const tableRow = tableRows[r];
 
           if (!$isTableRowNode(tableRow)) {
             throw new Error('Expected table row');
