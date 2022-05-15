@@ -6,18 +6,17 @@ import { $getNodeByKey, DecoratorNode } from 'lexical';
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 
-import joinClasses from '../utils/join-classes';
 import { css } from '@emotion/react';
 import { Button, Checkbox, Input } from 'ultra-design';
 import { CloseLineIcon } from 'ultra-icon';
 
 type Options = ReadonlyArray<Option>;
 
-type Option = Readonly<{
+type Option = {
   text: string;
   uid: string;
   votes: Array<number>;
-}>;
+};
 
 function createUID(): string {
   return Math.random()
@@ -102,7 +101,7 @@ function PollOptionComponent({
       <Button
         type="pure"
         disabled={options.length < 3}
-        className={joinClasses('PollNode__optionDelete', options.length < 3 && 'PollNode__optionDeleteDisabled')}
+        className={'PollNode__optionDelete' + (options.length < 3 ? ' PollNode__optionDeleteDisabled' : '')}
         arial-label="Remove"
         onClick={() => {
           withPollNode(node => {
