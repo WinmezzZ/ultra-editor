@@ -1,3 +1,8 @@
+import 'prismjs';
+import 'prismjs/components/prism-jsx';
+import 'prismjs/components/prism-tsx';
+import 'prismjs/components/prism-go';
+import 'prismjs/components/prism-php';
 import LexicalComposer from '@lexical/react/LexicalComposer';
 import RichTextPlugin from '@lexical/react/LexicalRichTextPlugin';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
