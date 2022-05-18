@@ -583,13 +583,13 @@ export default function ToolbarPlugin() {
 
       {blockType === 'code' ? (
         <>
-          <Select className="code-language" onChange={onCodeLanguageSelect} value={codeLanguage}>
+          <Select className="code-language" onChange={onCodeLanguageSelect} value={codeLanguage} filterable>
             {getCodeLanguages().map(l => (
               <Select.Option label={l} value={l} key={l} />
             ))}
           </Select>
           <Divider vertical />
-          <Select className="code-theme" onChange={setCodeTheme} value={codeTheme}>
+          <Select className="code-theme" onChange={setCodeTheme} value={codeTheme} filterable>
             {codeBlockThemeList.map(theme => (
               <Select.Option label={theme} value={theme} key={theme} />
             ))}
@@ -604,7 +604,7 @@ export default function ToolbarPlugin() {
               <Divider vertical />
             </>
           )}
-          <Select value={fontSize} onChange={onFontSizeSelect}>
+          <Select value={fontSize} onChange={onFontSizeSelect} style={{ minWidth: 80 }}>
             {fontSizeList.map(font => (
               <Select.Option value={font} key={font}>
                 {font}

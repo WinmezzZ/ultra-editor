@@ -62,13 +62,14 @@
     "@lexical/utils": "^0.2.9",
     "katex": "^0.15.3",
     "lexical": "^0.2.9",
-    "ultra-design": "^0.2.1",
+    "ultra-design": "^0.2.4",
     "ultra-icon": "^0.0.7",
     "winhooks": "^0.0.2",
     "y-websocket": "^1.4.0",
     "yjs": "^13.5.34"
   },
   "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.17.12",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.0.6",
