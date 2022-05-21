@@ -129,7 +129,7 @@ const rootEditorStyle = (ultraContext: ConfigProviderProps) => {
   return css`
     margin: 20px auto;
     border-radius: 2px;
-    max-width: 1000px;
+    max-width: 1100px;
     color: ${textColor};
     position: relative;
     line-height: 20px;
