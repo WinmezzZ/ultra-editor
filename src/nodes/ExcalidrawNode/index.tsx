@@ -2,7 +2,7 @@ import type { ExcalidrawElementFragment } from './excalidraw-modal';
 import type { EditorConfig, LexicalEditor, LexicalNode, NodeKey } from 'lexical';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import useLexicalNodeSelection from '@lexical/react/useLexicalNodeSelection';
+import { useLexicalNodeSelection } from '@lexical/react/useLexicalNodeSelection';
 import { mergeRegister } from '@lexical/utils';
 import {
   $getNodeByKey,

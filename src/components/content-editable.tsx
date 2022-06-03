@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import LexicalContentEditable from '@lexical/react/LexicalContentEditable';
+import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { FC } from 'react';
 import { EditorProps, useEditorPropsContext } from '../context/editor-props-context';
 
@@ -11,13 +11,13 @@ const Placeholder: FC<PlaceholderProps> = ({ className }) => {
   const editorProps = useEditorPropsContext();
 
   return (
-    <LexicalContentEditable
+    <ContentEditable
       css={!className && placeholderStyle(editorProps)}
       className={className || 'ContentEditable__root'}
       // style={{ caretColor: editorProps.theme === 'dark' ? '#fff' : 'rgb(5, 5, 5)' }}
     >
       请输入...
-    </LexicalContentEditable>
+    </ContentEditable>
   );
 };
 

@@ -3,21 +3,22 @@ import 'prismjs/components/prism-jsx';
 import 'prismjs/components/prism-tsx';
 import 'prismjs/components/prism-go';
 import 'prismjs/components/prism-php';
-import LexicalComposer from '@lexical/react/LexicalComposer';
-import RichTextPlugin from '@lexical/react/LexicalRichTextPlugin';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import AutoFocusPlugin from '@lexical/react/LexicalAutoFocusPlugin';
+import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
+import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
+import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
+import { TablePlugin } from '@lexical/react/LexicalTablePlugin';
+import { ClearEditorPlugin } from '@lexical/react/LexicalClearEditorPlugin';
+import { HashtagPlugin } from '@lexical/react/LexicalHashtagPlugin';
 import Theme from './themes';
 import ToolbarPlugin from './plugins/toolbar-plugin';
 // import TreeViewPlugin from './plugins/TreeViewPlugin';
-import LinkPlugin from '@lexical/react/LexicalLinkPlugin';
-import ListPlugin from '@lexical/react/LexicalListPlugin';
-import CheckListPlugin from '@lexical/react/LexicalCheckListPlugin';
 import CodeHighlightPlugin from './plugins/code-highlight-plugin';
 import AutoLinkPlugin from './plugins/autolink-plugin';
 import ImagesPlugin from './plugins/images-plugin';
-import TablePlugin from '@lexical/react/LexicalTablePlugin';
-import ClearPlugin from '@lexical/react/LexicalClearEditorPlugin';
 import MarkdownShortcutPlugin from './plugins/markdown-shotcurt-plugin';
 import TableCellResizerPlugin from './plugins/table-cell-resizer-plugin';
 
@@ -38,7 +39,6 @@ import ActionsPlugins from './plugins/action-plugin';
 import SpeechToTextPlugin from './plugins/speech-to-text-plugin';
 import TableActionMenuPlugin from './plugins/table-action-menu-plugin';
 import MentionsPlugin from './plugins/mentions-plugin';
-import HashtagsPlugin from '@lexical/react/LexicalHashtagPlugin';
 import EmojisPlugin from './plugins/emojis-plugin';
 import ClickableLinkPlugin from './plugins/clickable-link-plugin';
 import TabFocusPlugin from './plugins/tab-focus-plugin';
@@ -103,11 +103,11 @@ const Editor: FC<EditorProps> = props => {
               <MentionsPlugin />
               <ActionsPlugins />
               <SpeechToTextPlugin />
-              <HashtagsPlugin />
+              <HashtagPlugin />
               <EmojisPlugin />
               <ClickableLinkPlugin />
               <KeywordsPlugin />
-              <ClearPlugin />
+              <ClearEditorPlugin />
               <TabFocusPlugin />
               <EquationsPlugin />
               <NeteastMusicPlugin />

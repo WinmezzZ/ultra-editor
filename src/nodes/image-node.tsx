@@ -1,13 +1,13 @@
 import type { EditorConfig, LexicalEditor, LexicalNode, NodeKey } from 'lexical';
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import HashtagsPlugin from '@lexical/react/LexicalHashtagPlugin';
+import { HashtagPlugin } from '@lexical/react/LexicalHashtagPlugin';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import LinkPlugin from '@lexical/react/LexicalLinkPlugin';
-import LexicalNestedComposer from '@lexical/react/LexicalNestedComposer';
-import RichTextPlugin from '@lexical/react/LexicalRichTextPlugin';
-import TablesPlugin from '@lexical/react/LexicalTablePlugin';
-import useLexicalNodeSelection from '@lexical/react/useLexicalNodeSelection';
+import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
+import { LexicalNestedComposer } from '@lexical/react/LexicalNestedComposer';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { TablePlugin } from '@lexical/react/LexicalTablePlugin';
+import { useLexicalNodeSelection } from '@lexical/react/useLexicalNodeSelection';
 import { mergeRegister } from '@lexical/utils';
 import {
   $getNodeByKey,
@@ -210,12 +210,12 @@ function ImageComponent({
         <div css={imageCaptionStyle(ultradContext)}>
           <LexicalNestedComposer initialEditor={caption}>
             <MentionsPlugin />
-            <TablesPlugin />
+            <TablePlugin />
             <TableCellActionMenuPlugin />
             <ImagesPlugin />
             <LinkPlugin />
             <EmojisPlugin />
-            <HashtagsPlugin />
+            <HashtagPlugin />
             <KeywordsPlugin />
 
             <HistoryPlugin externalHistoryState={historyState} />
@@ -340,14 +340,14 @@ export class ImageNode extends DecoratorNode<React.ReactNode> {
   }
 
   setWidthAndHeight(width: 'inherit' | number, height: 'inherit' | number): void {
-    const writable = this.getWritable<ImageNode>();
+    const writable = this.getWritable();
 
     writable.__width = width;
     writable.__height = height;
   }
 
   setShowCaption(showCaption: boolean): void {
-    const writable = this.getWritable<ImageNode>();
+    const writable = this.getWritable();
 
     writable.__showCaption = showCaption;
   }
